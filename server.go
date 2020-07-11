@@ -21,5 +21,5 @@ func main() {
 	e.Use(middleware.RemoveTrailingSlash())
 	e.Use(middleware.RequestID())
 	e.Use(middleware.Recover())
-	e.Logger.Fatal(e.Start(":8000"))
+	e.Logger.Fatal(e.Start(":5000"))
 }
