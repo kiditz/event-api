@@ -107,3 +107,12 @@ func Errors(c echo.Context, statusCode int, s interface{}) error {
 		StatusCode: statusCode,
 	})
 }
+
+// Success is used to handle data success
+func Success(c echo.Context, s interface{}) error {
+	return c.JSON(http.StatusOK, ErrorModel{
+		Data:       s,
+		Status:     http.StatusText(http.StatusOK),
+		StatusCode: http.StatusOK,
+	})
+}
