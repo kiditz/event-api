@@ -8,9 +8,12 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func main() {
+func init() {
 	db.Connect()
 	db.DB.LogMode(true)
+}
+func main() {
+
 	e := echo.New()
 	trans.InitTranslate(e)
 	r.InitRoutes(e)

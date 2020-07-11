@@ -1,9 +1,12 @@
 package trans
 
 import (
+	"encoding/json"
 	"net/http"
 	"reflect"
 	"strings"
+
+	"io/ioutil"
 
 	"github.com/go-playground/locales/en"
 	"github.com/go-playground/locales/id"
@@ -33,20 +36,35 @@ func InitTranslate(e *echo.Echo) {
 	})
 	en := en.New()
 	UNI = ut.New(en, en, id.New())
+
 	transEn, _ := UNI.GetTranslator("en")
 	transID, _ := UNI.GetTranslator("id")
 	en_trans.RegisterDefaultTranslations(VALIDATE, transEn)
 	id_trans.RegisterDefaultTranslations(VALIDATE, transID)
+	// Handle translation from en.json
+	addTranslator(transEn, "en.json")
+	// Handle translation from id.json
+	addTranslator(transID, "id.json")
+
+}
+
+func addTranslator(trans ut.Translator, fileName string) {
+	file, _ := ioutil.ReadFile(fileName)
+	var data map[string]string
+	json.Unmarshal([]byte(file), &data)
+	for key, value := range data {
+		trans.Add(key, value, false)
+	}
 }
 
 // Translate the value
-func Translate(c echo.Context, s interface{}) []map[string]interface{} {
+func Translate(c echo.Context, s interface{}) ([]map[string]interface{}, ut.Translator) {
 	err := VALIDATE.Struct(s)
 
 	var slice []map[string]interface{}
+	acceptLanguage := c.Request().Header.Get("Accept-Language")
+	trans, _ := UNI.GetTranslator(acceptLanguage)
 	if err != nil {
-		acceptLanguage := c.Request().Header.Get("Accept-Language")
-		trans, _ := UNI.FindTranslator(acceptLanguage)
 		errs := err.(validator.ValidationErrors)
 		for _, err := range errs {
 			mapper := make(map[string]interface{})
@@ -55,13 +73,20 @@ func Translate(c echo.Context, s interface{}) []map[string]interface{} {
 			mapper["value"] = strings.TrimSpace(strings.ReplaceAll(err.Translate(trans), err.Field(), ""))
 			slice = append(slice, mapper)
 		}
-		return slice
+		return slice, trans
 	}
-	return slice
+	return slice, trans
 }
 
 // Errors is used for handle error by standarize api
 func Errors(c echo.Context, statusCode int, s interface{}) error {
+	if reflect.TypeOf(s).Name() == "string" {
+		return c.JSON(statusCode, ErrorModel{
+			Status:     http.StatusText(statusCode),
+			StatusCode: statusCode,
+			Message:    s.(string),
+		})
+	}
 	return c.JSON(statusCode, ErrorModel{
 		Status:     http.StatusText(statusCode),
 		Errors:     s,

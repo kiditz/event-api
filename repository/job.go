@@ -13,12 +13,12 @@ const (
 	StatusOpen = "OPEN"
 )
 
-// CreateJob used to create new job operation
-func CreateJob(event *e.Job) error {
+// CreateJob used to insert job into jobs database
+func CreateJob(job *e.Job) error {
 
 	return db.DB.Transaction(func(tx *gorm.DB) error {
-		event.Status = StatusOpen
-		if err := tx.Create(&event).Error; err != nil {
+		job.Status = StatusOpen
+		if err := tx.Create(&job).Error; err != nil {
 			return err
 		}
 		return nil

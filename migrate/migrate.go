@@ -13,4 +13,5 @@ func main() {
 		&e.Company{},
 	)
 	db.DB.Model(&e.Job{}).AddForeignKey("company_id", "companies(id)", "CASCADE", "CASCADE")
+	db.DB.Model(&e.Job{}).AddUniqueIndex("idx_company_id_title", "company_id", "title", "status")
 }
