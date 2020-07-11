@@ -7,5 +7,5 @@ import (
 
 // SetEventRoutes to initialize routing used by event
 func SetEventRoutes(e *echo.Echo) {
-	e.POST("/event", c.NewEvent)
+	e.POST("/job", c.CreateJob)
 }

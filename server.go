@@ -3,13 +3,14 @@ package main
 import (
 	"github.com/kiditz/spgku-job/db"
 	r "github.com/kiditz/spgku-job/router"
-	"github.com/kiditz/spgku-job/trans"
+	trans "github.com/kiditz/spgku-job/translate"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
 	db.Connect()
+	db.DB.LogMode(true)
 	e := echo.New()
 	trans.InitTranslate(e)
 	r.InitRoutes(e)

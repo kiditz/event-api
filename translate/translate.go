@@ -29,7 +29,6 @@ func InitTranslate(e *echo.Echo) {
 		if name == "-" {
 			return ""
 		}
-
 		return name
 	})
 	en := en.New()
@@ -41,7 +40,7 @@ func InitTranslate(e *echo.Echo) {
 }
 
 // Translate the value
-func Translate(c echo.Context, s interface{}) ([]map[string]interface{}, error) {
+func Translate(c echo.Context, s interface{}) []map[string]interface{} {
 	err := VALIDATE.Struct(s)
 
 	var slice []map[string]interface{}
@@ -56,9 +55,9 @@ func Translate(c echo.Context, s interface{}) ([]map[string]interface{}, error) 
 			mapper["value"] = strings.TrimSpace(strings.ReplaceAll(err.Translate(trans), err.Field(), ""))
 			slice = append(slice, mapper)
 		}
-		return slice, err
+		return slice
 	}
-	return slice, nil
+	return slice
 }
 
 //Errors is used for handle error by standarize api

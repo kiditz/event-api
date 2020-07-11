@@ -12,7 +12,7 @@ type Job struct {
 	StartDate   time.Time `gorm:"not null" json:"start_date" validate:"required"`
 	EndDate     time.Time `gorm:"not null" json:"end_date" validate:"gtefield=StartDate,required"`
 	Location    string    `json:"location"`
-	CompanyID   uint      `sql:"index" gorm:"not null" json:"company_id" `
-	Company     Company   `json:"company"`
+	CompanyID   uint      `sql:"index" gorm:"not null" json:"company_id"`
+	Company     Company   `json:"company" validate:"required"`
 	Model
 }

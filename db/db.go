@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/jinzhu/gorm"
-
 	// Postgres Dialect
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
