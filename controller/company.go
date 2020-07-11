@@ -30,7 +30,7 @@ func CreateCompany(c echo.Context) error {
 		}
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
-	return c.JSON(http.StatusOK, company)
+	return t.Success(c, company)
 }
 
 // FindCompany used to found company by it's primary key id
@@ -40,5 +40,5 @@ func FindCompany(c echo.Context) error {
 	if err != nil {
 		return t.Errors(c, http.StatusNotFound, t.TranslateError(c, err))
 	}
-	return c.JSON(http.StatusOK, company)
+	return t.Success(c, company)
 }

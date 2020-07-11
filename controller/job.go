@@ -28,5 +28,5 @@ func CreateJob(c echo.Context) error {
 			return t.Errors(c, http.StatusBadRequest, res)
 		}
 	}
-	return c.JSON(http.StatusOK, job)
+	return t.Success(c, job)
 }
