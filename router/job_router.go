@@ -5,7 +5,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// SetEventRoutes to initialize routing used by event
-func SetEventRoutes(e *echo.Echo) {
+// SetJobRoutes to initialize routing used by event
+func SetJobRoutes(e *echo.Echo) {
 	e.POST("/job", c.CreateJob)
 }

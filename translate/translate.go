@@ -62,8 +62,7 @@ func Translate(c echo.Context, s interface{}) ([]map[string]interface{}, ut.Tran
 	err := VALIDATE.Struct(s)
 
 	var slice []map[string]interface{}
-	acceptLanguage := c.Request().Header.Get("Accept-Language")
-	trans, _ := UNI.GetTranslator(acceptLanguage)
+	trans := GetTranslator(c)
 	if err != nil {
 		errs := err.(validator.ValidationErrors)
 		for _, err := range errs {
@@ -76,6 +75,21 @@ func Translate(c echo.Context, s interface{}) ([]map[string]interface{}, ut.Tran
 		return slice, trans
 	}
 	return slice, trans
+}
+
+// GetTranslator is used to call translator
+func GetTranslator(c echo.Context) ut.Translator {
+	acceptLanguage := c.Request().Header.Get("Accept-Language")
+	trans, _ := UNI.GetTranslator(acceptLanguage)
+
+	return trans
+}
+
+// TranslateError to get error from translate.json into string value
+func TranslateError(c echo.Context, err error) string {
+	tx := GetTranslator(c)
+	res, _ := tx.T(err.Error())
+	return res
 }
 
 // Errors is used for handle error by standarize api

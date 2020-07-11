@@ -1,4 +1,5 @@
 {
     "jobs_company_id_companies_id_foreign": "Perusahaan tidak ditemukan!",
-    "idx_company_id_title": "Judul sudah pernah dibuat"
+    "idx_company_id_title": "Judul sudah pernah dibuat",
+    "company_not_found": "Perusahaan belum terdaftar"
 }

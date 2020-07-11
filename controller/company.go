@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	e "github.com/kiditz/spgku-job/entity"
 	r "github.com/kiditz/spgku-job/repository"
@@ -10,7 +11,7 @@ import (
 	"github.com/lib/pq"
 )
 
-// CreateCompany to create new job for the talent
+// CreateCompany used to insert company data into database
 func CreateCompany(c echo.Context) error {
 	company := new(e.Company)
 	err := c.Bind(&company)
@@ -28,6 +29,16 @@ func CreateCompany(c echo.Context) error {
 			return t.Errors(c, http.StatusBadRequest, res)
 		}
 		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, company)
+}
+
+// FindCompany used to found company by it's primary key id
+func FindCompany(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	company, err := r.FindCompanyByID(id)
+	if err != nil {
+		return t.Errors(c, http.StatusNotFound, t.TranslateError(c, err))
 	}
 	return c.JSON(http.StatusOK, company)
 }

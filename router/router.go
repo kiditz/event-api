@@ -6,5 +6,6 @@ import (
 
 // InitRoutes Initialize Routing
 func InitRoutes(e *echo.Echo) {
-	SetEventRoutes(e)
+	SetCompanyRoutes(e)
+	SetJobRoutes(e)
 }

@@ -1,3 +1,5 @@
 {
-    "jobs_company_id_companies_id_foreign": "Companies not found!"
+    "jobs_company_id_companies_id_foreign": "Companies not found!",
+    "idx_company_id_title": "Title has been created before",
+    "company_not_found": "Company not found in the system!"
 }
