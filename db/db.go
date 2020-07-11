@@ -22,7 +22,6 @@ func Connect() {
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
 	dbURI := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", dbHost, dbPort, username, dbName, password) //Build connection string
-	fmt.Println(dbURI)
 	conn, err := gorm.Open("postgres", dbURI)
 	if err != nil {
 		panic(err)

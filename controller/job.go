@@ -2,12 +2,18 @@ package controller
 
 import (
 	"net/http"
-	"time"
+	"strings"
 
 	e "github.com/kiditz/spgku-job/entity"
 	r "github.com/kiditz/spgku-job/repository"
 	t "github.com/kiditz/spgku-job/translate"
 	"github.com/labstack/echo/v4"
+	"github.com/lib/pq"
+)
+
+const (
+	// CompanyForeignError is for check if companyy foreign key error
+	CompanyForeignError = "jobs_company_id_companies_id_foreign"
 )
 
 // CreateJob to create new job for the talent
@@ -19,12 +25,16 @@ func CreateJob(c echo.Context) error {
 	}
 	var translate = t.Translate(c, job)
 	if translate != nil {
-		return t.Errors(c, translate)
+		return t.Errors(c, http.StatusBadRequest, translate)
 	}
-	job.CreatedAt = time.Now().UTC()
 	err = r.CreateJob(job)
 	if err != nil {
-		return err
+		if err, ok := err.(*pq.Error); ok {
+			if strings.EqualFold(err.Constraint, CompanyForeignError) {
+				return t.Errors(c, http.StatusBadRequest, err.Code.Name())
+			}
+			return t.Errors(c, http.StatusBadRequest, err.Error())
+		}
 	}
 	return c.JSON(http.StatusOK, job)
 }

@@ -12,4 +12,5 @@ func main() {
 		&e.Job{},
 		&e.Company{},
 	)
+	db.DB.Model(&e.Job{}).AddForeignKey("company_id", "companies(id)", "CASCADE", "CASCADE")
 }

@@ -60,11 +60,11 @@ func Translate(c echo.Context, s interface{}) []map[string]interface{} {
 	return slice
 }
 
-//Errors is used for handle error by standarize api
-func Errors(c echo.Context, s interface{}) error {
-	return c.JSON(http.StatusBadRequest, ErrorModel{
-		Status:     http.StatusText(http.StatusBadRequest),
+// Errors is used for handle error by standarize api
+func Errors(c echo.Context, statusCode int, s interface{}) error {
+	return c.JSON(statusCode, ErrorModel{
+		Status:     http.StatusText(statusCode),
 		Errors:     s,
-		StatusCode: http.StatusBadRequest,
+		StatusCode: statusCode,
 	})
 }
