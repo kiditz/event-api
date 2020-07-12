@@ -9,4 +9,5 @@ import (
 func SetCompanyRoutes(e *echo.Echo) {
 	e.POST("/company", c.CreateCompany)
 	e.GET("/company/:id", c.FindCompany)
+	e.GET("/company", c.GetCompanies)
 }
