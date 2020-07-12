@@ -1,4 +1,4 @@
-package trans
+package translate
 
 // ErrorModel used to response error
 type ErrorModel struct {
