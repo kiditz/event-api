@@ -11,7 +11,7 @@ type Job struct {
 	Status      string    `sql:"index" gorm:"type:varchar(10);" json:"status,omitempty"`
 	StartDate   time.Time `gorm:"not null" json:"start_date" validate:"required"`
 	EndDate     time.Time `gorm:"not null" json:"end_date" validate:"gtefield=StartDate,required"`
-	Location    string    `json:"location"`
+	Location    Location  `json:"location"`
 	CompanyID   uint      `json:"company_id" validate:"required"`
 	Company     Company   `gorm:"foreignkey:CompanyID" json:"company,omitempty" validate:"-"`
 	Model
