@@ -31,8 +31,15 @@ func FindCompanyByID(companyID int) (e.Company, error) {
 
 // GetCompanies by input.Name or input.Location if exists
 func GetCompanies(name string, location string, offset int, limit int) []e.Company {
+	if limit == 0 {
+		limit = 10
+	}
+
 	var companies []e.Company
-	tx := db.DB.Where("name LIKE ?", name)
+	tx := db.DB
+	if t.NotEmpty(name) {
+		tx = db.DB.Where("name LIKE ?", name)
+	}
 	if t.NotEmpty(location) {
 		tx = tx.Where("location LIKE ?", location)
 	}
