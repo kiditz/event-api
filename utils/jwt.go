@@ -6,11 +6,16 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/kiditz/spgku-job/translate"
+
 	"github.com/labstack/echo/v4"
 )
 
 // ParseJwtString used to parse jwt token
 func ParseJwtString(tokenString string) (map[string]interface{}, error) {
+	if translate.Empty(tokenString) {
+		return nil, nil
+	}
 	base64Url := strings.Split(tokenString, ".")[1]
 	var result map[string]interface{}
 	base64Str := strings.ReplaceAll(base64Url, "-", "+")
