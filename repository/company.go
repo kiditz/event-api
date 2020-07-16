@@ -22,7 +22,7 @@ func CreateCompany(company *e.Company) error {
 // FindCompanyByID is used to query company by it's primary ke
 func FindCompanyByID(companyID int) (e.Company, error) {
 	var company e.Company
-	if db.DB.Find(&company, companyID).RecordNotFound() {
+	if db.DB.Preload("Location").Find(&company, companyID).RecordNotFound() {
 		err := fmt.Errorf("company_not_found")
 		return company, err
 	}
@@ -30,19 +30,25 @@ func FindCompanyByID(companyID int) (e.Company, error) {
 }
 
 // GetCompanies by input.Name or input.Location if exists
-func GetCompanies(name string, location string, offset int, limit int) []e.Company {
+func GetCompanies(name string, country string, city string, offset int, limit int) []e.Company {
 	if limit == 0 {
 		limit = 10
 	}
 
 	var companies []e.Company
-	tx := db.DB
+	tx := db.DB.Model(&companies).Preload("Location")
 	if t.NotEmpty(name) {
-		tx = db.DB.Where("name LIKE ?", name)
+		tx = db.DB.Where("name LIKE ?", "%"+name+"%")
 	}
-	if t.NotEmpty(location) {
-		tx = tx.Where("location LIKE ?", location)
+
+	if t.NotEmpty(country) {
+		tx = tx.Joins("inner join locations ON locations.id = companies.location_id AND locations.country LIKE ?", "%"+country+"%")
 	}
+
+	if t.NotEmpty(city) {
+		tx = tx.Joins("inner join locations ON locations.id = companies.location_id AND locations.city LIKE ?", "%"+city+"%")
+	}
+
 	tx = tx.Offset(offset).Limit(limit)
 	tx.Find(&companies)
 	return companies
