@@ -46,9 +46,10 @@ func FindCompany(c echo.Context) error {
 // GetCompanies used to found company by name, location, and do pagination
 func GetCompanies(c echo.Context) error {
 	name := c.QueryParam("name")
-	location := c.QueryParam("loc")
+	city := c.QueryParam("city")
+	country := c.QueryParam("country")
 	offset, _ := strconv.Atoi(c.QueryParam("offset"))
 	limit, _ := strconv.Atoi(c.QueryParam("limit"))
-	companies := r.GetCompanies(name, location, offset, limit)
+	companies := r.GetCompanies(name, country, city, offset, limit)
 	return t.Success(c, companies)
 }
