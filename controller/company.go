@@ -7,6 +7,7 @@ import (
 	e "github.com/kiditz/spgku-job/entity"
 	r "github.com/kiditz/spgku-job/repository"
 	t "github.com/kiditz/spgku-job/translate"
+	"github.com/kiditz/spgku-job/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/lib/pq"
 )
@@ -22,6 +23,7 @@ func CreateCompany(c echo.Context) error {
 	if hasErr != nil {
 		return t.Errors(c, http.StatusBadRequest, hasErr)
 	}
+	company.CreatedBy = utils.GetUsername(c)
 	err = r.CreateCompany(company)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
