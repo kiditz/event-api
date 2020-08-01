@@ -1,4 +1,4 @@
-module github.com/kiditz/spgku-job
+module github.com/kiditz/spgku-api
 
 go 1.13
 

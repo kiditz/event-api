@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/kiditz/spgku-job/db"
-	r "github.com/kiditz/spgku-job/router"
-	trans "github.com/kiditz/spgku-job/translate"
+	"github.com/kiditz/spgku-api/db"
+	r "github.com/kiditz/spgku-api/router"
+	trans "github.com/kiditz/spgku-api/translate"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -21,5 +21,5 @@ func main() {
 	e.Use(middleware.RemoveTrailingSlash())
 	e.Use(middleware.RequestID())
 	e.Use(middleware.Recover())
-	e.Logger.Fatal(e.Start(":5000"))
+	e.Logger.Fatal(e.Start(":8000"))
 }

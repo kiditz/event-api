@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/kiditz/spgku-job/db"
-	e "github.com/kiditz/spgku-job/entity"
+	"github.com/kiditz/spgku-api/db"
+	e "github.com/kiditz/spgku-api/entity"
 )
 
 func main() {
@@ -12,6 +12,7 @@ func main() {
 		&e.Job{},
 		&e.Company{},
 		&e.Location{},
+		&e.User{},
 	)
 	db.DB.Model(&e.Job{}).AddForeignKey("company_id", "companies(id)", "CASCADE", "CASCADE")
 	db.DB.Model(&e.Company{}).AddForeignKey("location_id", "locations(id)", "CASCADE", "CASCADE")

@@ -2,8 +2,8 @@ package repository
 
 import (
 	"github.com/jinzhu/gorm"
-	"github.com/kiditz/spgku-job/db"
-	e "github.com/kiditz/spgku-job/entity"
+	"github.com/kiditz/spgku-api/db"
+	e "github.com/kiditz/spgku-api/entity"
 )
 
 const (

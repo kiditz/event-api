@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	e "github.com/kiditz/spgku-job/entity"
-	r "github.com/kiditz/spgku-job/repository"
-	t "github.com/kiditz/spgku-job/translate"
-	"github.com/kiditz/spgku-job/utils"
+	e "github.com/kiditz/spgku-api/entity"
+	r "github.com/kiditz/spgku-api/repository"
+	t "github.com/kiditz/spgku-api/translate"
+	"github.com/kiditz/spgku-api/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/lib/pq"
 )

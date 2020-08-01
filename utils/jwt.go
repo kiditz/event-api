@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/kiditz/spgku-job/translate"
+	"github.com/kiditz/spgku-api/translate"
 
 	"github.com/labstack/echo/v4"
 )

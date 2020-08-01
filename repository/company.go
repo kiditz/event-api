@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
-	"github.com/kiditz/spgku-job/db"
-	e "github.com/kiditz/spgku-job/entity"
-	t "github.com/kiditz/spgku-job/translate"
+	"github.com/kiditz/spgku-api/db"
+	e "github.com/kiditz/spgku-api/entity"
+	t "github.com/kiditz/spgku-api/translate"
 )
 
 // CreateCompany used for inserting company into "companies" database "params" companies id required

@@ -1,7 +1,7 @@
 package router
 
 import (
-	c "github.com/kiditz/spgku-job/controller"
+	c "github.com/kiditz/spgku-api/controller"
 	"github.com/labstack/echo/v4"
 )
 

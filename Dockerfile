@@ -29,7 +29,7 @@ RUN cp /build/id.json .
 RUN cp /build/en.json .
 
 # Export necessary port
-EXPOSE 5000
+EXPOSE 8000
 
 # Command to run when starting the container
 CMD ["/dist/server"]
