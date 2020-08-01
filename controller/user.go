@@ -15,7 +15,16 @@ import (
 	"github.com/lib/pq"
 )
 
-// AddUser api used to signup
+// AddUser godoc
+// @Summary AddUser api used to signup
+// @Description Create a new user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body entity.User true "New User"
+// @Success 200 {object} translate.ErrorModel{data=entity.User} desc
+// @Failure 400 {object} translate.ErrorModel
+// @Router /user [post]
 func AddUser(c echo.Context) error {
 	user := new(e.User)
 	err := c.Bind(&user)
@@ -65,10 +74,10 @@ func SignIn(c echo.Context) error {
 		}
 		return t.Success(c, map[string]string{"token": result})
 	}
-	return t.Errors(c, http.StatusUnauthorized, t.TranslateString(c, "user_not_found"))
+	return t.Errors(c, http.StatusUnauthorized, t.TranslatesString(c, "user_not_found"))
 }
 
-// TesTestClaims test private
+// TestClaims test private
 func TestClaims(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)

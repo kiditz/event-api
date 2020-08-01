@@ -6,8 +6,8 @@ import (
 )
 
 // SetCompanyRoutes to initialize routing used by company
-func SetCompanyRoutes(e *echo.Echo) {
-	e.POST("/company", c.CreateCompany)
-	e.GET("/company/:id", c.FindCompany)
-	e.GET("/company", c.GetCompanies)
+func SetCompanyRoutes(v1 *echo.Group) {
+	v1.POST("/company", c.CreateCompany)
+	v1.GET("/company/:id", c.FindCompany)
+	v1.GET("/company", c.GetCompanies)
 }

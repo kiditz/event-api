@@ -1,0 +1,78 @@
+basePath: /api/v1
+definitions:
+  entity.User:
+    properties:
+      created_at:
+        type: string
+      created_by:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      type:
+        type: string
+      updated_at:
+        type: string
+      updated_by:
+        type: string
+    required:
+    - name
+    type: object
+  translate.ErrorModel:
+    properties:
+      data:
+        type: object
+      errors:
+        type: object
+      message:
+        type: string
+      status:
+        type: string
+      status_code:
+        type: integer
+    type: object
+host: localhost:8000
+info:
+  contact: {}
+  description: This is event staffing application management
+  license: {}
+  title: Spgku Application
+  version: "1.0"
+paths:
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: New User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/entity.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ErrorModel'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ErrorModel'
+      summary: AddUser api used to signup
+      tags:
+      - users
+swagger: "2.0"

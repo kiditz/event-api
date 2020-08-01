@@ -40,7 +40,7 @@ func FindCompany(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	company, err := r.FindCompanyByID(id)
 	if err != nil {
-		return t.Errors(c, http.StatusNotFound, t.TranslateError(c, err))
+		return t.Errors(c, http.StatusNotFound, t.Translation(c, err))
 	}
 	return t.Success(c, company)
 }

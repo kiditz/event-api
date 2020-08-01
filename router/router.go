@@ -5,8 +5,8 @@ import (
 )
 
 // InitRoutes Initialize Routing
-func InitRoutes(e *echo.Echo) {
-	SetCompanyRoutes(e)
-	SetJobRoutes(e)
-	SetUserRoutes(e)
+func InitRoutes(v1 *echo.Group) {
+	SetCompanyRoutes(v1)
+	SetJobRoutes(v1)
+	SetUserRoutes(v1)
 }

@@ -6,6 +6,6 @@ import (
 )
 
 // SetJobRoutes to initialize routing used by event
-func SetJobRoutes(e *echo.Echo) {
-	e.POST("/job", c.CreateJob)
+func SetJobRoutes(v1 *echo.Group) {
+	v1.POST("/job", c.CreateJob)
 }

@@ -85,30 +85,28 @@ func GetTranslator(c echo.Context) ut.Translator {
 	return trans
 }
 
-// TranslateError to get error from translate.json into string value
-func TranslateError(c echo.Context, err error) string {
-	tx := GetTranslator(c)
-	res, _ := tx.T(err.Error())
-	return res
+// Translation handle error message
+func Translation(c echo.Context, err error) string {
+	return TranslatesString(c, err.Error())
 }
 
-//TranslateString used
-func TranslateString(c echo.Context, err string) string {
+//TranslatesString is used to handle error by using input string
+func TranslatesString(c echo.Context, input string) string {
 	tx := GetTranslator(c)
-	res, _ := tx.T(err)
+	res, _ := tx.T(input)
 	return res
 }
 
 // Errors is used for handle error by standarize api
 func Errors(c echo.Context, statusCode int, s interface{}) error {
 	if reflect.TypeOf(s).Name() == "string" {
-		return c.JSON(statusCode, ErrorModel{
+		return c.JSON(statusCode, Result{
 			Status:     http.StatusText(statusCode),
 			StatusCode: statusCode,
 			Message:    s.(string),
 		})
 	}
-	return c.JSON(statusCode, ErrorModel{
+	return c.JSON(statusCode, Result{
 		Status:     http.StatusText(statusCode),
 		Errors:     s,
 		StatusCode: statusCode,
@@ -117,7 +115,7 @@ func Errors(c echo.Context, statusCode int, s interface{}) error {
 
 // Success is used to handle data success
 func Success(c echo.Context, s interface{}) error {
-	return c.JSON(http.StatusOK, ErrorModel{
+	return c.JSON(http.StatusOK, Result{
 		Data:       s,
 		Status:     http.StatusText(http.StatusOK),
 		StatusCode: http.StatusOK,

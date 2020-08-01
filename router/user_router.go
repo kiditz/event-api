@@ -7,9 +7,9 @@ import (
 )
 
 // SetUserRoutes to initialize routing used by user
-func SetUserRoutes(e *echo.Echo) {
-	e.POST("/api/v1/user", c.AddUser)
-	e.POST("/api/v1/auth/token", c.SignIn)
-	e.GET("/api/v1/user/private", c.TestClaims, m.IsLoggedIn(), m.IsCompany)
+func SetUserRoutes(v1 *echo.Group) {
+	v1.POST("/user", c.AddUser)
+	v1.POST("/auth/token", c.SignIn)
+	v1.GET("/user/private", c.TestClaims, m.IsLoggedIn(), m.IsCompany)
 
 }
