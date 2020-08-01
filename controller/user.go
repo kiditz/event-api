@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -58,7 +59,7 @@ func SignIn(c echo.Context) error {
 		claims["email"] = user.Email
 		claims["type"] = user.Type
 		claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-		result, err := token.SignedString([]byte("secret"))
+		result, err := token.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
 		if err != nil {
 			return err
 		}

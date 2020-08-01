@@ -4,8 +4,10 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/kiditz/spgku-api/translate"
 
 	"github.com/labstack/echo/v4"
@@ -39,9 +41,25 @@ func ParseJwt(c echo.Context) (map[string]interface{}, error) {
 func GetUsername(c echo.Context) string {
 	data, _ := ParseJwt(c)
 	if data["username"] != nil {
-		return fmt.Sprintf("%v", data["user_name"])
+		return fmt.Sprintf("%v", data["email"])
 	}
 	return "System"
+}
+
+// VerifyToken used to verify is token valid
+func VerifyToken(c echo.Context) (*jwt.Token, error) {
+	auth := c.Request().Header.Get("Authorization")
+	var tokenString = strings.TrimSpace(strings.ReplaceAll(auth, "Bearer", ""))
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(os.Getenv("ACCESS_SECRET")), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
 }
 
 // func main() {
