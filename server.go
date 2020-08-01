@@ -1,8 +1,6 @@
 package main
 
 import (
-	"os"
-
 	"github.com/kiditz/spgku-api/db"
 	r "github.com/kiditz/spgku-api/router"
 	trans "github.com/kiditz/spgku-api/translate"
@@ -15,14 +13,11 @@ func init() {
 	db.DB.LogMode(true)
 }
 func main() {
-	var IsLoggedIn = middleware.JWTWithConfig(middleware.JWTConfig{
-		SigningKey: []byte(os.Getenv("ACCESS_SECRET")),
-	})
 
 	e := echo.New()
 	trans.InitTranslate(e)
+
 	r.InitRoutes(e)
-	e.Use(IsLoggedIn)
 	e.Use(middleware.Logger())
 	e.Use(middleware.RemoveTrailingSlash())
 	e.Use(middleware.RequestID())

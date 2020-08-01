@@ -67,3 +67,11 @@ func SignIn(c echo.Context) error {
 	}
 	return t.Errors(c, http.StatusUnauthorized, t.TranslateString(c, "user_not_found"))
 }
+
+// TesTestClaims test private
+func TestClaims(c echo.Context) error {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	// name := claims["name"].(string)
+	return t.Success(c, claims)
+}
