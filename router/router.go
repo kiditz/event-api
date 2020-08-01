@@ -8,4 +8,5 @@ import (
 func InitRoutes(e *echo.Echo) {
 	SetCompanyRoutes(e)
 	SetJobRoutes(e)
+	SetUserRoutes(e)
 }

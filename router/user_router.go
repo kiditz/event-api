@@ -7,6 +7,6 @@ import (
 
 // SetUserRoutes to initialize routing used by user
 func SetUserRoutes(e *echo.Echo) {
-	e.POST("/user", c.AddUser)
+	e.POST("/api/v1/user", c.AddUser)
 
 }
