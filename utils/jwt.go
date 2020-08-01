@@ -38,7 +38,10 @@ func ParseJwt(c echo.Context) (map[string]interface{}, error) {
 // GetUsername get the username from jwt result
 func GetUsername(c echo.Context) string {
 	data, _ := ParseJwt(c)
-	return fmt.Sprintf("%v", data["user_name"])
+	if data["username"] != nil {
+		return fmt.Sprintf("%v", data["user_name"])
+	}
+	return "System"
 }
 
 // func main() {

@@ -92,6 +92,13 @@ func TranslateError(c echo.Context, err error) string {
 	return res
 }
 
+//TranslateString used
+func TranslateString(c echo.Context, err string) string {
+	tx := GetTranslator(c)
+	res, _ := tx.T(err)
+	return res
+}
+
 // Errors is used for handle error by standarize api
 func Errors(c echo.Context, statusCode int, s interface{}) error {
 	if reflect.TypeOf(s).Name() == "string" {

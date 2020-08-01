@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
 	e "github.com/kiditz/spgku-api/entity"
@@ -14,4 +16,14 @@ func AddUser(user *e.User) error {
 		}
 		return nil
 	})
+}
+
+// FindUserByEmail is used to query user by email address
+func FindUserByEmail(email string) (e.User, error) {
+	var user e.User
+	if db.DB.Where("email = ?", email).Find(&user).RecordNotFound() {
+		err := fmt.Errorf("user_not_found")
+		return user, err
+	}
+	return user, nil
 }
