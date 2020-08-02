@@ -22,8 +22,8 @@ import (
 // @Accept json
 // @Produce json
 // @Param user body entity.User true "New User"
-// @Success 200 {object} translate.ErrorModel{data=entity.User} desc
-// @Failure 400 {object} translate.ErrorModel
+// @Success 200 {object} translate.ResultSuccess{data=entity.User} desc
+// @Failure 400 {object} translate.ResultErrors
 // @Router /user [post]
 func AddUser(c echo.Context) error {
 	user := new(e.User)

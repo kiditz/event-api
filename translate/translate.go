@@ -100,13 +100,13 @@ func TranslatesString(c echo.Context, input string) string {
 // Errors is used for handle error by standarize api
 func Errors(c echo.Context, statusCode int, s interface{}) error {
 	if reflect.TypeOf(s).Name() == "string" {
-		return c.JSON(statusCode, Result{
+		return c.JSON(statusCode, ResultErrors{
 			Status:     http.StatusText(statusCode),
 			StatusCode: statusCode,
 			Message:    s.(string),
 		})
 	}
-	return c.JSON(statusCode, Result{
+	return c.JSON(statusCode, ResultErrors{
 		Status:     http.StatusText(statusCode),
 		Errors:     s,
 		StatusCode: statusCode,
@@ -115,7 +115,7 @@ func Errors(c echo.Context, statusCode int, s interface{}) error {
 
 // Success is used to handle data success
 func Success(c echo.Context, s interface{}) error {
-	return c.JSON(http.StatusOK, Result{
+	return c.JSON(http.StatusOK, ResultSuccess{
 		Data:       s,
 		Status:     http.StatusText(http.StatusOK),
 		StatusCode: http.StatusOK,

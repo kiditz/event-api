@@ -55,7 +55,7 @@ var doc = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/translate.ErrorModel"
+                                    "$ref": "#/definitions/translate.ResultSuccess"
                                 },
                                 {
                                     "type": "object",
@@ -71,7 +71,7 @@ var doc = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/translate.ErrorModel"
+                            "$ref": "#/definitions/translate.ResultErrors"
                         }
                     }
                 }
@@ -82,20 +82,14 @@ var doc = `{
         "entity.User": {
             "type": "object",
             "required": [
-                "name"
+                "email",
+                "name",
+                "password",
+                "type"
             ],
             "properties": {
-                "created_at": {
-                    "type": "string"
-                },
-                "created_by": {
-                    "type": "string"
-                },
                 "email": {
                     "type": "string"
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "name": {
                     "type": "string"
@@ -105,32 +99,39 @@ var doc = `{
                 },
                 "type": {
                     "type": "string"
-                },
-                "updated_at": {
-                    "type": "string"
-                },
-                "updated_by": {
-                    "type": "string"
                 }
             }
         },
-        "translate.ErrorModel": {
+        "translate.ResultErrors": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Dynamic message"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "Bad Request"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "example": 400
+                }
+            }
+        },
+        "translate.ResultSuccess": {
             "type": "object",
             "properties": {
                 "data": {
                     "type": "object"
                 },
-                "errors": {
-                    "type": "object"
-                },
-                "message": {
-                    "type": "string"
-                },
                 "status": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "OK"
                 },
                 "status_code": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 200
                 }
             }
         }

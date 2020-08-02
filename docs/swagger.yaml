@@ -2,38 +2,41 @@ basePath: /api/v1
 definitions:
   entity.User:
     properties:
-      created_at:
-        type: string
-      created_by:
-        type: string
       email:
         type: string
-      id:
-        type: integer
       name:
         type: string
       password:
         type: string
       type:
         type: string
-      updated_at:
-        type: string
-      updated_by:
-        type: string
     required:
+    - email
     - name
+    - password
+    - type
     type: object
-  translate.ErrorModel:
+  translate.ResultErrors:
+    properties:
+      message:
+        example: Dynamic message
+        type: string
+      status:
+        example: Bad Request
+        type: string
+      status_code:
+        example: 400
+        type: integer
+    type: object
+  translate.ResultSuccess:
     properties:
       data:
         type: object
-      errors:
-        type: object
-      message:
-        type: string
       status:
+        example: OK
         type: string
       status_code:
+        example: 200
         type: integer
     type: object
 host: localhost:8000
@@ -63,7 +66,7 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/translate.ErrorModel'
+            - $ref: '#/definitions/translate.ResultSuccess'
             - properties:
                 data:
                   $ref: '#/definitions/entity.User'
@@ -71,7 +74,7 @@ paths:
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/translate.ErrorModel'
+            $ref: '#/definitions/translate.ResultErrors'
       summary: AddUser api used to signup
       tags:
       - users
