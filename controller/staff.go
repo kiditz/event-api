@@ -43,3 +43,12 @@ func AddDigitalStaff(c echo.Context) error {
 	}
 	return t.Success(c, digitalStaff)
 }
+
+//GetDigitalStaff used to get all digital staff
+func GetDigitalStaff(c echo.Context) error {
+	records, err := r.GetDigitalStaff()
+	if err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return t.Success(c, records)
+}

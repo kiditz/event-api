@@ -8,4 +8,5 @@ import (
 // SetDigitalStaffRoute to initialize routing used by event
 func SetDigitalStaffRoute(v1 *echo.Group) {
 	v1.POST("/digital-staff", c.AddDigitalStaff)
+	v1.GET("/digital-staffs", c.GetDigitalStaff)
 }
