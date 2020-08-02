@@ -19,7 +19,7 @@ func AddDigitalStaff(digitalStaff *e.DigitalStaff) error {
 // GetDigitalStaff used for inserting company into "companies" database "params" companies id required
 func GetDigitalStaff() ([]e.DigitalStaff, error) {
 	var records []e.DigitalStaff
-	if err := db.DB.Find(&records).Error; err != nil {
+	if err := db.DB.Find(&records).Order("id", false).Error; err != nil {
 		return records, err
 	}
 	return records, nil

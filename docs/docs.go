@@ -35,7 +35,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "digitalStaff"
+                    "staff"
                 ],
                 "summary": "AddDigitalStaff used to categories help digital staff",
                 "parameters": [
@@ -62,6 +62,58 @@ var doc = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/entity.DigitalStaff"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/event-staff": {
+            "post": {
+                "description": "Create a new digital staff category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "AddDigitalStaff used to categories help digital staff",
+                "parameters": [
+                    {
+                        "description": "New Event Staff",
+                        "name": "eventStaff",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.EventStaff"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.EventStaff"
                                         }
                                     }
                                 }
@@ -150,6 +202,20 @@ var doc = `{
                 },
                 "subtitle": {
                     "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.EventStaff": {
+            "type": "object",
+            "required": [
+                "title"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
                 },
                 "title": {
                     "type": "string"

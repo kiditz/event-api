@@ -17,6 +17,15 @@ definitions:
     - subtitle
     - title
     type: object
+  entity.EventStaff:
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+    required:
+    - title
+    type: object
   entity.User:
     properties:
       email:
@@ -94,7 +103,38 @@ paths:
             $ref: '#/definitions/translate.ResultErrors'
       summary: AddDigitalStaff used to categories help digital staff
       tags:
-      - digitalStaff
+      - staff
+  /event-staff:
+    post:
+      consumes:
+      - application/json
+      description: Create a new digital staff category
+      parameters:
+      - description: New Event Staff
+        in: body
+        name: eventStaff
+        required: true
+        schema:
+          $ref: '#/definitions/entity.EventStaff'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.EventStaff'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: AddDigitalStaff used to categories help digital staff
+      tags:
+      - staff
   /user:
     post:
       consumes:
