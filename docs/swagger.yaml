@@ -2,13 +2,18 @@ basePath: /api/v1
 definitions:
   entity.DigitalStaff:
     properties:
+      followers:
+        type: string
       id:
         type: integer
+      image:
+        type: string
       subtitle:
         type: string
       title:
         type: string
     required:
+    - image
     - subtitle
     - title
     type: object

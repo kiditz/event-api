@@ -134,12 +134,19 @@ var doc = `{
         "entity.DigitalStaff": {
             "type": "object",
             "required": [
+                "image",
                 "subtitle",
                 "title"
             ],
             "properties": {
+                "followers": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
+                },
+                "image": {
+                    "type": "string"
                 },
                 "subtitle": {
                     "type": "string"
