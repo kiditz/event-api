@@ -13,6 +13,8 @@ func main() {
 		&e.Company{},
 		&e.Location{},
 		&e.User{},
+		&e.DigitalStaff{},
+		&e.EventStaff{},
 	)
 	db.DB.Model(&e.Job{}).AddForeignKey("company_id", "companies(id)", "CASCADE", "CASCADE")
 	db.DB.Model(&e.Company{}).AddForeignKey("location_id", "locations(id)", "CASCADE", "CASCADE")
