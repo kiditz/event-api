@@ -1,5 +1,17 @@
 basePath: /api/v1
 definitions:
+  entity.DigitalStaff:
+    properties:
+      id:
+        type: integer
+      subtitle:
+        type: string
+      title:
+        type: string
+    required:
+    - subtitle
+    - title
+    type: object
   entity.User:
     properties:
       email:
@@ -47,6 +59,37 @@ info:
   title: Spgku Application
   version: "1.0"
 paths:
+  /digital-staff:
+    post:
+      consumes:
+      - application/json
+      description: Create a new digital staff category
+      parameters:
+      - description: New DigitalStaff
+        in: body
+        name: digitallStaff
+        required: true
+        schema:
+          $ref: '#/definitions/entity.DigitalStaff'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.DigitalStaff'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: AddDigitalStaff used to categories help digital staff
+      tags:
+      - digitalStaff
   /user:
     post:
       consumes:

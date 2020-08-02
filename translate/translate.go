@@ -57,8 +57,8 @@ func addTranslator(trans ut.Translator, fileName string) {
 	}
 }
 
-// Translate the value
-func Translate(c echo.Context, s interface{}) ([]map[string]interface{}, ut.Translator) {
+// ValidateTranslator the value
+func ValidateTranslator(c echo.Context, s interface{}) ([]map[string]interface{}, ut.Translator) {
 	err := VALIDATE.Struct(s)
 
 	var slice []map[string]interface{}

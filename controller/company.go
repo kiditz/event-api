@@ -19,7 +19,7 @@ func CreateCompany(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	var hasErr, tx = t.Translate(c, company)
+	var hasErr, tx = t.ValidateTranslator(c, company)
 	if hasErr != nil {
 		return t.Errors(c, http.StatusBadRequest, hasErr)
 	}
