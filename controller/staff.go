@@ -12,7 +12,7 @@ import (
 )
 
 // AddDigitalStaff godoc
-// @Summary AddDigitalStaff used to categories help digital staff
+// @Summary AddDigitalStaff Add new digital staf
 // @Description Create a new digital staff category
 // @Tags staff
 // @Accept json
@@ -20,7 +20,7 @@ import (
 // @Param digitallStaff body entity.DigitalStaff true "New DigitalStaff"
 // @Success 200 {object} translate.ResultSuccess{data=entity.DigitalStaff} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /digital-staff [post]
+// @Router /digital-staffs [post]
 func AddDigitalStaff(c echo.Context) error {
 	digitalStaff := new(e.DigitalStaff)
 	err := c.Bind(&digitalStaff)
@@ -45,7 +45,7 @@ func AddDigitalStaff(c echo.Context) error {
 }
 
 // AddEventStaff godoc
-// @Summary AddDigitalStaff used to categories help digital staff
+// @Summary AddEventStaff used to add new event staff
 // @Description Create a new digital staff category
 // @Tags staff
 // @Accept json
@@ -53,7 +53,7 @@ func AddDigitalStaff(c echo.Context) error {
 // @Param eventStaff body entity.EventStaff true "New Event Staff"
 // @Success 200 {object} translate.ResultSuccess{data=entity.EventStaff} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /event-staff [post]
+// @Router /event-staffs [post]
 func AddEventStaff(c echo.Context) error {
 	eventStaff := new(e.EventStaff)
 	err := c.Bind(&eventStaff)

@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// SetJobRoutes to initialize routing used by event
-func SetJobRoutes(v1 *echo.Group) {
-	v1.POST("/campaign", c.AddCampaign, m.IsLoggedIn(), m.IsCompany)
+// SetCampaignRoutes to initialize routing used by event
+func SetCampaignRoutes(v1 *echo.Group) {
+	v1.POST("/campaigns", c.AddCampaign, m.IsLoggedIn(), m.IsCompany)
 }

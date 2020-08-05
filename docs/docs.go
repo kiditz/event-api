@@ -25,9 +25,9 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/digital-staff": {
+        "/campaigns": {
             "post": {
-                "description": "Create a new digital staff category",
+                "description": "Create a new user",
                 "consumes": [
                     "application/json"
                 ],
@@ -35,17 +35,17 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "staff"
+                    "campaigns"
                 ],
-                "summary": "AddDigitalStaff used to categories help digital staff",
+                "summary": "AddCampaign api used to signup",
                 "parameters": [
                     {
-                        "description": "New DigitalStaff",
-                        "name": "digitallStaff",
+                        "description": "New Campaign",
+                        "name": "campaign",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.DigitalStaff"
+                            "$ref": "#/definitions/entity.Campaign"
                         }
                     }
                 ],
@@ -61,7 +61,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/entity.DigitalStaff"
+                                            "$ref": "#/definitions/entity.Campaign"
                                         }
                                     }
                                 }
@@ -107,9 +107,7 @@ var doc = `{
                         }
                     }
                 }
-            }
-        },
-        "/event-staff": {
+            },
             "post": {
                 "description": "Create a new digital staff category",
                 "consumes": [
@@ -121,15 +119,15 @@ var doc = `{
                 "tags": [
                     "staff"
                 ],
-                "summary": "AddDigitalStaff used to categories help digital staff",
+                "summary": "AddDigitalStaff Add new digital staf",
                 "parameters": [
                     {
-                        "description": "New Event Staff",
-                        "name": "eventStaff",
+                        "description": "New DigitalStaff",
+                        "name": "digitallStaff",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.EventStaff"
+                            "$ref": "#/definitions/entity.DigitalStaff"
                         }
                     }
                 ],
@@ -145,7 +143,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/entity.EventStaff"
+                                            "$ref": "#/definitions/entity.DigitalStaff"
                                         }
                                     }
                                 }
@@ -182,6 +180,56 @@ var doc = `{
                             "items": {
                                 "$ref": "#/definitions/entity.EventStaff"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new digital staff category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "staff"
+                ],
+                "summary": "AddEventStaff used to add new event staff",
+                "parameters": [
+                    {
+                        "description": "New Event Staff",
+                        "name": "eventStaff",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.EventStaff"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.EventStaff"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -247,6 +295,78 @@ var doc = `{
         }
     },
     "definitions": {
+        "entity.Campaign": {
+            "type": "object",
+            "required": [
+                "criteria",
+                "detail",
+                "end_date",
+                "end_price",
+                "method",
+                "social_media",
+                "start_date",
+                "start_price",
+                "task",
+                "title"
+            ],
+            "properties": {
+                "criteria": {
+                    "type": "string"
+                },
+                "detail": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "end_price": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Image"
+                    }
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Location"
+                },
+                "location_id": {
+                    "type": "integer"
+                },
+                "method": {
+                    "type": "string"
+                },
+                "sample_product": {
+                    "type": "string"
+                },
+                "social_media": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.SocialMedia"
+                    }
+                },
+                "staff_amount": {
+                    "type": "integer"
+                },
+                "start_date": {
+                    "type": "string"
+                },
+                "start_price": {
+                    "type": "number"
+                },
+                "task": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.DigitalStaff": {
             "type": "object",
             "required": [
@@ -282,6 +402,71 @@ var doc = `{
                     "type": "integer"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Image": {
+            "type": "object",
+            "required": [
+                "image_url"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Location": {
+            "type": "object",
+            "required": [
+                "formatted_address",
+                "lat",
+                "lng"
+            ],
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "formatted_address": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "international_phone_number": {
+                    "type": "string"
+                },
+                "lat": {
+                    "type": "number"
+                },
+                "lng": {
+                    "type": "number"
+                },
+                "phone_number": {
+                    "type": "string"
+                },
+                "place_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.SocialMedia": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
                     "type": "string"
                 }
             }

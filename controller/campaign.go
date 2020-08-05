@@ -13,7 +13,16 @@ import (
 	"github.com/lib/pq"
 )
 
-// AddCampaign to create new campaign
+// AddCampaign godoc
+// @Summary AddCampaign api used to signup
+// @Description Create a new user
+// @Tags campaigns
+// @Accept json
+// @Produce json
+// @Param campaign body entity.Campaign true "New Campaign"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Campaign} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /campaigns [post]
 func AddCampaign(c echo.Context) error {
 	campaign := new(e.Campaign)
 	err := c.Bind(&campaign)

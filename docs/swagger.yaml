@@ -1,5 +1,56 @@
 basePath: /api/v1
 definitions:
+  entity.Campaign:
+    properties:
+      criteria:
+        type: string
+      detail:
+        type: string
+      end_date:
+        type: string
+      end_price:
+        type: number
+      id:
+        type: integer
+      images:
+        items:
+          $ref: '#/definitions/entity.Image'
+        type: array
+      location:
+        $ref: '#/definitions/entity.Location'
+        type: object
+      location_id:
+        type: integer
+      method:
+        type: string
+      sample_product:
+        type: string
+      social_media:
+        items:
+          $ref: '#/definitions/entity.SocialMedia'
+        type: array
+      staff_amount:
+        type: integer
+      start_date:
+        type: string
+      start_price:
+        type: number
+      task:
+        type: string
+      title:
+        type: string
+    required:
+    - criteria
+    - detail
+    - end_date
+    - end_price
+    - method
+    - social_media
+    - start_date
+    - start_price
+    - task
+    - title
+    type: object
   entity.DigitalStaff:
     properties:
       followers:
@@ -25,6 +76,49 @@ definitions:
         type: string
     required:
     - title
+    type: object
+  entity.Image:
+    properties:
+      id:
+        type: integer
+      image_url:
+        type: string
+    required:
+    - image_url
+    type: object
+  entity.Location:
+    properties:
+      address:
+        type: string
+      formatted_address:
+        type: string
+      icon:
+        type: string
+      id:
+        type: integer
+      international_phone_number:
+        type: string
+      lat:
+        type: number
+      lng:
+        type: number
+      phone_number:
+        type: string
+      place_id:
+        type: string
+    required:
+    - formatted_address
+    - lat
+    - lng
+    type: object
+  entity.SocialMedia:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - name
     type: object
   entity.User:
     properties:
@@ -73,7 +167,58 @@ info:
   title: Spgku Application
   version: "1.0"
 paths:
-  /digital-staff:
+  /campaigns:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user
+      parameters:
+      - description: New Campaign
+        in: body
+        name: campaign
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Campaign'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Campaign'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: AddCampaign api used to signup
+      tags:
+      - campaigns
+  /digital-staffs:
+    get:
+      consumes:
+      - application/json
+      description: Create a new digital staff category
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.DigitalStaff'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: GetDigitalStaff used to categories help digital staff
+      tags:
+      - staff
     post:
       consumes:
       - application/json
@@ -101,14 +246,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
-      summary: AddDigitalStaff used to categories help digital staff
+      summary: AddDigitalStaff Add new digital staf
       tags:
       - staff
-  /digital-staffs:
+  /event-staffs:
     get:
       consumes:
       - application/json
-      description: Create a new digital staff category
+      description: Get all data of event staff
       produces:
       - application/json
       responses:
@@ -116,16 +261,15 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entity.DigitalStaff'
+              $ref: '#/definitions/entity.EventStaff'
             type: array
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
-      summary: GetDigitalStaff used to categories help digital staff
+      summary: GetEventStaff used to categories help event staff
       tags:
       - staff
-  /event-staff:
     post:
       consumes:
       - application/json
@@ -153,28 +297,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
-      summary: AddDigitalStaff used to categories help digital staff
-      tags:
-      - staff
-  /event-staffs:
-    get:
-      consumes:
-      - application/json
-      description: Get all data of event staff
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/entity.EventStaff'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/translate.ResultErrors'
-      summary: GetEventStaff used to categories help event staff
+      summary: AddEventStaff used to add new event staff
       tags:
       - staff
   /user:
