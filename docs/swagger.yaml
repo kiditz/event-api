@@ -104,6 +104,27 @@ paths:
       summary: AddDigitalStaff used to categories help digital staff
       tags:
       - staff
+  /digital-staffs:
+    get:
+      consumes:
+      - application/json
+      description: Create a new digital staff category
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.DigitalStaff'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: GetDigitalStaff used to categories help digital staff
+      tags:
+      - staff
   /event-staff:
     post:
       consumes:
@@ -133,6 +154,27 @@ paths:
           schema:
             $ref: '#/definitions/translate.ResultErrors'
       summary: AddDigitalStaff used to categories help digital staff
+      tags:
+      - staff
+  /event-staffs:
+    get:
+      consumes:
+      - application/json
+      description: Get all data of event staff
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.EventStaff'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: GetEventStaff used to categories help event staff
       tags:
       - staff
   /user:
@@ -166,4 +208,9 @@ paths:
       summary: AddUser api used to signup
       tags:
       - users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

@@ -78,6 +78,14 @@ func AddEventStaff(c echo.Context) error {
 }
 
 //GetDigitalStaff used to get all digital staff
+// @Summary GetDigitalStaff used to categories help digital staff
+// @Description Create a new digital staff category
+// @Tags staff
+// @Accept json
+// @Produce json
+// @Success 200 {array} entity.DigitalStaff desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /digital-staffs [get]
 func GetDigitalStaff(c echo.Context) error {
 	records, err := r.GetDigitalStaff()
 	if err != nil {
@@ -86,7 +94,15 @@ func GetDigitalStaff(c echo.Context) error {
 	return t.Success(c, records)
 }
 
-//GetEventStaff used to get all digital staff
+// GetEventStaff used to get all digital staff
+// @Summary GetEventStaff used to categories help event staff
+// @Description Get all data of event staff
+// @Tags staff
+// @Accept json
+// @Produce json
+// @Success 200 {array} entity.EventStaff desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /event-staffs [get]
 func GetEventStaff(c echo.Context) error {
 	records, err := r.GetEventStaff()
 	if err != nil {

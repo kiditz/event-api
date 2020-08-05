@@ -21,6 +21,10 @@ func init() {
 // @version 1.0
 // @host localhost:8000
 // @BasePath /api/v1
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
+
 func main() {
 
 	e := echo.New()
