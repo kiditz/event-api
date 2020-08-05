@@ -13,7 +13,7 @@ import (
 	"github.com/lib/pq"
 )
 
-// AddCampaign to create new job for the talent
+// AddCampaign to create new campaign
 func AddCampaign(c echo.Context) error {
 	campaign := new(e.Campaign)
 	err := c.Bind(&campaign)
