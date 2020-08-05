@@ -2,6 +2,7 @@ package translate
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"reflect"
 	"strings"
@@ -99,11 +100,12 @@ func TranslatesString(c echo.Context, input string) string {
 
 // Errors is used for handle error by standarize api
 func Errors(c echo.Context, statusCode int, s interface{}) error {
+	fmt.Println(s)
 	if reflect.TypeOf(s).Name() == "string" {
 		return c.JSON(statusCode, ResultErrors{
 			Status:     http.StatusText(statusCode),
 			StatusCode: statusCode,
-			Message:    s.(string),
+			Message:    TranslatesString(c, s.(string)),
 		})
 	}
 	return c.JSON(statusCode, ResultErrors{
