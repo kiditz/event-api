@@ -27,7 +27,7 @@ func AddCampaign(c echo.Context) error {
 	user := c.Get("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
 	fmt.Printf("claims %s", claims)
-	// campaign.CreatedBy = claims["email"].(string)
+	campaign.CreatedBy = claims["email"].(string)
 	err = r.AddCampaign(campaign)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
