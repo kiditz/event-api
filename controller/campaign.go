@@ -92,12 +92,11 @@ func GetCampaignByDate(c echo.Context) error {
 }
 
 // GetAllSocialMedia godoc
-// @Summary GetAllSocialMedia used to find campaign by it's start date and end date
+// @Summary GetAllSocialMedia used to find all social media list
 // @Description find campaign by date
 // @Tags campaigns
 // @Accept json
 // @Produce json
-// @Param date query string true "Date to search"
 // @Success 200 {array} translate.ResultSuccess{data=entity.SocialMedia} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /campaigns/social-media [get]

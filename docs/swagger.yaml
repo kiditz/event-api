@@ -352,6 +352,34 @@ paths:
       summary: Upload documents
       tags:
       - campaigns
+  /campaigns/social-media:
+    get:
+      consumes:
+      - application/json
+      description: find campaign by date
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              allOf:
+              - $ref: '#/definitions/translate.ResultSuccess'
+              - properties:
+                  data:
+                    $ref: '#/definitions/entity.SocialMedia'
+                type: object
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetAllSocialMedia used to find all social media list
+      tags:
+      - campaigns
   /digital-staffs:
     get:
       consumes:
