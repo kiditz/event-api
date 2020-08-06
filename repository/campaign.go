@@ -1,12 +1,14 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
 	e "github.com/kiditz/spgku-api/entity"
 )
 
-// AddCampaign used to insert job into campaign into campaigns database
+// AddCampaign used to insert campaign into campaigns database
 func AddCampaign(campaign *e.Campaign) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		tx = tx.Set("gorm:association_autoupdate", false)
@@ -32,4 +34,23 @@ func FindCampaignByID(campaignID int) (e.Campaign, error) {
 		return campaign, err
 	}
 	return campaign, nil
+}
+
+// GetCampaignByDate  used to find campaign by date
+func GetCampaignByDate(date string) ([]e.Campaign, error) {
+	fmt.Printf("date %s", date)
+	var campaign []e.Campaign
+	if err := db.DB.Where("? between to_char(start_date, 'YYYY-MM-DD') and to_char(end_date, 'YYYY-MM-DD') ", date).Find(&campaign).Error; err != nil {
+		return campaign, err
+	}
+	return campaign, nil
+}
+
+// GetAllSocialMedia  used to find campaign by date
+func GetAllSocialMedia() ([]e.SocialMedia, error) {
+	var socialMediaList []e.SocialMedia
+	if err := db.DB.Find(&socialMediaList).Error; err != nil {
+		return socialMediaList, err
+	}
+	return socialMediaList, nil
 }

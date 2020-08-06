@@ -53,6 +53,18 @@ func AddUser(c echo.Context) error {
 }
 
 //SignIn used to login
+// @Summary Sign In
+// @Description Sign in by using email and password
+// @Tags users
+// @Accept x-www-form-urlencoded
+// @Produce  json
+// @Param email query string true "your account email"
+// @Param password query string true "your account password"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Campaign} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Failure 404 {object} translate.ResultErrors
+// @Failure 500 {object} translate.ResultErrors
+// @Router /auth/token [post]
 func SignIn(c echo.Context) error {
 	email := c.FormValue("email")
 	password := c.FormValue("password")

@@ -46,6 +46,14 @@ func GetUsername(c echo.Context) string {
 	return "System"
 }
 
+// GetUser used to getting the user from claims
+func GetUser(c echo.Context) jwt.MapClaims {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	// fmt.Printf("claims %s", claims)
+	return claims
+}
+
 // VerifyToken used to verify is token valid
 func VerifyToken(c echo.Context) (*jwt.Token, error) {
 	auth := c.Request().Header.Get("Authorization")

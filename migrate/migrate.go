@@ -16,5 +16,7 @@ func main() {
 		&e.EventStaff{},
 		&e.Image{},
 		&e.SocialMedia{},
+		&e.Document{},
 	)
+	db.DB.Model(&e.Campaign{}).AddUniqueIndex("idx_created_by_title", "created_by", "title")
 }
