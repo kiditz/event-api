@@ -16,8 +16,5 @@ func GetUser(c echo.Context) jwt.MapClaims {
 
 //GetEmail used to get user email
 func GetEmail(c echo.Context) string {
-	user := c.Get("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	// fmt.Printf("claims %s", claims)
-	return claims["username"].(string)
+	return GetUser(c)["email"].(string)
 }
