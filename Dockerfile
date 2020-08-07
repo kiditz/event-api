@@ -25,6 +25,7 @@ WORKDIR /dist
 
 # Copy binary from build to main folder
 RUN cp /build/main .
+RUN cp /build/Spgku-3e3cc4a1430f.json .
 RUN cp /build/id.json .
 RUN cp /build/en.json .
 
