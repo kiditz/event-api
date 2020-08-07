@@ -13,12 +13,13 @@ type Campaign struct {
 	SocialMedias  []SocialMedia `json:"social_media" validate:"required" gorm:"many2many:social_media_list;"`
 	Location      *Location     `json:"location,omitempty" gorm:"foreignkey:LocationID"`
 	LocationID    uint          `json:"location_id"`
-	SampleProduct string        `json:"sample_product"`
+	SampleProduct string        `json:"sample_product" gorm:"type:varchar(5);not null;default:'Y'"`
 	Images        []Image       `json:"images" gorm:"many2many:image_list;"`
 	StartDate     *time.Time    `gorm:"not null" json:"start_date" validate:"required"`
 	EndDate       *time.Time    `gorm:"not null" json:"end_date" validate:"gtefield=StartDate,required"`
 	StartPrice    float64       `json:"start_price" gorm:"not null" validate:"gte=100000.0,required"`
 	EndPrice      float64       `json:"end_price" gorm:"not null" validate:"gtefield=StartPrice,required"`
 	StaffAmount   uint          `json:"staff_amount" gorm:"not null" validate:"gte=1,required"`
+	Status        string        `json:"status" gorm:"type:varchar(60);not null;default:'booked'"`
 	Model
 }
