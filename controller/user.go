@@ -35,7 +35,6 @@ func AddUser(c echo.Context) error {
 	if hasErr != nil {
 		return t.Errors(c, http.StatusBadRequest, hasErr)
 	}
-	user.CreatedBy = u.GetUsername(c)
 	pwd, err := u.HashAndSalt([]byte(user.Password))
 	if err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
