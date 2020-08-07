@@ -248,7 +248,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/entity.Campaign"
+                                            "$ref": "#/definitions/entity.Document"
                                         }
                                     }
                                 }
@@ -666,6 +666,9 @@ var doc = `{
                 "start_price": {
                     "type": "number"
                 },
+                "status": {
+                    "type": "string"
+                },
                 "task": {
                     "type": "string"
                 },
@@ -695,6 +698,26 @@ var doc = `{
                     "type": "string"
                 },
                 "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Document": {
+            "type": "object",
+            "properties": {
+                "filename": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer"
+                },
+                "url": {
                     "type": "string"
                 }
             }
@@ -770,6 +793,9 @@ var doc = `{
                 "name"
             ],
             "properties": {
+                "icon": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
