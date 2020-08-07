@@ -3,6 +3,7 @@ module github.com/kiditz/spgku-api
 go 1.13
 
 require (
+	cloud.google.com/go/storage v1.10.0
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-openapi/spec v0.19.9 // indirect
