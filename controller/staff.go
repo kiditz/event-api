@@ -31,7 +31,7 @@ func AddDigitalStaff(c echo.Context) error {
 	if hasErr != nil {
 		return t.Errors(c, http.StatusBadRequest, hasErr)
 	}
-	digitalStaff.CreatedBy = u.GetUsername(c)
+	digitalStaff.CreatedBy = u.GetEmail(c)
 
 	err = r.AddDigitalStaff(digitalStaff)
 	if err != nil {
@@ -64,7 +64,7 @@ func AddEventStaff(c echo.Context) error {
 	if hasErr != nil {
 		return t.Errors(c, http.StatusBadRequest, hasErr)
 	}
-	eventStaff.CreatedBy = u.GetUsername(c)
+	eventStaff.CreatedBy = u.GetEmail(c)
 
 	err = r.AddEventStaff(eventStaff)
 	if err != nil {
