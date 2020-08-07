@@ -24,7 +24,7 @@ import (
 // @Accept  multipart/form-data
 // @Produce  json
 // @Param file formData file true "campaign image"
-// @Success 200 {object} translate.ResultSuccess{data=entity.Campaign} desc
+// @Success 200 {object} translate.ResultSuccess{data=entity.Document} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Failure 404 {object} translate.ResultErrors
 // @Failure 500 {object} translate.ResultErrors
