@@ -6,5 +6,6 @@ type Document struct {
 	FileName string `json:"filename"`
 	URL      string `json:"url"`
 	Size     int64  `json:"size"`
+	Message  string `json:"message"`
 	Model
 }
