@@ -1,8 +1,6 @@
 package repository
 
 import (
-	"fmt"
-
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
 	e "github.com/kiditz/spgku-api/entity"
@@ -36,14 +34,30 @@ func FindCampaignByID(campaignID int) (e.Campaign, error) {
 	return campaign, nil
 }
 
-// GetCampaignByDate  used to find campaign by date
-func GetCampaignByDate(date string) ([]e.Campaign, error) {
-	fmt.Printf("date %s", date)
+// CampaignsFilter filtering query by
+type CampaignsFilter struct {
+	date   string `query:"name"`
+	q      string `query:"q"`
+	offset int    `query:"offset"`
+	limit  int    `query:"limit"`
+}
+
+// GetCampaigns  used to find campaign by date
+func GetCampaigns(filter *CampaignsFilter) []e.Campaign {
 	var campaign []e.Campaign
-	if err := db.DB.Where("? between to_char(start_date, 'YYYY-MM-DD') and to_char(end_date, 'YYYY-MM-DD') ", date).Find(&campaign).Error; err != nil {
-		return campaign, err
+	query := db.DB
+	if filter.limit == 0 {
+		filter.limit = 10
 	}
-	return campaign, nil
+	if len(filter.date) > 0 {
+		query = query.Where("? between to_char(start_date, 'YYYY-MM-DD') and to_char(end_date, 'YYYY-MM-DD')", filter.date)
+	}
+	if len(filter.q) > 0 {
+		query = query.Where("title LIKE ?", "%"+filter.q+"%")
+	}
+
+	query = query.Offset(filter.offset).Limit(filter.limit).Order("id desc").Find(&campaign)
+	return campaign
 }
 
 // GetAllSocialMedia  used to find campaign by date

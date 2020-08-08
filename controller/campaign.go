@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 	"strconv"
-	"time"
 
 	e "github.com/kiditz/spgku-api/entity"
 	r "github.com/kiditz/spgku-api/repository"
@@ -31,17 +30,11 @@ func AddCampaign(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	var hasErr, tx = t.ValidateTranslator(c, campaign)
-	if hasErr != nil {
-		return t.Errors(c, http.StatusBadRequest, hasErr)
-	}
-
 	campaign.CreatedBy = utils.GetUser(c)["email"].(string)
 	err = r.AddCampaign(campaign)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
-			res, _ := tx.T(err.Constraint)
-			return t.Errors(c, http.StatusBadRequest, res)
+			return t.Errors(c, http.StatusBadRequest, err.Constraint)
 		}
 	}
 	return t.Success(c, campaign)
@@ -67,28 +60,27 @@ func FindcampaignByID(c echo.Context) error {
 	return t.Success(c, campaign)
 }
 
-// GetCampaignByDate godoc
-// @Summary GetCampaignByDate used to find campaign by it's start date and end date
+// GetCampaigns godoc
+// @Summary GetCampaigns used to find campaign by it's start date and end date
 // @Description find campaign by date
 // @Tags campaigns
 // @Accept json
 // @Produce json
-// @Param date query string true "Date to search"
+// @Param date query string false "date"
+// @Param q query string false "title"
+// @Param offset query int false "offset"
+// @Param limit query int false "limit"
 // @Success 200 {array} translate.ResultSuccess{data=entity.Campaign} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /campaigns/date [get]
+// @Router /campaigns [get]
 // @Security ApiKeyAuth
-func GetCampaignByDate(c echo.Context) error {
-	dateStr := c.QueryParam("date")
-	date, err := time.Parse("2006-01-02", dateStr)
-	if err != nil {
+func GetCampaigns(c echo.Context) error {
+	filter := new(r.CampaignsFilter)
+	if err := c.Bind(filter); err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
-	campaign, err := r.GetCampaignByDate(date.Format("2006-01-02"))
-	if err != nil {
-		return t.Errors(c, http.StatusBadRequest, err.Error())
-	}
-	return t.Success(c, campaign)
+	campaigns := r.GetCampaigns(filter)
+	return t.Success(c, campaigns)
 }
 
 // GetAllSocialMedia godoc

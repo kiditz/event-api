@@ -11,4 +11,5 @@ type Location struct {
 	InternationalPhoneNumber *string `json:"international_phone_number"`
 	PlaceID                  *string `json:"place_id"`
 	Icon                     *string `json:"icon"`
+	Name                     *string `json:"name"`
 }

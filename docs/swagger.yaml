@@ -118,6 +118,8 @@ definitions:
         type: number
       lng:
         type: number
+      name:
+        type: string
       phone_number:
         type: string
       place_id:
@@ -231,6 +233,50 @@ paths:
       tags:
       - users
   /campaigns:
+    get:
+      consumes:
+      - application/json
+      description: find campaign by date
+      parameters:
+      - description: date
+        in: query
+        name: date
+        type: string
+      - description: title
+        in: query
+        name: q
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: integer
+      - description: limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              allOf:
+              - $ref: '#/definitions/translate.ResultSuccess'
+              - properties:
+                  data:
+                    $ref: '#/definitions/entity.Campaign'
+                type: object
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetCampaigns used to find campaign by it's start date and end date
+      tags:
+      - campaigns
     post:
       description: Create a new campaign
       parameters:
@@ -293,40 +339,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: FindcampaignById used to find campaign by it's primary key
-      tags:
-      - campaigns
-  /campaigns/date:
-    get:
-      consumes:
-      - application/json
-      description: find campaign by date
-      parameters:
-      - description: Date to search
-        in: query
-        name: date
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              allOf:
-              - $ref: '#/definitions/translate.ResultSuccess'
-              - properties:
-                  data:
-                    $ref: '#/definitions/entity.Campaign'
-                type: object
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/translate.ResultErrors'
-      security:
-      - ApiKeyAuth: []
-      summary: GetCampaignByDate used to find campaign by it's start date and end date
       tags:
       - campaigns
   /campaigns/documents:
