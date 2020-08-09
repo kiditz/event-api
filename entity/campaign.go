@@ -14,12 +14,12 @@ type Campaign struct {
 	Location      *Location     `json:"location,omitempty" gorm:"foreignkey:LocationID"`
 	LocationID    uint          `json:"location_id"`
 	SampleProduct string        `json:"sample_product" gorm:"type:varchar(5);not null;default:'Y'"`
-	Images        []Image       `json:"images" gorm:"many2many:image_list;"`
+	Images        []Image       `json:"images" gorm:"many2many:campaign_images;"`
 	StartDate     *time.Time    `gorm:"not null" json:"start_date" validate:"required"`
 	EndDate       *time.Time    `gorm:"not null" json:"end_date" validate:"gtefield=StartDate,required"`
 	StartTime     string        `json:"start_time"`
 	EndTime       string        `json:"end_time"`
-	StartPrice    float64       `json:"start_price" gorm:"not null" validate:"gte=100000.0,required"`
+	StartPrice    float64       `json:"start_price" gorm:"not null" validate:"gte=50000.0,required"`
 	EndPrice      float64       `json:"end_price" gorm:"not null" validate:"gtefield=StartPrice,required"`
 	StaffAmount   uint          `json:"staff_amount" gorm:"not null" validate:"gte=1,required"`
 	Status        string        `json:"status" gorm:"type:varchar(60);not null;default:'booked'"`

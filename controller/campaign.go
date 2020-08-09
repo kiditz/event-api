@@ -79,7 +79,7 @@ func GetCampaigns(c echo.Context) error {
 	if err := c.Bind(filter); err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
-	campaigns := r.GetCampaigns(filter)
+	campaigns := r.GetCampaigns(filter, c)
 	return t.Success(c, campaigns)
 }
 

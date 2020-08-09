@@ -8,5 +8,6 @@ import (
 func InitRoutes(v1 *echo.Group) {
 	SetCampaignRoutes(v1)
 	SetUserRoutes(v1)
-	SetStaffRoute(v1)
+
+	SetTalentRoutes(v1)
 }

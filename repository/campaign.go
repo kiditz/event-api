@@ -1,9 +1,13 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
 	e "github.com/kiditz/spgku-api/entity"
+	"github.com/kiditz/spgku-api/utils"
+	"github.com/labstack/echo/v4"
 )
 
 // AddCampaign used to insert campaign into campaigns database
@@ -36,27 +40,32 @@ func FindCampaignByID(campaignID int) (e.Campaign, error) {
 
 // CampaignsFilter filtering query by
 type CampaignsFilter struct {
-	date   string `query:"name"`
-	q      string `query:"q"`
-	offset int    `query:"offset"`
-	limit  int    `query:"limit"`
+	Date   string `query:"date" json:"date"`
+	Query  string `query:"q" json:"q"`
+	Offset int    `query:"offset" json:"offset"`
+	Limit  int    `query:"limit" json:"limit"`
+	OnlyMe bool   `query:"onlyme" json:"onlyme"`
 }
 
 // GetCampaigns  used to find campaign by date
-func GetCampaigns(filter *CampaignsFilter) []e.Campaign {
+func GetCampaigns(filter *CampaignsFilter, c echo.Context) []e.Campaign {
 	var campaign []e.Campaign
 	query := db.DB
-	if filter.limit == 0 {
-		filter.limit = 10
+	if filter.Limit == 0 {
+		filter.Limit = 10
 	}
-	if len(filter.date) > 0 {
-		query = query.Where("? between to_char(start_date, 'YYYY-MM-DD') and to_char(end_date, 'YYYY-MM-DD')", filter.date)
+	fmt.Printf("Filtered :%v", &filter)
+	if len(filter.Date) > 0 {
+		query = query.Where("? between to_char(start_date, 'YYYY-MM-DD') and to_char(end_date, 'YYYY-MM-DD')", filter.Date)
 	}
-	if len(filter.q) > 0 {
-		query = query.Where("title LIKE ?", "%"+filter.q+"%")
+	if len(filter.Query) > 0 {
+		query = query.Where("title ilike ?", "%"+filter.Query+"%")
+	}
+	if filter.OnlyMe {
+		query = query.Where("created_by = ?", utils.GetEmail(c))
 	}
 
-	query = query.Offset(filter.offset).Limit(filter.limit).Order("id desc").Find(&campaign)
+	query = query.Preload("Images").Offset(filter.Offset).Limit(filter.Limit).Order("id desc").Find(&campaign)
 	return campaign
 }
 

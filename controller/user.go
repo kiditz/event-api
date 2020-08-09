@@ -31,10 +31,6 @@ func AddUser(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	var hasErr, tx = t.ValidateTranslator(c, user)
-	if hasErr != nil {
-		return t.Errors(c, http.StatusBadRequest, hasErr)
-	}
 	pwd, err := u.HashAndSalt([]byte(user.Password))
 	if err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
@@ -43,8 +39,7 @@ func AddUser(c echo.Context) error {
 	err = r.AddUser(user)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
-			res, _ := tx.T(err.Constraint)
-			return t.Errors(c, http.StatusBadRequest, res)
+			return t.Errors(c, http.StatusBadRequest, err.Error())
 		}
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
@@ -76,6 +71,7 @@ func SignIn(c echo.Context) error {
 		token := jwt.New(jwt.SigningMethodHS256)
 		claims := token.Claims.(jwt.MapClaims)
 		claims["name"] = user.Name
+		claims["id"] = user.ID
 		claims["email"] = user.Email
 		claims["type"] = user.Type
 		claims["exp"] = time.Now().Add(time.Hour * 72).Unix()

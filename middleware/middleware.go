@@ -20,11 +20,25 @@ var (
 	talent  = "talent"
 )
 
+// IsCompany used to routing if loggined user is company
 func IsCompany(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := c.Get("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
 		isCompany := claims["type"] == company
+		if isCompany == false {
+			return echo.ErrUnauthorized
+		}
+		return next(c)
+	}
+}
+
+// IsTalent used to routing if loggined user is talent
+func IsTalent(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		user := c.Get("user").(*jwt.Token)
+		claims := user.Claims.(jwt.MapClaims)
+		isCompany := claims["type"] == talent
 		if isCompany == false {
 			return echo.ErrUnauthorized
 		}

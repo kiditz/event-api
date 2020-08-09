@@ -562,6 +562,60 @@ var doc = `{
                 }
             }
         },
+        "/talents": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new talent",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "talents"
+                ],
+                "summary": "AddTalent api used to create new talent",
+                "parameters": [
+                    {
+                        "description": "New Talent",
+                        "name": "talent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Talent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Talent"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/user": {
             "post": {
                 "description": "Create a new user",
@@ -644,6 +698,9 @@ var doc = `{
                 "end_price": {
                     "type": "number"
                 },
+                "end_time": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -680,6 +737,9 @@ var doc = `{
                 },
                 "start_price": {
                     "type": "number"
+                },
+                "start_time": {
+                    "type": "string"
                 },
                 "status": {
                     "type": "string"
@@ -765,6 +825,14 @@ var doc = `{
                 }
             }
         },
+        "entity.Industries": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Location": {
             "type": "object",
             "required": [
@@ -818,6 +886,82 @@ var doc = `{
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Talent": {
+            "type": "object",
+            "required": [
+                "age",
+                "birth_date",
+                "end_price",
+                "gender",
+                "height",
+                "instagram_link",
+                "start_price"
+            ],
+            "properties": {
+                "age": {
+                    "type": "string"
+                },
+                "birth_date": {
+                    "type": "string"
+                },
+                "end_price": {
+                    "type": "number"
+                },
+                "engagement": {
+                    "type": "number"
+                },
+                "facebook_followers_count": {
+                    "type": "integer"
+                },
+                "facebook_link": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer"
+                },
+                "images": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Image"
+                    }
+                },
+                "industries": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Industries"
+                },
+                "instagram_feed_count": {
+                    "type": "integer"
+                },
+                "instagram_followers_count": {
+                    "type": "integer"
+                },
+                "instagram_like_count": {
+                    "type": "integer"
+                },
+                "instagram_link": {
+                    "type": "string"
+                },
+                "is_verified": {
+                    "type": "boolean"
+                },
+                "location": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Location"
+                },
+                "start_price": {
+                    "type": "number"
+                },
+                "twitter_followers_count": {
+                    "type": "integer"
+                },
+                "twitter_link": {
                     "type": "string"
                 }
             }

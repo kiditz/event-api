@@ -10,6 +10,8 @@ definitions:
         type: string
       end_price:
         type: number
+      end_time:
+        type: string
       id:
         type: integer
       images:
@@ -35,6 +37,8 @@ definitions:
         type: string
       start_price:
         type: number
+      start_time:
+        type: string
       status:
         type: string
       task:
@@ -102,6 +106,11 @@ definitions:
     required:
     - image_url
     type: object
+  entity.Industries:
+    properties:
+      name:
+        type: string
+    type: object
   entity.Location:
     properties:
       address:
@@ -139,6 +148,59 @@ definitions:
         type: string
     required:
     - name
+    type: object
+  entity.Talent:
+    properties:
+      age:
+        type: string
+      birth_date:
+        type: string
+      end_price:
+        type: number
+      engagement:
+        type: number
+      facebook_followers_count:
+        type: integer
+      facebook_link:
+        type: string
+      gender:
+        type: string
+      height:
+        type: integer
+      images:
+        items:
+          $ref: '#/definitions/entity.Image'
+        type: array
+      industries:
+        $ref: '#/definitions/entity.Industries'
+        type: object
+      instagram_feed_count:
+        type: integer
+      instagram_followers_count:
+        type: integer
+      instagram_like_count:
+        type: integer
+      instagram_link:
+        type: string
+      is_verified:
+        type: boolean
+      location:
+        $ref: '#/definitions/entity.Location'
+        type: object
+      start_price:
+        type: number
+      twitter_followers_count:
+        type: integer
+      twitter_link:
+        type: string
+    required:
+    - age
+    - birth_date
+    - end_price
+    - gender
+    - height
+    - instagram_link
+    - start_price
     type: object
   entity.User:
     properties:
@@ -511,6 +573,37 @@ paths:
       summary: AddEventStaff used to add new event staff
       tags:
       - staff
+  /talents:
+    post:
+      description: Create a new talent
+      parameters:
+      - description: New Talent
+        in: body
+        name: talent
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Talent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Talent'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: AddTalent api used to create new talent
+      tags:
+      - talents
   /user:
     post:
       consumes:

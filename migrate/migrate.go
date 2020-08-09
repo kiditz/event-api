@@ -12,11 +12,15 @@ func main() {
 		&e.Campaign{},
 		&e.Location{},
 		&e.User{},
-		&e.DigitalStaff{},
-		&e.EventStaff{},
+		&e.SubCategory{},
+		&e.Category{},
 		&e.Image{},
 		&e.SocialMedia{},
 		&e.Document{},
+		&e.SubCategory{},
+		&e.Talent{},
+		&e.Expertise{},
+		&e.Service{},
 	)
 	db.DB.Model(&e.Campaign{}).AddUniqueIndex("idx_created_by_title", "created_by", "title")
 }
