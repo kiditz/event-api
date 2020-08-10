@@ -26,6 +26,11 @@ definitions:
         type: object
       location_id:
         type: integer
+      payment_days:
+        $ref: '#/definitions/entity.PaymentDays'
+        type: object
+      payment_days_id:
+        type: integer
       payment_terms:
         $ref: '#/definitions/entity.PaymentTerms'
         type: object
@@ -117,13 +122,22 @@ definitions:
     - lat
     - lng
     type: object
+  entity.PaymentDays:
+    properties:
+      days:
+        type: integer
+      id:
+        type: integer
+    required:
+    - days
+    type: object
   entity.PaymentTerms:
     properties:
-      code:
-        type: string
       id:
         type: integer
       name:
+        type: string
+      slug:
         type: string
     required:
     - name
@@ -341,21 +355,21 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              allOf:
-              - $ref: '#/definitions/translate.ResultSuccess'
-              - properties:
-                  data:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
                     $ref: '#/definitions/entity.Campaign'
-                type: object
-            type: array
+                  type: array
+              type: object
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
       security:
       - ApiKeyAuth: []
-      summary: GetCampaigns used to find campaign by it's start date and end date
+      summary: GetCampaigns used to find campaign by specific params
       tags:
       - campaigns
     post:
@@ -460,6 +474,34 @@ paths:
       summary: Upload documents
       tags:
       - campaigns
+  /campaigns/payment-days:
+    get:
+      consumes:
+      - application/json
+      description: find all payment days
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.PaymentDays'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetPaymentDays used to find all payment days list
+      tags:
+      - campaigns
   /campaigns/payment-terms:
     get:
       consumes:
@@ -471,21 +513,21 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              allOf:
-              - $ref: '#/definitions/translate.ResultSuccess'
-              - properties:
-                  data:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
                     $ref: '#/definitions/entity.PaymentTerms'
-                type: object
-            type: array
+                  type: array
+              type: object
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
       security:
       - ApiKeyAuth: []
-      summary: GetPaymentTerms used to find all social media list
+      summary: GetPaymentTerms used to find all payment terms list
       tags:
       - campaigns
   /campaigns/social-media:
@@ -499,14 +541,14 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              allOf:
-              - $ref: '#/definitions/translate.ResultSuccess'
-              - properties:
-                  data:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
                     $ref: '#/definitions/entity.SocialMedia'
-                type: object
-            type: array
+                  type: array
+              type: object
         "400":
           description: Bad Request
           schema:

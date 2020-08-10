@@ -13,8 +13,10 @@ type Campaign struct {
 	LocationID     uint          `json:"location_id"`
 	PaymentTerms   *PaymentTerms `json:"payment_terms,omitempty" gorm:"foreignkey:PaymentTermsID"`
 	PaymentTermsID uint          `json:"payment_terms_id"`
-	StartDate      *time.Time    `gorm:"not null" json:"start_date"`
-	EndDate        *time.Time    `gorm:"not null" json:"end_date" validate:"gtefield=StartDate"`
+	PaymentDaysID  uint          `json:"payment_days_id"`
+	PaymentDays    *PaymentDays  `json:"payment_days,omitempty" gorm:"foreignkey:PaymentDaysID"`
+	StartDate      *time.Time    `json:"start_date"`
+	EndDate        *time.Time    `json:"end_date" validate:"gtefield=StartDate"`
 	StartPrice     float64       `json:"start_price" gorm:"not null" validate:"gte=50000.0,required"`
 	EndPrice       float64       `json:"end_price" gorm:"not null" validate:"gtefield=StartPrice,required"`
 	StaffAmount    uint          `json:"staff_amount" gorm:"not null" validate:"gte=1,required"`

@@ -25,8 +25,12 @@ func AddCampaign(campaign *e.Campaign) error {
 			tx.Model(&campaign).Association("Location").Append(campaign.Location)
 		}
 		if campaign.PaymentTerms != nil {
-			tx.Model(&campaign.PaymentTerms).Save(campaign.Location)
+			tx.Model(&campaign.PaymentTerms).Save(campaign.PaymentTerms)
 			tx.Model(&campaign).Association("PaymentTerms").Append(campaign.PaymentTerms)
+		}
+		if campaign.PaymentDays != nil {
+			tx.Model(&campaign.PaymentDays).Save(campaign.PaymentDays)
+			tx.Model(&campaign).Association("PaymentDays").Append(campaign.PaymentDays)
 		}
 		return nil
 	})
@@ -35,7 +39,7 @@ func AddCampaign(campaign *e.Campaign) error {
 // FindCampaignByID  used to find campaign by id
 func FindCampaignByID(campaignID int) (e.Campaign, error) {
 	var campaign e.Campaign
-	if err := db.DB.Where("id=?", campaignID).Preload("Location").Preload("SocialMedias").Find(&campaign).Error; err != nil {
+	if err := db.DB.Where("id=?", campaignID).Preload("Location").Preload("PaymentTerms").Preload("PaymentDays").Find(&campaign).Error; err != nil {
 		return campaign, err
 	}
 	return campaign, nil
@@ -68,7 +72,7 @@ func GetCampaigns(filter *CampaignsFilter, c echo.Context) []e.Campaign {
 		query = query.Where("created_by = ?", utils.GetEmail(c))
 	}
 
-	query = query.Preload("Images").Offset(filter.Offset).Limit(filter.Limit).Order("id desc").Find(&campaign)
+	query = query.Preload("PaymentTerms").Preload("PaymentDays").Offset(filter.Offset).Limit(filter.Limit).Order("id desc").Find(&campaign)
 	return campaign
 }
 
@@ -84,4 +88,11 @@ func GetPaymentTerms() []e.PaymentTerms {
 	var paymentTerms []e.PaymentTerms
 	db.DB.Find(&paymentTerms)
 	return paymentTerms
+}
+
+// GetPaymentDays docs
+func GetPaymentDays() []e.PaymentDays {
+	var paymentDays []e.PaymentDays
+	db.DB.Find(&paymentDays)
+	return paymentDays
 }

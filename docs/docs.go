@@ -114,7 +114,7 @@ var doc = `{
                 "tags": [
                     "campaigns"
                 ],
-                "summary": "GetCampaigns used to find campaign by it's start date and end date",
+                "summary": "GetCampaigns used to find campaign by specific params",
                 "parameters": [
                     {
                         "type": "string",
@@ -145,22 +145,22 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/definitions/translate.ResultSuccess"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "data": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
                                                 "$ref": "#/definitions/entity.Campaign"
                                             }
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -291,6 +291,55 @@ var doc = `{
                 }
             }
         },
+        "/campaigns/payment-days": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find all payment days",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "campaigns"
+                ],
+                "summary": "GetPaymentDays used to find all payment days list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.PaymentDays"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/campaigns/payment-terms": {
             "get": {
                 "security": [
@@ -308,27 +357,27 @@ var doc = `{
                 "tags": [
                     "campaigns"
                 ],
-                "summary": "GetPaymentTerms used to find all social media list",
+                "summary": "GetPaymentTerms used to find all payment terms list",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/definitions/translate.ResultSuccess"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "data": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
                                                 "$ref": "#/definitions/entity.PaymentTerms"
                                             }
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -362,22 +411,22 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/definitions/translate.ResultSuccess"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "data": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
                                                 "$ref": "#/definitions/entity.SocialMedia"
                                             }
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -703,6 +752,13 @@ var doc = `{
                 "location_id": {
                     "type": "integer"
                 },
+                "payment_days": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.PaymentDays"
+                },
+                "payment_days_id": {
+                    "type": "integer"
+                },
                 "payment_terms": {
                     "type": "object",
                     "$ref": "#/definitions/entity.PaymentTerms"
@@ -830,19 +886,33 @@ var doc = `{
                 }
             }
         },
+        "entity.PaymentDays": {
+            "type": "object",
+            "required": [
+                "days"
+            ],
+            "properties": {
+                "days": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.PaymentTerms": {
             "type": "object",
             "required": [
                 "name"
             ],
             "properties": {
-                "code": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "slug": {
                     "type": "string"
                 }
             }

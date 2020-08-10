@@ -61,7 +61,7 @@ func FindCampaignByID(c echo.Context) error {
 }
 
 // GetCampaigns godoc
-// @Summary GetCampaigns used to find campaign by it's start date and end date
+// @Summary GetCampaigns used to find campaign by specific params
 // @Description find campaign by date
 // @Tags campaigns
 // @Accept json
@@ -70,7 +70,7 @@ func FindCampaignByID(c echo.Context) error {
 // @Param q query string false "title"
 // @Param offset query int false "offset"
 // @Param limit query int false "limit"
-// @Success 200 {array} translate.ResultSuccess{data=entity.Campaign} desc
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.Campaign} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /campaigns [get]
 // @Security ApiKeyAuth
@@ -89,7 +89,7 @@ func GetCampaigns(c echo.Context) error {
 // @Tags campaigns
 // @Accept json
 // @Produce json
-// @Success 200 {array} translate.ResultSuccess{data=entity.SocialMedia} desc
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.SocialMedia} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /campaigns/social-media [get]
 // @Security ApiKeyAuth
@@ -99,16 +99,31 @@ func GetAllSocialMedia(c echo.Context) error {
 }
 
 // GetPaymentTerms godoc
-// @Summary GetPaymentTerms used to find all social media list
+// @Summary GetPaymentTerms used to find all payment terms list
 // @Description find all payment terms
 // @Tags campaigns
 // @Accept json
 // @Produce json
-// @Success 200 {array} translate.ResultSuccess{data=entity.PaymentTerms} desc
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.PaymentTerms} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /campaigns/payment-terms [get]
 // @Security ApiKeyAuth
 func GetPaymentTerms(c echo.Context) error {
 	paymentTerms := r.GetPaymentTerms()
 	return t.Success(c, paymentTerms)
+}
+
+// GetPaymentDays godoc
+// @Summary GetPaymentDays used to find all payment days list
+// @Description find all payment days
+// @Tags campaigns
+// @Accept json
+// @Produce json
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.PaymentDays} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /campaigns/payment-days [get]
+// @Security ApiKeyAuth
+func GetPaymentDays(c echo.Context) error {
+	paymentDays := r.GetPaymentDays()
+	return t.Success(c, paymentDays)
 }
