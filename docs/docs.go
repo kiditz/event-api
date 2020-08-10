@@ -500,7 +500,7 @@ var doc = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "find category by date",
+                "description": "find all category",
                 "consumes": [
                     "application/json"
                 ],
@@ -526,6 +526,113 @@ var doc = `{
                                         "properties": {
                                             "data": {
                                                 "$ref": "#/definitions/entity.Category"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/sub-categories": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find all sub category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "GetSubCategories used to find all sub category",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/definitions/translate.ResultSuccess"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "data": {
+                                                "$ref": "#/definitions/entity.SubCategory"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/sub-categories/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "used to find all sub category by category id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "GetSubCategoriesByCategoryID used to find all sub category by category id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/definitions/translate.ResultSuccess"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "data": {
+                                                "$ref": "#/definitions/entity.SubCategory"
                                             }
                                         }
                                     }
@@ -730,6 +837,13 @@ var doc = `{
                 "title"
             ],
             "properties": {
+                "category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Category"
+                },
+                "category_id": {
+                    "type": "integer"
+                },
                 "currency": {
                     "type": "string"
                 },
@@ -766,12 +880,6 @@ var doc = `{
                 "payment_terms_id": {
                     "type": "integer"
                 },
-                "services": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Service"
-                    }
-                },
                 "staff_amount": {
                     "type": "integer"
                 },
@@ -783,6 +891,13 @@ var doc = `{
                 },
                 "status": {
                     "type": "string"
+                },
+                "sub_category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.SubCategory"
+                },
+                "sub_category_id": {
+                    "type": "integer"
                 },
                 "title": {
                     "type": "string"
@@ -914,40 +1029,6 @@ var doc = `{
                 },
                 "slug": {
                     "type": "string"
-                }
-            }
-        },
-        "entity.Service": {
-            "type": "object",
-            "required": [
-                "description"
-            ],
-            "properties": {
-                "category": {
-                    "type": "object",
-                    "$ref": "#/definitions/entity.Category"
-                },
-                "category_id": {
-                    "type": "integer"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "portfolios": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Image"
-                    }
-                },
-                "sub_category": {
-                    "type": "object",
-                    "$ref": "#/definitions/entity.SubCategory"
-                },
-                "sub_category_id": {
-                    "type": "integer"
                 }
             }
         },
