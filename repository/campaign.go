@@ -17,9 +17,9 @@ func AddCampaign(campaign *e.Campaign) error {
 		if err := tx.Save(&campaign).Error; err != nil {
 			return err
 		}
-		if len(campaign.Services) > 0 {
-			tx.Model(&campaign.Services).Association("Services").Append(campaign.Services)
-		}
+		// if len(campaign.Services) > 0 {
+		// 	tx.Model(&campaign.Services).Association("Services").Append(campaign.Services)
+		// }
 		if campaign.Location != nil {
 			tx.Model(&campaign.Location).Save(campaign.Location)
 			tx.Model(&campaign).Association("Location").Append(campaign.Location)

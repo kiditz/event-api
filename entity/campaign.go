@@ -8,7 +8,10 @@ type Campaign struct {
 	Title          string        `json:"title" sql:"index" gorm:"type:varchar(60);index:campaign_title_idx;not null" validate:"required"`
 	Detail         string        `json:"detail" validate:"required" gorm:"not null"`
 	Currency       string        `json:"currency" validate:"required" gorm:"not null"`
-	Services       []Service     `json:"services" gorm:"many2many:campaign_services;"`
+	Category       Category      `json:"category"`
+	CategoryID     uint          `json:"category_id"`
+	SubCategory    SubCategory   `json:"sub_category"`
+	SubCategoryID  uint          `json:"sub_category_id"`
 	Location       *Location     `json:"location,omitempty" gorm:"foreignkey:LocationID"`
 	LocationID     uint          `json:"location_id"`
 	PaymentTerms   *PaymentTerms `json:"payment_terms,omitempty" gorm:"foreignkey:PaymentTermsID"`
