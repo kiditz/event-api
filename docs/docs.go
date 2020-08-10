@@ -291,6 +291,55 @@ var doc = `{
                 }
             }
         },
+        "/campaigns/payment-terms": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find all payment terms",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "campaigns"
+                ],
+                "summary": "GetPaymentTerms used to find all social media list",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/definitions/translate.ResultSuccess"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "data": {
+                                                "$ref": "#/definitions/entity.PaymentTerms"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/campaigns/social-media": {
             "get": {
                 "security": [
@@ -371,6 +420,52 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Campaign"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find category by date",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "GetCategoies used to find all categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
                             "type": "array",
                             "items": {
                                 "allOf": [
@@ -381,176 +476,12 @@ var doc = `{
                                         "type": "object",
                                         "properties": {
                                             "data": {
-                                                "$ref": "#/definitions/entity.Campaign"
+                                                "$ref": "#/definitions/entity.Category"
                                             }
                                         }
                                     }
                                 ]
                             }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/translate.ResultErrors"
-                        }
-                    }
-                }
-            }
-        },
-        "/digital-staffs": {
-            "get": {
-                "description": "Create a new digital staff category",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "staff"
-                ],
-                "summary": "GetDigitalStaff used to categories help digital staff",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entity.DigitalStaff"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/translate.ResultErrors"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a new digital staff category",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "staff"
-                ],
-                "summary": "AddDigitalStaff Add new digital staf",
-                "parameters": [
-                    {
-                        "description": "New DigitalStaff",
-                        "name": "digitallStaff",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.DigitalStaff"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/translate.ResultSuccess"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/entity.DigitalStaff"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/translate.ResultErrors"
-                        }
-                    }
-                }
-            }
-        },
-        "/event-staffs": {
-            "get": {
-                "description": "Get all data of event staff",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "staff"
-                ],
-                "summary": "GetEventStaff used to categories help event staff",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entity.EventStaff"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/translate.ResultErrors"
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Create a new digital staff category",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "staff"
-                ],
-                "summary": "AddEventStaff used to add new event staff",
-                "parameters": [
-                    {
-                        "description": "New Event Staff",
-                        "name": "eventStaff",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.EventStaff"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/translate.ResultSuccess"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/entity.EventStaff"
-                                        }
-                                    }
-                                }
-                            ]
                         }
                     },
                     "400": {
@@ -586,6 +517,61 @@ var doc = `{
                         "schema": {
                             "$ref": "#/definitions/entity.Talent"
                         }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Talent"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/talents/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find talent by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "talents"
+                ],
+                "summary": "FindtalentById used to find talent by it's primary key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Talent ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -670,23 +656,32 @@ var doc = `{
         }
     },
     "definitions": {
+        "entity.BusinessType": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Campaign": {
             "type": "object",
             "required": [
-                "criteria",
+                "currency",
                 "detail",
-                "end_date",
                 "end_price",
-                "method",
-                "social_media",
                 "staff_amount",
-                "start_date",
                 "start_price",
-                "task",
                 "title"
             ],
             "properties": {
-                "criteria": {
+                "currency": {
                     "type": "string"
                 },
                 "detail": {
@@ -698,17 +693,8 @@ var doc = `{
                 "end_price": {
                     "type": "number"
                 },
-                "end_time": {
-                    "type": "string"
-                },
                 "id": {
                     "type": "integer"
-                },
-                "images": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Image"
-                    }
                 },
                 "location": {
                     "type": "object",
@@ -717,16 +703,17 @@ var doc = `{
                 "location_id": {
                     "type": "integer"
                 },
-                "method": {
-                    "type": "string"
+                "payment_terms": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.PaymentTerms"
                 },
-                "sample_product": {
-                    "type": "string"
+                "payment_terms_id": {
+                    "type": "integer"
                 },
-                "social_media": {
+                "services": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.SocialMedia"
+                        "$ref": "#/definitions/entity.Service"
                     }
                 },
                 "staff_amount": {
@@ -738,13 +725,7 @@ var doc = `{
                 "start_price": {
                     "type": "number"
                 },
-                "start_time": {
-                    "type": "string"
-                },
                 "status": {
-                    "type": "string"
-                },
-                "task": {
                     "type": "string"
                 },
                 "title": {
@@ -752,28 +733,26 @@ var doc = `{
                 }
             }
         },
-        "entity.DigitalStaff": {
+        "entity.Category": {
             "type": "object",
-            "required": [
-                "image",
-                "subtitle",
-                "title"
-            ],
             "properties": {
-                "followers": {
+                "is_searchable": {
+                    "type": "boolean"
+                },
+                "is_usable": {
+                    "type": "boolean"
+                },
+                "name": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
-                "image": {
+                "slug": {
                     "type": "string"
                 },
-                "subtitle": {
-                    "type": "string"
-                },
-                "title": {
-                    "type": "string"
+                "sub_categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.SubCategory"
+                    }
                 }
             }
         },
@@ -797,20 +776,6 @@ var doc = `{
                 }
             }
         },
-        "entity.EventStaff": {
-            "type": "object",
-            "required": [
-                "title"
-            ],
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.Image": {
             "type": "object",
             "required": [
@@ -821,14 +786,6 @@ var doc = `{
                     "type": "integer"
                 },
                 "image_url": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Industries": {
-            "type": "object",
-            "properties": {
-                "name": {
                     "type": "string"
                 }
             }
@@ -873,6 +830,57 @@ var doc = `{
                 }
             }
         },
+        "entity.PaymentTerms": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Service": {
+            "type": "object",
+            "required": [
+                "description"
+            ],
+            "properties": {
+                "category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Category"
+                },
+                "category_id": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "portfolios": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Image"
+                    }
+                },
+                "sub_category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.SubCategory"
+                },
+                "sub_category_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.SocialMedia": {
             "type": "object",
             "required": [
@@ -890,26 +898,42 @@ var doc = `{
                 }
             }
         },
+        "entity.SubCategory": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "is_searchable": {
+                    "type": "boolean"
+                },
+                "is_usable": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Talent": {
             "type": "object",
             "required": [
-                "age",
                 "birth_date",
-                "end_price",
                 "gender",
                 "height",
-                "instagram_link",
-                "start_price"
+                "image",
+                "instagram_link"
             ],
             "properties": {
-                "age": {
-                    "type": "string"
-                },
                 "birth_date": {
                     "type": "string"
                 },
-                "end_price": {
-                    "type": "number"
+                "business_type": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.BusinessType"
                 },
                 "engagement": {
                     "type": "number"
@@ -926,23 +950,11 @@ var doc = `{
                 "height": {
                     "type": "integer"
                 },
-                "images": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Image"
-                    }
-                },
-                "industries": {
+                "image": {
                     "type": "object",
-                    "$ref": "#/definitions/entity.Industries"
-                },
-                "instagram_feed_count": {
-                    "type": "integer"
+                    "$ref": "#/definitions/entity.Image"
                 },
                 "instagram_followers_count": {
-                    "type": "integer"
-                },
-                "instagram_like_count": {
                     "type": "integer"
                 },
                 "instagram_link": {
@@ -955,13 +967,19 @@ var doc = `{
                     "type": "object",
                     "$ref": "#/definitions/entity.Location"
                 },
-                "start_price": {
-                    "type": "number"
-                },
                 "twitter_followers_count": {
                     "type": "integer"
                 },
                 "twitter_link": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "youtube_followers_count": {
+                    "type": "integer"
+                },
+                "youtube_link": {
                     "type": "string"
                 }
             }

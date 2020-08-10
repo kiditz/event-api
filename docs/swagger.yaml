@@ -1,8 +1,17 @@
 basePath: /api/v1
 definitions:
+  entity.BusinessType:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
   entity.Campaign:
     properties:
-      criteria:
+      currency:
         type: string
       detail:
         type: string
@@ -10,26 +19,21 @@ definitions:
         type: string
       end_price:
         type: number
-      end_time:
-        type: string
       id:
         type: integer
-      images:
-        items:
-          $ref: '#/definitions/entity.Image'
-        type: array
       location:
         $ref: '#/definitions/entity.Location'
         type: object
       location_id:
         type: integer
-      method:
-        type: string
-      sample_product:
-        type: string
-      social_media:
+      payment_terms:
+        $ref: '#/definitions/entity.PaymentTerms'
+        type: object
+      payment_terms_id:
+        type: integer
+      services:
         items:
-          $ref: '#/definitions/entity.SocialMedia'
+          $ref: '#/definitions/entity.Service'
         type: array
       staff_amount:
         type: integer
@@ -37,43 +41,32 @@ definitions:
         type: string
       start_price:
         type: number
-      start_time:
-        type: string
       status:
         type: string
-      task:
-        type: string
       title:
         type: string
     required:
-    - criteria
+    - currency
     - detail
-    - end_date
     - end_price
-    - method
-    - social_media
     - staff_amount
-    - start_date
     - start_price
-    - task
     - title
     type: object
-  entity.DigitalStaff:
+  entity.Category:
     properties:
-      followers:
+      is_searchable:
+        type: boolean
+      is_usable:
+        type: boolean
+      name:
         type: string
-      id:
-        type: integer
-      image:
+      slug:
         type: string
-      subtitle:
-        type: string
-      title:
-        type: string
-    required:
-    - image
-    - subtitle
-    - title
+      sub_categories:
+        items:
+          $ref: '#/definitions/entity.SubCategory'
+        type: array
     type: object
   entity.Document:
     properties:
@@ -88,15 +81,6 @@ definitions:
       url:
         type: string
     type: object
-  entity.EventStaff:
-    properties:
-      id:
-        type: integer
-      title:
-        type: string
-    required:
-    - title
-    type: object
   entity.Image:
     properties:
       id:
@@ -105,11 +89,6 @@ definitions:
         type: string
     required:
     - image_url
-    type: object
-  entity.Industries:
-    properties:
-      name:
-        type: string
     type: object
   entity.Location:
     properties:
@@ -138,6 +117,40 @@ definitions:
     - lat
     - lng
     type: object
+  entity.PaymentTerms:
+    properties:
+      code:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  entity.Service:
+    properties:
+      category:
+        $ref: '#/definitions/entity.Category'
+        type: object
+      category_id:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      portfolios:
+        items:
+          $ref: '#/definitions/entity.Image'
+        type: array
+      sub_category:
+        $ref: '#/definitions/entity.SubCategory'
+        type: object
+      sub_category_id:
+        type: integer
+    required:
+    - description
+    type: object
   entity.SocialMedia:
     properties:
       icon:
@@ -149,14 +162,26 @@ definitions:
     required:
     - name
     type: object
+  entity.SubCategory:
+    properties:
+      category_id:
+        type: integer
+      is_searchable:
+        type: boolean
+      is_usable:
+        type: boolean
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
   entity.Talent:
     properties:
-      age:
-        type: string
       birth_date:
         type: string
-      end_price:
-        type: number
+      business_type:
+        $ref: '#/definitions/entity.BusinessType'
+        type: object
       engagement:
         type: number
       facebook_followers_count:
@@ -167,18 +192,10 @@ definitions:
         type: string
       height:
         type: integer
-      images:
-        items:
-          $ref: '#/definitions/entity.Image'
-        type: array
-      industries:
-        $ref: '#/definitions/entity.Industries'
+      image:
+        $ref: '#/definitions/entity.Image'
         type: object
-      instagram_feed_count:
-        type: integer
       instagram_followers_count:
-        type: integer
-      instagram_like_count:
         type: integer
       instagram_link:
         type: string
@@ -187,20 +204,22 @@ definitions:
       location:
         $ref: '#/definitions/entity.Location'
         type: object
-      start_price:
-        type: number
       twitter_followers_count:
         type: integer
       twitter_link:
         type: string
+      user_id:
+        type: integer
+      youtube_followers_count:
+        type: integer
+      youtube_link:
+        type: string
     required:
-    - age
     - birth_date
-    - end_price
     - gender
     - height
+    - image
     - instagram_link
-    - start_price
     type: object
   entity.User:
     properties:
@@ -386,14 +405,12 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              allOf:
-              - $ref: '#/definitions/translate.ResultSuccess'
-              - properties:
-                  data:
-                    $ref: '#/definitions/entity.Campaign'
-                type: object
-            type: array
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Campaign'
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -443,6 +460,34 @@ paths:
       summary: Upload documents
       tags:
       - campaigns
+  /campaigns/payment-terms:
+    get:
+      consumes:
+      - application/json
+      description: find all payment terms
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              allOf:
+              - $ref: '#/definitions/translate.ResultSuccess'
+              - properties:
+                  data:
+                    $ref: '#/definitions/entity.PaymentTerms'
+                type: object
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetPaymentTerms used to find all social media list
+      tags:
+      - campaigns
   /campaigns/social-media:
     get:
       consumes:
@@ -471,11 +516,11 @@ paths:
       summary: GetAllSocialMedia used to find all social media list
       tags:
       - campaigns
-  /digital-staffs:
+  /categories:
     get:
       consumes:
       - application/json
-      description: Create a new digital staff category
+      description: find category by date
       produces:
       - application/json
       responses:
@@ -483,96 +528,22 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entity.DigitalStaff'
+              allOf:
+              - $ref: '#/definitions/translate.ResultSuccess'
+              - properties:
+                  data:
+                    $ref: '#/definitions/entity.Category'
+                type: object
             type: array
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
-      summary: GetDigitalStaff used to categories help digital staff
+      security:
+      - ApiKeyAuth: []
+      summary: GetCategoies used to find all categories
       tags:
-      - staff
-    post:
-      consumes:
-      - application/json
-      description: Create a new digital staff category
-      parameters:
-      - description: New DigitalStaff
-        in: body
-        name: digitallStaff
-        required: true
-        schema:
-          $ref: '#/definitions/entity.DigitalStaff'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/translate.ResultSuccess'
-            - properties:
-                data:
-                  $ref: '#/definitions/entity.DigitalStaff'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/translate.ResultErrors'
-      summary: AddDigitalStaff Add new digital staf
-      tags:
-      - staff
-  /event-staffs:
-    get:
-      consumes:
-      - application/json
-      description: Get all data of event staff
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/entity.EventStaff'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/translate.ResultErrors'
-      summary: GetEventStaff used to categories help event staff
-      tags:
-      - staff
-    post:
-      consumes:
-      - application/json
-      description: Create a new digital staff category
-      parameters:
-      - description: New Event Staff
-        in: body
-        name: eventStaff
-        required: true
-        schema:
-          $ref: '#/definitions/entity.EventStaff'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/translate.ResultSuccess'
-            - properties:
-                data:
-                  $ref: '#/definitions/entity.EventStaff'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/translate.ResultErrors'
-      summary: AddEventStaff used to add new event staff
-      tags:
-      - staff
+      - categories
   /talents:
     post:
       description: Create a new talent
@@ -602,6 +573,38 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: AddTalent api used to create new talent
+      tags:
+      - talents
+  /talents/{id}:
+    get:
+      consumes:
+      - application/json
+      description: find talent by id
+      parameters:
+      - description: Talent ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Talent'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: FindtalentById used to find talent by it's primary key
       tags:
       - talents
   /user:

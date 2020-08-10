@@ -40,18 +40,18 @@ func AddCampaign(c echo.Context) error {
 	return t.Success(c, campaign)
 }
 
-// FindcampaignByID godoc
+// FindCampaignByID godoc
 // @Summary FindcampaignById used to find campaign by it's primary key
 // @Description find campaign by id
 // @Tags campaigns
 // @Accept json
 // @Produce json
 // @Param id path string true "Campaign ID"
-// @Success 200 {array} translate.ResultSuccess{data=entity.Campaign} desc
+// @Success 200 {object} translate.ResultSuccess{data=entity.Campaign} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /campaigns/{id} [get]
 // @Security ApiKeyAuth
-func FindcampaignByID(c echo.Context) error {
+func FindCampaignByID(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	campaign, err := r.FindCampaignByID(id)
 	if err != nil {
@@ -94,9 +94,21 @@ func GetCampaigns(c echo.Context) error {
 // @Router /campaigns/social-media [get]
 // @Security ApiKeyAuth
 func GetAllSocialMedia(c echo.Context) error {
-	socialMediaList, err := r.GetAllSocialMedia()
-	if err != nil {
-		return t.Errors(c, http.StatusBadRequest, err.Error())
-	}
+	socialMediaList := r.GetAllSocialMedia()
 	return t.Success(c, socialMediaList)
+}
+
+// GetPaymentTerms godoc
+// @Summary GetPaymentTerms used to find all social media list
+// @Description find all payment terms
+// @Tags campaigns
+// @Accept json
+// @Produce json
+// @Success 200 {array} translate.ResultSuccess{data=entity.PaymentTerms} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /campaigns/payment-terms [get]
+// @Security ApiKeyAuth
+func GetPaymentTerms(c echo.Context) error {
+	paymentTerms := r.GetPaymentTerms()
+	return t.Success(c, paymentTerms)
 }

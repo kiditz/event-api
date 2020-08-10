@@ -17,13 +17,16 @@ func AddCampaign(campaign *e.Campaign) error {
 		if err := tx.Save(&campaign).Error; err != nil {
 			return err
 		}
-		tx.Model(&campaign.SocialMedias).Association("SocialMedias").Append(campaign.SocialMedias)
+		if len(campaign.Services) > 0 {
+			tx.Model(&campaign.Services).Association("Services").Append(campaign.Services)
+		}
 		if campaign.Location != nil {
 			tx.Model(&campaign.Location).Save(campaign.Location)
 			tx.Model(&campaign).Association("Location").Append(campaign.Location)
 		}
-		if campaign.Images != nil {
-			tx.Model(&campaign.Images).Association("Images").Append(campaign.Images)
+		if campaign.PaymentTerms != nil {
+			tx.Model(&campaign.PaymentTerms).Save(campaign.Location)
+			tx.Model(&campaign).Association("PaymentTerms").Append(campaign.PaymentTerms)
 		}
 		return nil
 	})
@@ -32,7 +35,7 @@ func AddCampaign(campaign *e.Campaign) error {
 // FindCampaignByID  used to find campaign by id
 func FindCampaignByID(campaignID int) (e.Campaign, error) {
 	var campaign e.Campaign
-	if err := db.DB.Where("id=?", campaignID).Preload("Location").Preload("Images").Preload("SocialMedias").Find(&campaign).Error; err != nil {
+	if err := db.DB.Where("id=?", campaignID).Preload("Location").Preload("SocialMedias").Find(&campaign).Error; err != nil {
 		return campaign, err
 	}
 	return campaign, nil
@@ -47,7 +50,7 @@ type CampaignsFilter struct {
 	OnlyMe bool   `query:"onlyme" json:"onlyme"`
 }
 
-// GetCampaigns  used to find campaign by date
+// GetCampaigns used to find campaign by filtered values
 func GetCampaigns(filter *CampaignsFilter, c echo.Context) []e.Campaign {
 	var campaign []e.Campaign
 	query := db.DB
@@ -69,11 +72,16 @@ func GetCampaigns(filter *CampaignsFilter, c echo.Context) []e.Campaign {
 	return campaign
 }
 
-// GetAllSocialMedia  used to find campaign by date
-func GetAllSocialMedia() ([]e.SocialMedia, error) {
+// GetAllSocialMedia docs
+func GetAllSocialMedia() []e.SocialMedia {
 	var socialMediaList []e.SocialMedia
-	if err := db.DB.Find(&socialMediaList).Error; err != nil {
-		return socialMediaList, err
-	}
-	return socialMediaList, nil
+	db.DB.Find(&socialMediaList)
+	return socialMediaList
+}
+
+// GetPaymentTerms docs
+func GetPaymentTerms() []e.PaymentTerms {
+	var paymentTerms []e.PaymentTerms
+	db.DB.Find(&paymentTerms)
+	return paymentTerms
 }

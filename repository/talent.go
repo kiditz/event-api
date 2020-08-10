@@ -15,3 +15,12 @@ func AddTalent(user *e.Talent) error {
 		return nil
 	})
 }
+
+// FindTalentByID  used to find talent by id
+func FindTalentByID(talentID int) (e.Talent, error) {
+	var talent e.Talent
+	if err := db.DB.Where("id=?", talentID).Preload("Location").Preload("Image").Find(&talent).Error; err != nil {
+		return talent, err
+	}
+	return talent, nil
+}
