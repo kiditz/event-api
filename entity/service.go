@@ -10,5 +10,7 @@ type Service struct {
 	SubCategoryID      uint        `json:"sub_category_id" gorm:"not null"`
 	TalentID           uint        `json:"talent_id" gorm:"not null"`
 	SubCategory        SubCategory `json:"sub_category"`
+	ExpertiseID        uint        `json:"expertise_id"`
+	Expertise          Expertise   `json:"expertise" gorm:"not null"`
 	Portofilios        []Image     `json:"portfolios" gorm:"many2many:portfolios;"`
 }
