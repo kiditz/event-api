@@ -66,10 +66,7 @@ func FindCampaignByID(c echo.Context) error {
 // @Tags campaigns
 // @Accept json
 // @Produce json
-// @Param date query string false "date"
-// @Param q query string false "title"
-// @Param offset query int false "offset"
-// @Param limit query int false "limit"
+// @Param filter query repository.CampaignsFilter false "CampaignsFilter"
 // @Success 200 {object} translate.ResultSuccess{data=[]entity.Campaign} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /campaigns [get]

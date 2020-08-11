@@ -118,26 +118,27 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "date",
                         "name": "date",
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "title",
-                        "name": "q",
+                        "type": "integer",
+                        "name": "limit",
                         "in": "query"
                     },
                     {
                         "type": "integer",
-                        "description": "offset",
                         "name": "offset",
                         "in": "query"
                     },
                     {
-                        "type": "integer",
-                        "description": "limit",
-                        "name": "limit",
+                        "type": "boolean",
+                        "name": "onlyme",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "q",
                         "in": "query"
                     }
                 ],
@@ -689,6 +690,82 @@ var doc = `{
             }
         },
         "/talents": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find talents",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "talents"
+                ],
+                "summary": "GetTalents is api to find talents by params",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "categoryID",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "expertiseName",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "q",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "subCategoryID",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Talent"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            },
             "post": {
                 "security": [
                     {
@@ -1116,6 +1193,9 @@ var doc = `{
                         "$ref": "#/definitions/entity.Image"
                     }
                 },
+                "start_price": {
+                    "type": "number"
+                },
                 "sub_category": {
                     "type": "object",
                     "$ref": "#/definitions/entity.SubCategory"
@@ -1125,6 +1205,12 @@ var doc = `{
                 },
                 "talent_id": {
                     "type": "integer"
+                },
+                "topics": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Expertise"
+                    }
                 }
             }
         },
@@ -1194,6 +1280,12 @@ var doc = `{
                 "engagement": {
                     "type": "number"
                 },
+                "expertises": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Expertise"
+                    }
+                },
                 "facebook_followers_count": {
                     "type": "integer"
                 },
@@ -1228,6 +1320,9 @@ var doc = `{
                 "location": {
                     "type": "object",
                     "$ref": "#/definitions/entity.Location"
+                },
+                "location_id": {
+                    "type": "integer"
                 },
                 "phone": {
                     "type": "string"
@@ -1275,6 +1370,49 @@ var doc = `{
                 },
                 "type": {
                     "type": "string"
+                }
+            }
+        },
+        "repository.CampaignsFilter": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "onlyme": {
+                    "type": "boolean"
+                },
+                "q": {
+                    "type": "string"
+                }
+            }
+        },
+        "repository.FilteredTalent": {
+            "type": "object",
+            "properties": {
+                "categoryID": {
+                    "type": "integer"
+                },
+                "expertiseName": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "q": {
+                    "type": "string"
+                },
+                "subCategoryID": {
+                    "type": "integer"
                 }
             }
         },

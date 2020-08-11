@@ -65,3 +65,23 @@ func FindTalentByID(c echo.Context) error {
 	}
 	return t.Success(c, talent)
 }
+
+// GetTalents godoc
+// @Summary GetTalents is api to find talents by params
+// @Description find talents
+// @Tags talents
+// @Accept json
+// @Produce json
+// @Param filter query repository.FilteredTalent false "FilteredTalent"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Talent} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /talents [get]
+// @Security ApiKeyAuth
+func GetTalents(c echo.Context) error {
+	filter := new(r.FilteredTalent)
+	if err := c.Bind(filter); err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	talents := r.GetTalents(filter)
+	return t.Success(c, talents)
+}

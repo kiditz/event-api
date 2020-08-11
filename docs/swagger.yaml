@@ -176,6 +176,8 @@ definitions:
         items:
           $ref: '#/definitions/entity.Image'
         type: array
+      start_price:
+        type: number
       sub_category:
         $ref: '#/definitions/entity.SubCategory'
         type: object
@@ -183,6 +185,10 @@ definitions:
         type: integer
       talent_id:
         type: integer
+      topics:
+        items:
+          $ref: '#/definitions/entity.Expertise'
+        type: array
     required:
     - description
     type: object
@@ -226,6 +232,10 @@ definitions:
         type: integer
       engagement:
         type: number
+      expertises:
+        items:
+          $ref: '#/definitions/entity.Expertise'
+        type: array
       facebook_followers_count:
         type: integer
       facebook_link:
@@ -250,6 +260,8 @@ definitions:
       location:
         $ref: '#/definitions/entity.Location'
         type: object
+      location_id:
+        type: integer
       phone:
         type: string
       services:
@@ -287,6 +299,34 @@ definitions:
     - name
     - password
     - type
+    type: object
+  repository.CampaignsFilter:
+    properties:
+      date:
+        type: string
+      limit:
+        type: integer
+      offset:
+        type: integer
+      onlyme:
+        type: boolean
+      q:
+        type: string
+    type: object
+  repository.FilteredTalent:
+    properties:
+      categoryID:
+        type: integer
+      expertiseName:
+        type: string
+      limit:
+        type: integer
+      offset:
+        type: integer
+      q:
+        type: string
+      subCategoryID:
+        type: integer
     type: object
   translate.ResultErrors:
     properties:
@@ -370,22 +410,21 @@ paths:
       - application/json
       description: find campaign by date
       parameters:
-      - description: date
-        in: query
+      - in: query
         name: date
         type: string
-      - description: title
-        in: query
-        name: q
-        type: string
-      - description: offset
-        in: query
-        name: offset
-        type: integer
-      - description: limit
-        in: query
+      - in: query
         name: limit
         type: integer
+      - in: query
+        name: offset
+        type: integer
+      - in: query
+        name: onlyme
+        type: boolean
+      - in: query
+        name: q
+        type: string
       produces:
       - application/json
       responses:
@@ -710,6 +749,50 @@ paths:
       tags:
       - categories
   /talents:
+    get:
+      consumes:
+      - application/json
+      description: find talents
+      parameters:
+      - in: query
+        name: categoryID
+        type: integer
+      - in: query
+        name: expertiseName
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: offset
+        type: integer
+      - in: query
+        name: q
+        type: string
+      - in: query
+        name: subCategoryID
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Talent'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetTalents is api to find talents by params
+      tags:
+      - talents
     post:
       description: Create a new talent
       parameters:

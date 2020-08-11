@@ -10,5 +10,5 @@ func SetCategoryRoutes(v1 *echo.Group) {
 	v1.GET("/categories", c.GetCategories)
 	v1.GET("/sub-categories", c.GetSubCategories)
 	v1.GET("/sub-categories/:id", c.GetSubCategoriesByCategoryID)
-	v1.GET("/expertises/:id", c.GetExpertises)
+	v1.GET("/expertises", c.GetExpertises)
 }
