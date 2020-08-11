@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -25,15 +26,18 @@ import (
 // @Router /talents [post]
 // @Security ApiKeyAuth
 func AddTalent(c echo.Context) error {
-	talent := new(e.Talent)
+	var talent e.Talent
 	err := c.Bind(&talent)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	user := utils.GetUser(c)
-	talent.UserID = user["id"].(uint)
+	fmt.Printf("User:%v\n", user["id"])
+
+	talent.UserID = uint(user["id"].(float64))
 	talent.CreatedBy = user["email"].(string)
-	err = r.AddTalent(talent)
+	fmt.Printf("UserID%d\n", talent.UserID)
+	err = r.AddTalent(&talent)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
 			return t.Errors(c, http.StatusBadRequest, err.Constraint)
