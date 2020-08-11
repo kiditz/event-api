@@ -6,7 +6,9 @@ type Service struct {
 	ServiceDescription string      `json:"description" sql:"index" gorm:"not null" validate:"required"`
 	CategoryID         uint        `json:"category_id" gorm:"not null"`
 	Category           Category    `json:"category"`
+	ImageURL           string      `json:"image_url"`
 	SubCategoryID      uint        `json:"sub_category_id" gorm:"not null"`
+	TalentID           uint        `json:"talent_id" gorm:"not null"`
 	SubCategory        SubCategory `json:"sub_category"`
-	Images             []Image     `json:"portfolios" gorm:"many2many:portfolios;"`
+	Portofilios        []Image     `json:"portfolios" gorm:"many2many:portfolios;"`
 }
