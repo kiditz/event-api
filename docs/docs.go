@@ -1032,6 +1032,46 @@ var doc = `{
                 }
             }
         },
+        "entity.Service": {
+            "type": "object",
+            "required": [
+                "description"
+            ],
+            "properties": {
+                "category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Category"
+                },
+                "category_id": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "portfolios": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Image"
+                    }
+                },
+                "sub_category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.SubCategory"
+                },
+                "sub_category_id": {
+                    "type": "integer"
+                },
+                "talent_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.SocialMedia": {
             "type": "object",
             "required": [
@@ -1075,16 +1115,25 @@ var doc = `{
                 "birth_date",
                 "gender",
                 "height",
-                "image",
                 "instagram_link"
             ],
             "properties": {
+                "background": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Image"
+                },
+                "background_image_id": {
+                    "type": "integer"
+                },
                 "birth_date": {
                     "type": "string"
                 },
                 "business_type": {
                     "type": "object",
                     "$ref": "#/definitions/entity.BusinessType"
+                },
+                "business_type_id": {
+                    "type": "integer"
                 },
                 "engagement": {
                     "type": "number"
@@ -1101,9 +1150,15 @@ var doc = `{
                 "height": {
                     "type": "integer"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "image": {
                     "type": "object",
                     "$ref": "#/definitions/entity.Image"
+                },
+                "image_id": {
+                    "type": "integer"
                 },
                 "instagram_followers_count": {
                     "type": "integer"
@@ -1117,6 +1172,15 @@ var doc = `{
                 "location": {
                     "type": "object",
                     "$ref": "#/definitions/entity.Location"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Service"
+                    }
                 },
                 "twitter_followers_count": {
                     "type": "integer"

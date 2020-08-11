@@ -148,6 +148,33 @@ definitions:
     required:
     - name
     type: object
+  entity.Service:
+    properties:
+      category:
+        $ref: '#/definitions/entity.Category'
+        type: object
+      category_id:
+        type: integer
+      description:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      portfolios:
+        items:
+          $ref: '#/definitions/entity.Image'
+        type: array
+      sub_category:
+        $ref: '#/definitions/entity.SubCategory'
+        type: object
+      sub_category_id:
+        type: integer
+      talent_id:
+        type: integer
+    required:
+    - description
+    type: object
   entity.SocialMedia:
     properties:
       icon:
@@ -174,11 +201,18 @@ definitions:
     type: object
   entity.Talent:
     properties:
+      background:
+        $ref: '#/definitions/entity.Image'
+        type: object
+      background_image_id:
+        type: integer
       birth_date:
         type: string
       business_type:
         $ref: '#/definitions/entity.BusinessType'
         type: object
+      business_type_id:
+        type: integer
       engagement:
         type: number
       facebook_followers_count:
@@ -189,9 +223,13 @@ definitions:
         type: string
       height:
         type: integer
+      id:
+        type: integer
       image:
         $ref: '#/definitions/entity.Image'
         type: object
+      image_id:
+        type: integer
       instagram_followers_count:
         type: integer
       instagram_link:
@@ -201,6 +239,12 @@ definitions:
       location:
         $ref: '#/definitions/entity.Location'
         type: object
+      phone:
+        type: string
+      services:
+        items:
+          $ref: '#/definitions/entity.Service'
+        type: array
       twitter_followers_count:
         type: integer
       twitter_link:
@@ -215,7 +259,6 @@ definitions:
     - birth_date
     - gender
     - height
-    - image
     - instagram_link
     type: object
   entity.User:
