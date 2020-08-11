@@ -10,7 +10,7 @@ import (
 )
 
 // GetCategories godoc
-// @Summary GetCategoies used to find all categories
+// @Summary GetCategories used to find all categories
 // @Description find all category
 // @Tags categories
 // @Accept json
