@@ -12,7 +12,7 @@ type Talent struct {
 	ImageID                 uint          `json:"image_id"`
 	Image                   *Image        `json:"image"`
 	BackgroundImageID       uint          `json:"background_image_id"`
-	BackgroundImage         *Image        `json:"background" `
+	BackgroundImage         *Image        `json:"background"`
 	Height                  uint          `json:"height" validate:"required"`
 	BirthDate               *time.Time    `json:"birth_date" validate:"required"`
 	Gender                  string        `json:"gender" validate:"required"`
