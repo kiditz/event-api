@@ -49,9 +49,22 @@ func GetSubCategories(c echo.Context) error {
 // @Success 200 {array} translate.ResultSuccess{data=entity.SubCategory} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /sub-categories/{id} [get]
-// @Security ApiKeyAuth
 func GetSubCategoriesByCategoryID(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	categories := r.GetSubCategoriesByCategoryID(id)
 	return t.Success(c, categories)
+}
+
+// GetExpertises godoc
+// @Summary GetExpertises used to find all expertises
+// @Description  used to find all expertises
+// @Tags categories
+// @Accept json
+// @Produce json
+// @Success 200 {array} translate.ResultSuccess{data=entity.Expertise} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /expertises [get]
+func GetExpertises(c echo.Context) error {
+	expertises := r.GetExpertises()
+	return t.Success(c, expertises)
 }

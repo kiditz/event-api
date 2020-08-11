@@ -92,6 +92,17 @@ definitions:
       url:
         type: string
     type: object
+  entity.Expertise:
+    properties:
+      is_searchable:
+        type: boolean
+      is_usable:
+        type: boolean
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
   entity.Image:
     properties:
       id:
@@ -609,7 +620,33 @@ paths:
             $ref: '#/definitions/translate.ResultErrors'
       security:
       - ApiKeyAuth: []
-      summary: GetCategoies used to find all categories
+      summary: GetCategories used to find all categories
+      tags:
+      - categories
+  /expertises:
+    get:
+      consumes:
+      - application/json
+      description: used to find all expertises
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              allOf:
+              - $ref: '#/definitions/translate.ResultSuccess'
+              - properties:
+                  data:
+                    $ref: '#/definitions/entity.Expertise'
+                type: object
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: GetExpertises used to find all expertises
       tags:
       - categories
   /sub-categories:
@@ -669,8 +706,6 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
-      security:
-      - ApiKeyAuth: []
       summary: GetSubCategoriesByCategoryID used to find all sub category by category id
       tags:
       - categories

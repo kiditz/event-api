@@ -8,7 +8,7 @@ import (
 //GetCategories find all categories
 func GetCategories() []e.Category {
 	var categories []e.Category
-	db.DB.Find(&categories)
+	db.DB.Order("id").Find(&categories)
 	return categories
 }
 
@@ -22,6 +22,17 @@ func GetSubCategories() []e.SubCategory {
 //GetSubCategoriesByCategoryID find all sub_categories
 func GetSubCategoriesByCategoryID(categoryID int) []e.SubCategory {
 	var subCategories []e.SubCategory
-	db.DB.Where("category_id = ?", categoryID).Where("is_searchable = ?", true).Find(&subCategories)
+	db := db.DB
+	if categoryID > 1 {
+		db = db.Where("category_id = ?", categoryID)
+	}
+	db = db.Where("is_searchable = ?", true).Find(&subCategories)
 	return subCategories
+}
+
+// GetExpertises docs
+func GetExpertises() []e.Expertise {
+	var expertises []e.Expertise
+	db.DB.Find(&expertises)
+	return expertises
 }

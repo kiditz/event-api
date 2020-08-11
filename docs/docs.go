@@ -510,7 +510,7 @@ var doc = `{
                 "tags": [
                     "categories"
                 ],
-                "summary": "GetCategoies used to find all categories",
+                "summary": "GetCategories used to find all categories",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -526,6 +526,50 @@ var doc = `{
                                         "properties": {
                                             "data": {
                                                 "$ref": "#/definitions/entity.Category"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/expertises": {
+            "get": {
+                "description": "used to find all expertises",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "GetExpertises used to find all expertises",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/definitions/translate.ResultSuccess"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "data": {
+                                                "$ref": "#/definitions/entity.Expertise"
                                             }
                                         }
                                     }
@@ -593,11 +637,6 @@ var doc = `{
         },
         "/sub-categories/{id}": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
                 "description": "used to find all sub category by category id",
                 "consumes": [
                     "application/json"
@@ -943,6 +982,23 @@ var doc = `{
                     "type": "integer"
                 },
                 "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Expertise": {
+            "type": "object",
+            "properties": {
+                "is_searchable": {
+                    "type": "boolean"
+                },
+                "is_usable": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
                     "type": "string"
                 }
             }
