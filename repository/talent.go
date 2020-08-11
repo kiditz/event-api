@@ -7,9 +7,9 @@ import (
 )
 
 // AddTalent used to create new talent
-func AddTalent(user *e.Talent) error {
+func AddTalent(talent *e.Talent) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&user).Error; err != nil {
+		if err := tx.Save(&talent).Error; err != nil {
 			return err
 		}
 		return nil
