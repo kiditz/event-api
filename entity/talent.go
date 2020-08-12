@@ -6,6 +6,7 @@ import "time"
 type Talent struct {
 	ID                      uint          `json:"id" gorm:"primary_key"`
 	UserID                  uint          `json:"user_id"`
+	User                    User          `json:"account"`
 	PhoneNumber             string        `json:"phone"`
 	BusinessTypeID          uint          `json:"business_type_id"`
 	BusinessType            *BusinessType `json:"business_type"`
