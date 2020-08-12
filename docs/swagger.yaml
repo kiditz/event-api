@@ -218,6 +218,9 @@ definitions:
     type: object
   entity.Talent:
     properties:
+      account:
+        $ref: '#/definitions/entity.User'
+        type: object
       background:
         $ref: '#/definitions/entity.Image'
         type: object
@@ -290,6 +293,19 @@ definitions:
         type: string
       name:
         type: string
+      type:
+        type: string
+    required:
+    - email
+    - name
+    - type
+    type: object
+  entity.UserForm:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
       password:
         type: string
       type:
@@ -315,9 +331,9 @@ definitions:
     type: object
   repository.FilteredTalent:
     properties:
-      categoryID:
+      category_id:
         type: integer
-      expertiseName:
+      expertise_name:
         type: string
       limit:
         type: integer
@@ -325,7 +341,7 @@ definitions:
         type: integer
       q:
         type: string
-      subCategoryID:
+      sub_category_id:
         type: integer
     type: object
   translate.ResultErrors:
@@ -755,10 +771,10 @@ paths:
       description: find talents
       parameters:
       - in: query
-        name: categoryID
+        name: category_id
         type: integer
       - in: query
-        name: expertiseName
+        name: expertise_name
         type: string
       - in: query
         name: limit
@@ -770,7 +786,7 @@ paths:
         name: q
         type: string
       - in: query
-        name: subCategoryID
+        name: sub_category_id
         type: integer
       produces:
       - application/json
@@ -866,7 +882,7 @@ paths:
         name: user
         required: true
         schema:
-          $ref: '#/definitions/entity.User'
+          $ref: '#/definitions/entity.UserForm'
       produces:
       - application/json
       responses:

@@ -710,12 +710,12 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "name": "categoryID",
+                        "name": "category_id",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "name": "expertiseName",
+                        "name": "expertise_name",
                         "in": "query"
                     },
                     {
@@ -735,7 +735,7 @@ var doc = `{
                     },
                     {
                         "type": "integer",
-                        "name": "subCategoryID",
+                        "name": "sub_category_id",
                         "in": "query"
                     }
                 ],
@@ -894,7 +894,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/entity.UserForm"
                         }
                     }
                 ],
@@ -1260,6 +1260,10 @@ var doc = `{
                 "instagram_link"
             ],
             "properties": {
+                "account": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.User"
+                },
                 "background": {
                     "type": "object",
                     "$ref": "#/definitions/entity.Image"
@@ -1355,6 +1359,25 @@ var doc = `{
             "required": [
                 "email",
                 "name",
+                "type"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.UserForm": {
+            "type": "object",
+            "required": [
+                "email",
+                "name",
                 "password",
                 "type"
             ],
@@ -1396,10 +1419,10 @@ var doc = `{
         "repository.FilteredTalent": {
             "type": "object",
             "properties": {
-                "categoryID": {
+                "category_id": {
                     "type": "integer"
                 },
-                "expertiseName": {
+                "expertise_name": {
                     "type": "string"
                 },
                 "limit": {
@@ -1411,7 +1434,7 @@ var doc = `{
                 "q": {
                     "type": "string"
                 },
-                "subCategoryID": {
+                "sub_category_id": {
                     "type": "integer"
                 }
             }
