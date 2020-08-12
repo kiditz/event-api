@@ -10,5 +10,6 @@ import (
 func SetTalentRoutes(v1 *echo.Group) {
 	v1.POST("/talents", c.AddTalent, m.IsLoggedIn(), m.IsTalent)
 	v1.GET("/talents", c.GetTalents)
-	v1.GET("/talents/:id", c.FindTalentByID)
+	v1.GET("/talent/:id", c.FindTalentByID)
+	v1.GET("/talent", c.FindTalentByLogin, m.IsLoggedIn(), m.IsTalent)
 }

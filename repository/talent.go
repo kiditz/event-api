@@ -25,6 +25,15 @@ func FindTalentByID(talentID int) (e.Talent, error) {
 	return talent, nil
 }
 
+// FindTalentByEmail used to find talent by email
+func FindTalentByEmail(email string) (e.Talent, error) {
+	var talent e.Talent
+	if err := db.DB.Joins("JOIN users u ON u.id = talents.id").Where("u.email = ?", email).Preload("Location").Preload("Image").Find(&talent).Error; err != nil {
+		return talent, err
+	}
+	return talent, nil
+}
+
 // FilteredTalent used to filter talent query
 type FilteredTalent struct {
 	CategoryID    int64  `query:"category_id" json:"category_id"`
