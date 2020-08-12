@@ -1,14 +1,5 @@
 basePath: /api/v1
 definitions:
-  entity.BusinessType:
-    properties:
-      id:
-        type: integer
-      name:
-        type: string
-      slug:
-        type: string
-    type: object
   entity.Campaign:
     properties:
       category:
@@ -161,9 +152,6 @@ definitions:
     type: object
   entity.Service:
     properties:
-      category:
-        $ref: '#/definitions/entity.Category'
-        type: object
       category_id:
         type: integer
       description:
@@ -178,9 +166,6 @@ definitions:
         type: array
       start_price:
         type: number
-      sub_category:
-        $ref: '#/definitions/entity.SubCategory'
-        type: object
       sub_category_id:
         type: integer
       talent_id:
@@ -218,9 +203,6 @@ definitions:
     type: object
   entity.Talent:
     properties:
-      account:
-        $ref: '#/definitions/entity.User'
-        type: object
       background:
         $ref: '#/definitions/entity.Image'
         type: object
@@ -228,9 +210,6 @@ definitions:
         type: integer
       birth_date:
         type: string
-      business_type:
-        $ref: '#/definitions/entity.BusinessType'
-        type: object
       business_type_id:
         type: integer
       engagement:
@@ -252,8 +231,6 @@ definitions:
       image:
         $ref: '#/definitions/entity.Image'
         type: object
-      image_id:
-        type: integer
       instagram_followers_count:
         type: integer
       instagram_link:
@@ -267,16 +244,10 @@ definitions:
         type: integer
       phone:
         type: string
-      services:
-        items:
-          $ref: '#/definitions/entity.Service'
-        type: array
       twitter_followers_count:
         type: integer
       twitter_link:
         type: string
-      user_id:
-        type: integer
       youtube_followers_count:
         type: integer
       youtube_link:
@@ -790,6 +761,36 @@ paths:
       summary: FindTalentByLogin used to find talent login
       tags:
       - talents
+    post:
+      description: Create a new talent
+      parameters:
+      - description: New Talent
+        in: body
+        name: talent
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Talent'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Talent'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: AddTalent api used to create new talent
+      tags:
+      - talents
   /talent/{id}:
     get:
       consumes:
@@ -820,6 +821,37 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: FindtalentById used to find talent by it's primary key
+      tags:
+      - talents
+  /talent/service:
+    post:
+      description: Create a new service
+      parameters:
+      - description: New Service for talent
+        in: body
+        name: talent
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Service'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Service'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: AddService api used to create new service for talent
       tags:
       - talents
   /talents:
@@ -865,36 +897,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: GetTalents is api to find talents by params
-      tags:
-      - talents
-    post:
-      description: Create a new talent
-      parameters:
-      - description: New Talent
-        in: body
-        name: talent
-        required: true
-        schema:
-          $ref: '#/definitions/entity.Talent'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/translate.ResultSuccess'
-            - properties:
-                data:
-                  $ref: '#/definitions/entity.Talent'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/translate.ResultErrors'
-      security:
-      - ApiKeyAuth: []
-      summary: AddTalent api used to create new talent
       tags:
       - talents
   /user:

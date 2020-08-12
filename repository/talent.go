@@ -4,13 +4,30 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
 	e "github.com/kiditz/spgku-api/entity"
+	"github.com/kiditz/spgku-api/utils"
+	"github.com/labstack/echo/v4"
 )
 
 // AddTalent used to create new talent
-func AddTalent(talent *e.Talent) error {
+func AddTalent(talent *e.Talent, c echo.Context) error {
+
 	return db.DB.Transaction(func(tx *gorm.DB) error {
+		user := utils.GetUser(c)
+		talent.UserID = uint(user["id"].(float64))
+		talent.CreatedBy = user["email"].(string)
+		tx = tx.Set("gorm:association_autoupdate", false)
 		if err := tx.Save(&talent).Error; err != nil {
 			return err
+		}
+
+		tx.Model(&talent.Expertises).Association("Expertises").Append(talent.Expertises)
+		if talent.BackgroundImage != nil {
+			tx.Model(&talent.BackgroundImage).Save(talent.BackgroundImage)
+			tx.Model(&talent).Association("BackgroundImage").Append(talent.BackgroundImage)
+		}
+		if talent.Image != nil {
+			tx.Model(&talent.Image).Save(talent.Image)
+			tx.Model(&talent).Association("Image").Append(talent.Image)
 		}
 		return nil
 	})
@@ -22,6 +39,7 @@ func FindTalentByID(talentID int) (e.Talent, error) {
 	if err := db.DB.Where("id=?", talentID).Preload("Location").Preload("Image").Find(&talent).Error; err != nil {
 		return talent, err
 	}
+
 	return talent, nil
 }
 
@@ -67,8 +85,15 @@ func GetTalents(filter *FilteredTalent) []e.Talent {
 }
 
 // AddService used to create new service for specific talent
-func AddService(service *e.Service) error {
+func AddService(service *e.Service, c echo.Context) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
+		tx = tx.Set("gorm:association_autoupdate", false)
+		email := utils.GetEmail(c)
+		talent, err := FindTalentByEmail(email)
+		if err != nil {
+			return err
+		}
+		service.TalentID = talent.ID
 		if err := tx.Save(&service).Error; err != nil {
 			return err
 		}

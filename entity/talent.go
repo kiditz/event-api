@@ -5,12 +5,12 @@ import "time"
 // Talent account
 type Talent struct {
 	ID                      uint          `json:"id" gorm:"primary_key"`
-	UserID                  uint          `json:"user_id"`
-	User                    User          `json:"account"`
+	UserID                  uint          `json:"user_id" swaggerignore:"true"`
+	User                    *User         `json:"account" swaggerignore:"true"`
 	PhoneNumber             string        `json:"phone"`
 	BusinessTypeID          uint          `json:"business_type_id"`
-	BusinessType            *BusinessType `json:"business_type"`
-	ImageID                 uint          `json:"image_id"`
+	BusinessType            *BusinessType `json:"business_type" swaggerignore:"true"`
+	ImageID                 uint          `json:"image_id" swaggerignore:"true"`
 	Image                   *Image        `json:"image"`
 	BackgroundImageID       uint          `json:"background_image_id"`
 	BackgroundImage         *Image        `json:"background"`
@@ -19,7 +19,7 @@ type Talent struct {
 	Gender                  string        `json:"gender" validate:"required"`
 	Location                *Location     `json:"location"`
 	LocationID              uint          `json:"location_id"`
-	Services                []Service     `json:"services"`
+	Services                []Service     `json:"services" swaggerignore:"true"`
 	InstagramLink           string        `json:"instagram_link" validate:"required"`
 	InstagramFollowersCount uint          `json:"instagram_followers_count"`
 	FacebookLink            string        `json:"facebook_link"`

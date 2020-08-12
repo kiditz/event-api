@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -23,7 +22,7 @@ import (
 // @Param talent body entity.Talent true "New Talent"
 // @Success 200 {object} translate.ResultSuccess{data=entity.Talent} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /talents [post]
+// @Router /talent [post]
 // @Security ApiKeyAuth
 func AddTalent(c echo.Context) error {
 	var talent e.Talent
@@ -31,19 +30,40 @@ func AddTalent(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	user := utils.GetUser(c)
-	fmt.Printf("User:%v\n", user["id"])
-
-	talent.UserID = uint(user["id"].(float64))
-	talent.CreatedBy = user["email"].(string)
-	fmt.Printf("UserID%d\n", talent.UserID)
-	err = r.AddTalent(&talent)
+	err = r.AddTalent(&talent, c)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
 			return t.Errors(c, http.StatusBadRequest, err.Constraint)
 		}
 	}
 	return t.Success(c, talent)
+}
+
+// AddService godoc
+// @Summary AddService api used to create new service for talent
+// @Description Create a new service
+// @Tags talents
+// @MimeType
+// @Produce json
+// @Param talent body entity.Service true "New Service for talent"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Service} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /talent/service [post]
+// @Security ApiKeyAuth
+func AddService(c echo.Context) error {
+	var service e.Service
+	err := c.Bind(&service)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	// TODO: Service add
+	err = r.AddService(&service, c)
+	if err != nil {
+		if err, ok := err.(*pq.Error); ok {
+			return t.Errors(c, http.StatusBadRequest, err.Constraint)
+		}
+	}
+	return t.Success(c, service)
 }
 
 // FindTalentByID godoc

@@ -733,6 +733,112 @@ var doc = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new talent",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "talents"
+                ],
+                "summary": "AddTalent api used to create new talent",
+                "parameters": [
+                    {
+                        "description": "New Talent",
+                        "name": "talent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Talent"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Talent"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/talent/service": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new service",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "talents"
+                ],
+                "summary": "AddService api used to create new service for talent",
+                "parameters": [
+                    {
+                        "description": "New Service for talent",
+                        "name": "talent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Service"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Service"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
             }
         },
         "/talent/{id}": {
@@ -866,58 +972,6 @@ var doc = `{
                         }
                     }
                 }
-            },
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Create a new talent",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "talents"
-                ],
-                "summary": "AddTalent api used to create new talent",
-                "parameters": [
-                    {
-                        "description": "New Talent",
-                        "name": "talent",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.Talent"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/translate.ResultSuccess"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/entity.Talent"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/translate.ResultErrors"
-                        }
-                    }
-                }
             }
         },
         "/user": {
@@ -974,20 +1028,6 @@ var doc = `{
         }
     },
     "definitions": {
-        "entity.BusinessType": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "slug": {
-                    "type": "string"
-                }
-            }
-        },
         "entity.Campaign": {
             "type": "object",
             "required": [
@@ -1217,10 +1257,6 @@ var doc = `{
                 "description"
             ],
             "properties": {
-                "category": {
-                    "type": "object",
-                    "$ref": "#/definitions/entity.Category"
-                },
                 "category_id": {
                     "type": "integer"
                 },
@@ -1241,10 +1277,6 @@ var doc = `{
                 },
                 "start_price": {
                     "type": "number"
-                },
-                "sub_category": {
-                    "type": "object",
-                    "$ref": "#/definitions/entity.SubCategory"
                 },
                 "sub_category_id": {
                     "type": "integer"
@@ -1306,10 +1338,6 @@ var doc = `{
                 "instagram_link"
             ],
             "properties": {
-                "account": {
-                    "type": "object",
-                    "$ref": "#/definitions/entity.User"
-                },
                 "background": {
                     "type": "object",
                     "$ref": "#/definitions/entity.Image"
@@ -1319,10 +1347,6 @@ var doc = `{
                 },
                 "birth_date": {
                     "type": "string"
-                },
-                "business_type": {
-                    "type": "object",
-                    "$ref": "#/definitions/entity.BusinessType"
                 },
                 "business_type_id": {
                     "type": "integer"
@@ -1355,9 +1379,6 @@ var doc = `{
                     "type": "object",
                     "$ref": "#/definitions/entity.Image"
                 },
-                "image_id": {
-                    "type": "integer"
-                },
                 "instagram_followers_count": {
                     "type": "integer"
                 },
@@ -1377,20 +1398,11 @@ var doc = `{
                 "phone": {
                     "type": "string"
                 },
-                "services": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Service"
-                    }
-                },
                 "twitter_followers_count": {
                     "type": "integer"
                 },
                 "twitter_link": {
                     "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 },
                 "youtube_followers_count": {
                     "type": "integer"
