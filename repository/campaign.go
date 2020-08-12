@@ -71,7 +71,6 @@ func GetCampaigns(filter *CampaignsFilter, c echo.Context) []e.Campaign {
 	if filter.OnlyMe {
 		query = query.Where("created_by = ?", utils.GetEmail(c))
 	}
-
 	query = query.Preload("PaymentTerms").Preload("PaymentDays").Offset(filter.Offset).Limit(filter.Limit).Order("id desc").Find(&campaign)
 	return campaign
 }
