@@ -67,12 +67,11 @@ func FindTalentByID(c echo.Context) error {
 }
 
 // FindTalentByLogin godoc
-// @Summary FindtalentById used to find talent by it's primary key
-// @Description find talent by id
+// @Summary FindTalentByLogin used to find talent login
+// @Description find talent login
 // @Tags talents
 // @Accept json
 // @Produce json
-// @Param id path string true "Talent ID"
 // @Success 200 {object} translate.ResultSuccess{data=entity.Talent} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /talent [get]

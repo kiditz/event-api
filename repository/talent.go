@@ -28,7 +28,7 @@ func FindTalentByID(talentID int) (e.Talent, error) {
 // FindTalentByEmail used to find talent by email
 func FindTalentByEmail(email string) (e.Talent, error) {
 	var talent e.Talent
-	if err := db.DB.Joins("JOIN users u ON u.id = talents.id").Where("u.email = ?", email).Preload("Location").Preload("Image").Find(&talent).Error; err != nil {
+	if err := db.DB.Joins("JOIN users u ON u.id = talents.user_id").Where("u.email = ?", email).First(&talent).Error; err != nil {
 		return talent, err
 	}
 	return talent, nil

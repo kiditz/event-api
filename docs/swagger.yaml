@@ -764,6 +764,64 @@ paths:
       summary: GetSubCategoriesByCategoryID used to find all sub category by category id
       tags:
       - categories
+  /talent:
+    get:
+      consumes:
+      - application/json
+      description: find talent login
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Talent'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: FindTalentByLogin used to find talent login
+      tags:
+      - talents
+  /talent/{id}:
+    get:
+      consumes:
+      - application/json
+      description: find talent by id
+      parameters:
+      - description: Talent ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Talent'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: FindtalentById used to find talent by it's primary key
+      tags:
+      - talents
   /talents:
     get:
       consumes:
@@ -837,38 +895,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: AddTalent api used to create new talent
-      tags:
-      - talents
-  /talents/{id}:
-    get:
-      consumes:
-      - application/json
-      description: find talent by id
-      parameters:
-      - description: Talent ID
-        in: path
-        name: id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/translate.ResultSuccess'
-            - properties:
-                data:
-                  $ref: '#/definitions/entity.Talent'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/translate.ResultErrors'
-      security:
-      - ApiKeyAuth: []
-      summary: FindtalentById used to find talent by it's primary key
       tags:
       - talents
   /user:
