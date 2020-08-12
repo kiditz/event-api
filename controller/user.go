@@ -21,29 +21,35 @@ import (
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param user body entity.User true "New User"
+// @Param user body entity.UserForm true "New User"
 // @Success 200 {object} translate.ResultSuccess{data=entity.User} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /user [post]
 func AddUser(c echo.Context) error {
-	user := new(e.User)
-	err := c.Bind(&user)
+	form := new(e.UserForm)
+	err := c.Bind(&form)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	pwd, err := u.HashAndSalt([]byte(user.Password))
+	pwd, err := u.HashAndSalt([]byte(form.Password))
 	if err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
-	user.Password = pwd
-	err = r.AddUser(user)
+	form.Password = pwd
+	userData := e.User{
+		Name:     form.Name,
+		Email:    form.Email,
+		Password: form.Password,
+		Type:     form.Type,
+	}
+	err = r.AddUser(&userData)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
 			return t.Errors(c, http.StatusBadRequest, err.Error())
 		}
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
-	return t.Success(c, user)
+	return t.Success(c, userData)
 }
 
 //SignIn used to login
