@@ -8,6 +8,7 @@ type Talent struct {
 	UserID                  uint          `json:"user_id" swaggerignore:"true"`
 	User                    *User         `json:"account" swaggerignore:"true"`
 	PhoneNumber             string        `json:"phone"`
+	Description             string        `json:"description" gorm:"not null;default:''"`
 	BusinessTypeID          uint          `json:"business_type_id"`
 	BusinessType            *BusinessType `json:"business_type" swaggerignore:"true"`
 	ImageID                 uint          `json:"image_id" swaggerignore:"true"`

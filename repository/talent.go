@@ -80,7 +80,11 @@ func GetTalents(filter *FilteredTalent) []e.Talent {
 		query = query.Joins("JOIN expertises e ON e.id = t.expertise_id ")
 		query = query.Where("e.name ilike ? ", "%"+filter.ExpertiseName+"%")
 	}
-	query = query.Preload("Services").Preload("Services.Category").Preload("Services.SubCategory").Preload("User").Preload("Image").Offset(filter.Offset).Limit(filter.Limit).Find(&talents)
+	if filter.Q != "" {
+		query = query.Joins("JOIN users u ON u.id = talents.user_id ")
+		query = query.Where("u.name ilike ? or u.email like ? ", "%"+filter.Q+"%", "%"+filter.Q+"%")
+	}
+	query = query.Preload("Services").Preload("Services.Category").Preload("Services.SubCategory").Preload("User").Preload("Image").Preload("BackgroundImage").Offset(filter.Offset).Limit(filter.Limit).Find(&talents)
 	return talents
 }
 

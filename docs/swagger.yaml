@@ -55,6 +55,17 @@ definitions:
     - start_price
     - title
     type: object
+  entity.Cart:
+    properties:
+      id:
+        type: integer
+      ip_address:
+        type: string
+      service_id:
+        type: integer
+      talent_id:
+        type: integer
+    type: object
   entity.Category:
     properties:
       is_searchable:
@@ -212,6 +223,8 @@ definitions:
         type: string
       business_type_id:
         type: integer
+      description:
+        type: string
       engagement:
         type: number
       expertises:
@@ -621,6 +634,56 @@ paths:
       summary: GetAllSocialMedia used to find all social media list
       tags:
       - campaigns
+  /cart:
+    delete:
+      description: add to cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Cart'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: DeleteCart api used to delete cart for specific ip address
+      tags:
+      - orders
+    post:
+      description: add to cart
+      parameters:
+      - description: Add To Cart
+        in: body
+        name: talent
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Cart'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Cart'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: AddCart api used to create new cart for specific email address
+      tags:
+      - orders
   /categories:
     get:
       consumes:

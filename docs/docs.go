@@ -494,6 +494,91 @@ var doc = `{
                 }
             }
         },
+        "/cart": {
+            "post": {
+                "description": "add to cart",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "AddCart api used to create new cart for specific email address",
+                "parameters": [
+                    {
+                        "description": "Add To Cart",
+                        "name": "talent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Cart"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Cart"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "add to cart",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "DeleteCart api used to delete cart for specific ip address",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Cart"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/categories": {
             "get": {
                 "security": [
@@ -1106,6 +1191,23 @@ var doc = `{
                 }
             }
         },
+        "entity.Cart": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "ip_address": {
+                    "type": "string"
+                },
+                "service_id": {
+                    "type": "integer"
+                },
+                "talent_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.Category": {
             "type": "object",
             "properties": {
@@ -1350,6 +1452,9 @@ var doc = `{
                 },
                 "business_type_id": {
                     "type": "integer"
+                },
+                "description": {
+                    "type": "string"
                 },
                 "engagement": {
                     "type": "number"
