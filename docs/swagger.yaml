@@ -57,10 +57,10 @@ definitions:
     type: object
   entity.Cart:
     properties:
+      device_id:
+        type: string
       id:
         type: integer
-      ip_address:
-        type: string
       service_id:
         type: integer
       talent_id:
@@ -637,6 +637,12 @@ paths:
   /cart:
     delete:
       description: add to cart
+      parameters:
+      - description: Device ID
+        in: query
+        name: device_id
+        required: true
+        type: string
       produces:
       - application/json
       responses:

@@ -11,6 +11,7 @@ func main() {
 	db.DB.AutoMigrate(
 		&e.BusinessType{},
 		&e.Campaign{},
+		&e.Cart{},
 		&e.Category{},
 		&e.Document{},
 		&e.Expertise{},

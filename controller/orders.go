@@ -39,13 +39,15 @@ func AddCart(c echo.Context) error {
 // @Summary DeleteCart api used to delete cart for specific ip address
 // @Description add to cart
 // @Tags orders
+// @Param device_id query string true "Device ID"
 // @MimeType
 // @Produce json
 // @Success 200 {object} translate.ResultSuccess{data=entity.Cart} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /cart [delete]
 func DeleteCart(c echo.Context) error {
-	err := r.DeleteCart(c)
+	deviceID := c.QueryParam("device_id")
+	err := r.DeleteCart(deviceID)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
 			return t.Errors(c, http.StatusBadRequest, err.Constraint)

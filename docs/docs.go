@@ -551,6 +551,15 @@ var doc = `{
                     "orders"
                 ],
                 "summary": "DeleteCart api used to delete cart for specific ip address",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Device ID",
+                        "name": "device_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1194,11 +1203,11 @@ var doc = `{
         "entity.Cart": {
             "type": "object",
             "properties": {
+                "device_id": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
-                },
-                "ip_address": {
-                    "type": "string"
                 },
                 "service_id": {
                     "type": "integer"

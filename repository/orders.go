@@ -10,7 +10,6 @@ import (
 // AddToCart godoc
 func AddToCart(cart *e.Cart, c echo.Context) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
-		cart.IPAddress = c.RealIP()
 		if err := tx.Create(&cart).Error; err != nil {
 			return err
 		}
@@ -19,10 +18,9 @@ func AddToCart(cart *e.Cart, c echo.Context) error {
 }
 
 //DeleteCart delete cart by loggedin
-func DeleteCart(c echo.Context) error {
+func DeleteCart(deviceID string) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
-		ipAddress := c.RealIP()
-		if err := tx.Where("ip_address = ?", ipAddress).Delete(e.Cart{}).Error; err != nil {
+		if err := tx.Where("device_id = ?", deviceID).Delete(e.Cart{}).Error; err != nil {
 			return err
 		}
 		return nil
