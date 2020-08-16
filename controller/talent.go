@@ -111,16 +111,16 @@ func FindTalentByLogin(c echo.Context) error {
 // @Tags talents
 // @Accept json
 // @Produce json
-// @Param filter query repository.FilteredTalent false "FilteredTalent"
+// @Param filter query entity.FilteredTalent false "FilteredTalent"
 // @Success 200 {object} translate.ResultSuccess{data=entity.Talent} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /talents [get]
 // @Security ApiKeyAuth
 func GetTalents(c echo.Context) error {
-	filter := new(r.FilteredTalent)
+	filter := new(e.FilteredTalent)
 	if err := c.Bind(filter); err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
-	talents := r.GetTalents(filter)
+	talents := r.GetTalentList(filter)
 	return t.Success(c, talents)
 }

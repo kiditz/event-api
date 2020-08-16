@@ -21,7 +21,9 @@ func AddCampaign(campaign *e.Campaign) error {
 		// 	tx.Model(&campaign.Services).Association("Services").Append(campaign.Services)
 		// }
 		if campaign.Location != nil {
-			tx.Model(&campaign.Location).Save(campaign.Location)
+			if err := tx.Where("formatted_address = ?", campaign.Location.FormattedAddress).First(campaign.Location.FormattedAddress).First(&campaign.Location).Error; err != nil {
+				tx.Model(&campaign.Location).Save(campaign.Location)
+			}
 			tx.Model(&campaign).Association("Location").Append(campaign.Location)
 		}
 		if campaign.PaymentTerms != nil {

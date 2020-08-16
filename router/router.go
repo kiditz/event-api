@@ -10,4 +10,5 @@ func InitRoutes(v1 *echo.Group) {
 	SetUserRoutes(v1)
 	SetTalentRoutes(v1)
 	SetCategoryRoutes(v1)
+	SetOrderRoutes(v1)
 }

@@ -34,3 +34,24 @@ type Talent struct {
 	Expertises              []Expertise   `json:"expertises" gorm:"not null;many2many:talent_expertises;"`
 	Model
 }
+
+// FilteredTalent use to filter talent
+type FilteredTalent struct {
+	CategoryID    int64  `query:"category_id" json:"category_id"`
+	ExpertiseName string `query:"expertise_name" json:"expertise_name"`
+	Limit         int64  `query:"limit" json:"limit"`
+	Offset        int64  `query:"offset" json:"offset"`
+	Q             string `query:"q" json:"q"`
+	SubCategoryID int64  `query:"sub_category_id" json:"sub_category_id"`
+}
+
+// TalentResults go doc
+type TalentResults struct {
+	StartPrice      float64 `json:"start_price" `
+	ServiceID       uint    `json:"service_id"`
+	TalentID        uint    `json:"talent_id"`
+	Name            string  `json:"name"`
+	CategoryName    string  `json:"category_name"`
+	SubCategoryName string  `json:"sub_category_name"`
+	ImageURL        string  `json:"image_url"`
+}

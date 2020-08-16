@@ -3,5 +3,6 @@
     "idx_company_id_title": "Title has been created before",
     "idx_created_by_title": "Campaign title was created",
     "company_not_found": "Company not found in the system!",
-    "record not found": "Record not found"
+    "record not found": "Record not found",
+    "cart_service_id_talent_id": "Cart was exists"
 }

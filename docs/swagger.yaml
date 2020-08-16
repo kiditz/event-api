@@ -59,6 +59,10 @@ definitions:
     properties:
       device_id:
         type: string
+      device_name:
+        type: string
+      device_version:
+        type: string
       id:
         type: integer
       service_id:
@@ -105,6 +109,21 @@ definitions:
       slug:
         type: string
     type: object
+  entity.FilteredTalent:
+    properties:
+      category_id:
+        type: integer
+      expertise_name:
+        type: string
+      limit:
+        type: integer
+      offset:
+        type: integer
+      q:
+        type: string
+      sub_category_id:
+        type: integer
+    type: object
   entity.Image:
     properties:
       id:
@@ -113,6 +132,17 @@ definitions:
         type: string
     required:
     - image_url
+    type: object
+  entity.Invitation:
+    properties:
+      campaign_id:
+        type: integer
+      id:
+        type: integer
+      service_id:
+        type: integer
+      status:
+        type: string
     type: object
   entity.Location:
     properties:
@@ -160,6 +190,17 @@ definitions:
         type: string
     required:
     - name
+    type: object
+  entity.Quotation:
+    properties:
+      campaign_id:
+        type: integer
+      id:
+        type: integer
+      service_id:
+        type: integer
+      status:
+        type: string
     type: object
   entity.Service:
     properties:
@@ -312,21 +353,6 @@ definitions:
         type: boolean
       q:
         type: string
-    type: object
-  repository.FilteredTalent:
-    properties:
-      category_id:
-        type: integer
-      expertise_name:
-        type: string
-      limit:
-        type: integer
-      offset:
-        type: integer
-      q:
-        type: string
-      sub_category_id:
-        type: integer
     type: object
   translate.ResultErrors:
     properties:
@@ -659,7 +685,7 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
-      summary: DeleteCart api used to delete cart for specific ip address
+      summary: DeleteCart api used to delete cart for specific device
       tags:
       - orders
     post:
@@ -688,6 +714,36 @@ paths:
           schema:
             $ref: '#/definitions/translate.ResultErrors'
       summary: AddCart api used to create new cart for specific email address
+      tags:
+      - orders
+  /carts:
+    get:
+      description: find carts
+      parameters:
+      - description: Device ID
+        in: query
+        name: device_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Cart'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: GetCarts api used to find cart for specific device
       tags:
       - orders
   /categories:
@@ -744,6 +800,64 @@ paths:
       summary: GetExpertises used to find all expertises
       tags:
       - categories
+  /invitation:
+    post:
+      description: create new invitation
+      parameters:
+      - description: Invitation
+        in: body
+        name: talent
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Invitation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Invitation'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: AddInvitation api used to create new invitation for talent service
+      tags:
+      - orders
+  /quotation:
+    post:
+      description: create new invitation
+      parameters:
+      - description: Quotation
+        in: body
+        name: talent
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Quotation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Quotation'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: AddQuotation api used to create new invitation for talent service
+      tags:
+      - orders
   /sub-categories:
     get:
       consumes:

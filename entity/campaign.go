@@ -5,15 +5,11 @@ import "time"
 // Campaign is model for database campaigns
 type Campaign struct {
 	ID             uint          `gorm:"primary_key" json:"id"`
-	Title          string        `json:"title" sql:"index" gorm:"type:varchar(60);index:campaign_title_idx;not null" validate:"required"`
+	Title          string        `json:"title" gorm:"type:varchar(60);index;not null" validate:"required"`
 	Detail         string        `json:"detail" validate:"required" gorm:"not null"`
 	Currency       string        `json:"currency" validate:"required" gorm:"not null"`
-	Category       Category      `json:"category"`
-	CategoryID     uint          `json:"category_id"`
-	SubCategory    SubCategory   `json:"sub_category"`
-	SubCategoryID  uint          `json:"sub_category_id"`
 	Location       *Location     `json:"location,omitempty" gorm:"foreignkey:LocationID"`
-	LocationID     uint          `json:"location_id"`
+	LocationID     uint          `json:"location_id" gorm:"index;"`
 	PaymentTerms   *PaymentTerms `json:"payment_terms,omitempty" gorm:"foreignkey:PaymentTermsID"`
 	PaymentTermsID uint          `json:"payment_terms_id"`
 	PaymentDaysID  uint          `json:"payment_days_id"`

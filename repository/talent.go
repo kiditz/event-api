@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
 	e "github.com/kiditz/spgku-api/entity"
@@ -36,7 +38,14 @@ func AddTalent(talent *e.Talent, c echo.Context) error {
 // FindTalentByID  used to find talent by id
 func FindTalentByID(talentID int) (e.Talent, error) {
 	var talent e.Talent
-	if err := db.DB.Where("id=?", talentID).Preload("Location").Preload("Image").Find(&talent).Error; err != nil {
+	query := db.DB.Where("id=?", talentID)
+	query = query.Preload("Services").Preload("Services.Portofilios").Preload("Services.Category").Preload("Services.SubCategory")
+	query = query.Preload("Expertises")
+	query = query.Preload("Image").Preload("BackgroundImage")
+	query = query.Preload("User")
+	query = query.Preload("BusinessType")
+	query = query.Preload("Location")
+	if err := db.DB.Where("id=?", talentID).Find(&talent).Error; err != nil {
 		return talent, err
 	}
 
@@ -46,24 +55,23 @@ func FindTalentByID(talentID int) (e.Talent, error) {
 // FindTalentByEmail used to find talent by email
 func FindTalentByEmail(email string) (e.Talent, error) {
 	var talent e.Talent
-	if err := db.DB.Joins("JOIN users u ON u.id = talents.user_id").Where("u.email = ?", email).First(&talent).Error; err != nil {
+	query := db.DB.Joins("JOIN users u ON u.id = talents.user_id").Where("u.email = ?", email)
+	query = query.Preload("Services").Preload("Services.Portofilios").Preload("Services.Category").Preload("Services.SubCategory")
+	query = query.Preload("Expertises")
+	query = query.Preload("Image").Preload("BackgroundImage")
+	query = query.Preload("User")
+	query = query.Preload("BusinessType")
+	query = query.Preload("Location")
+	if err := query.First(&talent).Error; err != nil {
 		return talent, err
 	}
 	return talent, nil
 }
 
 // FilteredTalent used to filter talent query
-type FilteredTalent struct {
-	CategoryID    int64  `query:"category_id" json:"category_id"`
-	ExpertiseName string `query:"expertise_name" json:"expertise_name"`
-	Limit         int64  `query:"limit" json:"limit"`
-	Offset        int64  `query:"offset" json:"offset"`
-	Q             string `query:"q" json:"q"`
-	SubCategoryID int64  `query:"sub_category_id" json:"sub_category_id"`
-}
 
 // GetTalents  used to find talent by id
-func GetTalents(filter *FilteredTalent) []e.Talent {
+func GetTalents(filter *e.FilteredTalent) []e.Talent {
 	var talents []e.Talent
 	if filter.Limit == 0 {
 		filter.Limit = 10
@@ -86,6 +94,49 @@ func GetTalents(filter *FilteredTalent) []e.Talent {
 	}
 	query = query.Preload("Services").Preload("Services.Category").Preload("Services.SubCategory").Preload("User").Preload("Image").Preload("BackgroundImage").Offset(filter.Offset).Limit(filter.Limit).Find(&talents)
 	return talents
+}
+
+// GetTalentList  used to find talent by id
+func GetTalentList(filter *e.FilteredTalent) []e.TalentResults {
+	if filter.Limit == 0 {
+		filter.Limit = 20
+	}
+	query := db.DB.Table("users u")
+	query = query.Select("s.start_price, s.id, t.id, u.name , c.name, sc.name, s.image_url")
+	query = query.Joins("JOIN talents t ON u.id = t.user_id ")
+	query = query.Joins("LEFT JOIN talent_expertises te ON t.id = te.talent_id ")
+	query = query.Joins("JOIN services s ON t.id = s.talent_id AND s.id = (SELECT max(id) FROM services WHERE talent_id = t.id)")
+	query = query.Joins("JOIN categories c ON c.id = s.category_id")
+	query = query.Joins("JOIN sub_categories sc ON sc.id = s.sub_category_id")
+	query = query.Joins("LEFT JOIN expertises e ON e.id = te.expertise_id ")
+	if filter.Q != "" {
+		query = query.Where("u.name ilike ? or u.email like ? ", "%"+filter.Q+"%", "%"+filter.Q+"%")
+	}
+	if filter.ExpertiseName != "" {
+		query = query.Where("e.name ilike ? ", "%"+filter.ExpertiseName+"%")
+	}
+	if filter.SubCategoryID > 0 {
+		query = query.Where("s.sub_category_id = ?", filter.SubCategoryID)
+	}
+	if filter.CategoryID > 1 {
+		query = query.Where("s.category_id = ?", filter.CategoryID)
+	}
+	rows, err := query.Offset(filter.Offset).Limit(filter.Limit).Order("t.id desc").Rows()
+	defer rows.Close()
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	results := []e.TalentResults{}
+	for rows.Next() {
+		result := e.TalentResults{}
+		err := rows.Scan(&result.StartPrice, &result.ServiceID, &result.TalentID, &result.Name, &result.CategoryName, &result.SubCategoryName, &result.ImageURL)
+		if err != nil {
+			fmt.Println(err)
+		}
+		results = append(results, result)
+	}
+
+	return results
 }
 
 // AddService used to create new service for specific talent

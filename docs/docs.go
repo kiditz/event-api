@@ -550,7 +550,7 @@ var doc = `{
                 "tags": [
                     "orders"
                 ],
-                "summary": "DeleteCart api used to delete cart for specific ip address",
+                "summary": "DeleteCart api used to delete cart for specific device",
                 "parameters": [
                     {
                         "type": "string",
@@ -573,6 +573,56 @@ var doc = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/entity.Cart"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/carts": {
+            "get": {
+                "description": "find carts",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "GetCarts api used to find cart for specific device",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Device ID",
+                        "name": "device_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Cart"
+                                            }
                                         }
                                     }
                                 }
@@ -670,6 +720,104 @@ var doc = `{
                                     }
                                 ]
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/invitation": {
+            "post": {
+                "description": "create new invitation",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "AddInvitation api used to create new invitation for talent service",
+                "parameters": [
+                    {
+                        "description": "Invitation",
+                        "name": "talent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Invitation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Invitation"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/quotation": {
+            "post": {
+                "description": "create new invitation",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "AddQuotation api used to create new invitation for talent service",
+                "parameters": [
+                    {
+                        "description": "Quotation",
+                        "name": "talent",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Quotation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Quotation"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -1206,6 +1354,12 @@ var doc = `{
                 "device_id": {
                     "type": "string"
                 },
+                "device_name": {
+                    "type": "string"
+                },
+                "device_version": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -1277,6 +1431,29 @@ var doc = `{
                 }
             }
         },
+        "entity.FilteredTalent": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "expertise_name": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "q": {
+                    "type": "string"
+                },
+                "sub_category_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.Image": {
             "type": "object",
             "required": [
@@ -1287,6 +1464,23 @@ var doc = `{
                     "type": "integer"
                 },
                 "image_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Invitation": {
+            "type": "object",
+            "properties": {
+                "campaign_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "service_id": {
+                    "type": "integer"
+                },
+                "status": {
                     "type": "string"
                 }
             }
@@ -1358,6 +1552,23 @@ var doc = `{
                     "type": "string"
                 },
                 "slug": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Quotation": {
+            "type": "object",
+            "properties": {
+                "campaign_id": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "service_id": {
+                    "type": "integer"
+                },
+                "status": {
                     "type": "string"
                 }
             }
@@ -1585,29 +1796,6 @@ var doc = `{
                 },
                 "q": {
                     "type": "string"
-                }
-            }
-        },
-        "repository.FilteredTalent": {
-            "type": "object",
-            "properties": {
-                "category_id": {
-                    "type": "integer"
-                },
-                "expertise_name": {
-                    "type": "string"
-                },
-                "limit": {
-                    "type": "integer"
-                },
-                "offset": {
-                    "type": "integer"
-                },
-                "q": {
-                    "type": "string"
-                },
-                "sub_category_id": {
-                    "type": "integer"
                 }
             }
         },
