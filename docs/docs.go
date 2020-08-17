@@ -780,6 +780,64 @@ var doc = `{
                 }
             }
         },
+        "/invitations": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find invitations",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "GetInvitations api used to invitations by user logged in",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Invitation"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/quotation": {
             "post": {
                 "description": "create new invitation",
@@ -1281,13 +1339,6 @@ var doc = `{
                 "title"
             ],
             "properties": {
-                "category": {
-                    "type": "object",
-                    "$ref": "#/definitions/entity.Category"
-                },
-                "category_id": {
-                    "type": "integer"
-                },
                 "currency": {
                     "type": "string"
                 },
@@ -1335,13 +1386,6 @@ var doc = `{
                 },
                 "status": {
                     "type": "string"
-                },
-                "sub_category": {
-                    "type": "object",
-                    "$ref": "#/definitions/entity.SubCategory"
-                },
-                "sub_category_id": {
-                    "type": "integer"
                 },
                 "title": {
                     "type": "string"
@@ -1470,18 +1514,41 @@ var doc = `{
         },
         "entity.Invitation": {
             "type": "object",
+            "required": [
+                "campaign_id",
+                "service_id"
+            ],
             "properties": {
+                "campaign": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Campaign"
+                },
                 "campaign_id": {
                     "type": "integer"
                 },
                 "id": {
                     "type": "integer"
                 },
+                "service": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Service"
+                },
                 "service_id": {
                     "type": "integer"
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.LimitOffset": {
+            "type": "object",
+            "properties": {
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
                 }
             }
         },
@@ -1558,12 +1625,24 @@ var doc = `{
         },
         "entity.Quotation": {
             "type": "object",
+            "required": [
+                "campaign_id",
+                "message",
+                "price",
+                "service_id"
+            ],
             "properties": {
                 "campaign_id": {
                     "type": "integer"
                 },
                 "id": {
                     "type": "integer"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
                 },
                 "service_id": {
                     "type": "integer"

@@ -48,7 +48,7 @@ func AddDocument(c echo.Context) error {
 	document := &e.Document{
 		FileName: file.Filename,
 		Size:     file.Size,
-		URL:      "storage.googleapis.com/" + bucket + "/" + object,
+		URL:      "http://storage.googleapis.com/" + bucket + "/" + object,
 		Message:  message.Error(),
 	}
 	err = r.AddDocument(document)

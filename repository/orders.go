@@ -46,6 +46,23 @@ func AddInvitation(invitations *[]e.Invitation) error {
 	})
 }
 
+//GetInvitations find invitations by talent logged in
+func GetInvitations(email string, limitOffset e.LimitOffset) []e.Invitation {
+	if limitOffset.Limit <= 0 {
+		limitOffset.Limit = 10
+	}
+	invitations := []e.Invitation{}
+	query := db.DB
+	query = query.Joins("JOIN services s ON s.id = invitations.service_id")
+	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
+	query = query.Joins("JOIN users u ON t.user_id = u.id")
+	query = query.Where("u.email = ?", email)
+	query = query.Preload("Service.Category").Preload("Service.SubCategory")
+	query = query.Preload("Campaign")
+	query = query.Order("id desc").Limit(limitOffset.Limit).Offset(limitOffset.Offset).Find(&invitations)
+	return invitations
+}
+
 // AddQuotation godoc
 func AddQuotation(quote *e.Quotation) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {

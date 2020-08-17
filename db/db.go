@@ -24,6 +24,8 @@ func Connect() {
 	if err != nil {
 		panic(err)
 	}
+
 	fmt.Println("Connection Success")
 	DB = conn
+	// DB.LogMode(true)
 }

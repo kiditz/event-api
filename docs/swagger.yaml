@@ -2,11 +2,6 @@ basePath: /api/v1
 definitions:
   entity.Campaign:
     properties:
-      category:
-        $ref: '#/definitions/entity.Category'
-        type: object
-      category_id:
-        type: integer
       currency:
         type: string
       detail:
@@ -40,11 +35,6 @@ definitions:
         type: number
       status:
         type: string
-      sub_category:
-        $ref: '#/definitions/entity.SubCategory'
-        type: object
-      sub_category_id:
-        type: integer
       title:
         type: string
     required:
@@ -135,14 +125,30 @@ definitions:
     type: object
   entity.Invitation:
     properties:
+      campaign:
+        $ref: '#/definitions/entity.Campaign'
+        type: object
       campaign_id:
         type: integer
       id:
         type: integer
+      service:
+        $ref: '#/definitions/entity.Service'
+        type: object
       service_id:
         type: integer
       status:
         type: string
+    required:
+    - campaign_id
+    - service_id
+    type: object
+  entity.LimitOffset:
+    properties:
+      limit:
+        type: integer
+      offset:
+        type: integer
     type: object
   entity.Location:
     properties:
@@ -197,10 +203,19 @@ definitions:
         type: integer
       id:
         type: integer
+      message:
+        type: string
+      price:
+        type: number
       service_id:
         type: integer
       status:
         type: string
+    required:
+    - campaign_id
+    - message
+    - price
+    - service_id
     type: object
   entity.Service:
     properties:
@@ -827,6 +842,39 @@ paths:
           schema:
             $ref: '#/definitions/translate.ResultErrors'
       summary: AddInvitation api used to create new invitation for talent service
+      tags:
+      - orders
+  /invitations:
+    get:
+      description: find invitations
+      parameters:
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Invitation'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetInvitations api used to invitations by user logged in
       tags:
       - orders
   /quotation:

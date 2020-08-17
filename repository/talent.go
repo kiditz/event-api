@@ -17,20 +17,20 @@ func AddTalent(talent *e.Talent, c echo.Context) error {
 		user := utils.GetUser(c)
 		talent.UserID = uint(user["id"].(float64))
 		talent.CreatedBy = user["email"].(string)
-		tx = tx.Set("gorm:association_autoupdate", false)
+
 		if err := tx.Save(&talent).Error; err != nil {
 			return err
 		}
-
-		tx.Model(&talent.Expertises).Association("Expertises").Append(talent.Expertises)
-		if talent.BackgroundImage != nil {
-			tx.Model(&talent.BackgroundImage).Save(talent.BackgroundImage)
-			tx.Model(&talent).Association("BackgroundImage").Append(talent.BackgroundImage)
-		}
-		if talent.Image != nil {
-			tx.Model(&talent.Image).Save(talent.Image)
-			tx.Model(&talent).Association("Image").Append(talent.Image)
-		}
+		// tx = tx.Set("gorm:association_autoupdate", false)
+		tx.Model(&talent).Association("Expertises").Replace(talent.Expertises)
+		// if talent.BackgroundImage != nil {
+		// 	tx.Model(&talent.BackgroundImage).Save(talent.BackgroundImage)
+		// 	tx.Model(&talent).Association("BackgroundImage").Append(talent.BackgroundImage)
+		// }
+		// if talent.Image != nil {
+		// 	tx.Model(&talent.Image).Save(talent.Image)
+		// 	tx.Model(&talent).Association("Image").Append(talent.Image)
+		// }
 		return nil
 	})
 }

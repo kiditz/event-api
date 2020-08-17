@@ -6,6 +6,7 @@ import (
 	e "github.com/kiditz/spgku-api/entity"
 	r "github.com/kiditz/spgku-api/repository"
 	t "github.com/kiditz/spgku-api/translate"
+	"github.com/kiditz/spgku-api/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/lib/pq"
 )
@@ -95,6 +96,28 @@ func AddInvitation(c echo.Context) error {
 			return t.Errors(c, http.StatusBadRequest, err.Constraint)
 		}
 	}
+	return t.Success(c, invitations)
+}
+
+// GetInvitations godoc
+// @Summary GetInvitations api used to invitations by user logged in
+// @Description find invitations
+// @Tags orders
+// @MimeType
+// @Produce json
+// @Param invitation query entity.LimitOffset false "LimitOffset"
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.Invitation} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /invitations [get]
+// @Security ApiKeyAuth
+func GetInvitations(c echo.Context) error {
+	var limitOffset e.LimitOffset
+	err := c.Bind(&limitOffset)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	email := utils.GetEmail(c)
+	invitations := r.GetInvitations(email, limitOffset)
 	return t.Success(c, invitations)
 }
 
