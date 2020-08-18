@@ -30,7 +30,12 @@ func AddCampaign(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	campaign.CreatedBy = utils.GetUser(c)["email"].(string)
+	company, err := r.FindCompany(c)
+	if err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error)
+	}
+	campaign.CompanyID = company.ID
+	campaign.CreatedBy = utils.GetEmail(c)
 	err = r.AddCampaign(campaign)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {

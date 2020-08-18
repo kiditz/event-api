@@ -13,6 +13,7 @@ func main() {
 		&e.Campaign{},
 		&e.Cart{},
 		&e.Category{},
+		&e.Company{},
 		&e.Document{},
 		&e.Expertise{},
 		&e.Image{},

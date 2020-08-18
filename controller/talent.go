@@ -45,7 +45,7 @@ func AddTalent(c echo.Context) error {
 // @Tags talents
 // @MimeType
 // @Produce json
-// @Param talent body entity.Service true "New Service for talent"
+// @Param service body entity.Service true "New Service for talent"
 // @Success 200 {object} translate.ResultSuccess{data=entity.Service} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /talent/service [post]

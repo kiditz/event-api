@@ -15,22 +15,21 @@ func AddTalent(talent *e.Talent, c echo.Context) error {
 
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		user := utils.GetUser(c)
-		talent.UserID = uint(user["id"].(float64))
-		talent.CreatedBy = user["email"].(string)
+		// email := user["email"].(string)
+		userID := uint(user["id"].(float64))
+
+		account, _ := FindUserByID(userID)
+		talent.UserID = account.ID
+		talent.CreatedBy = account.Email
+		talent.User.Password = account.Password
+		// Only need for update event
+		talent.User.UpdatedBy = account.Email
+		talent.User.CreatedBy = account.Email
 
 		if err := tx.Save(&talent).Error; err != nil {
 			return err
 		}
-		// tx = tx.Set("gorm:association_autoupdate", false)
 		tx.Model(&talent).Association("Expertises").Replace(talent.Expertises)
-		// if talent.BackgroundImage != nil {
-		// 	tx.Model(&talent.BackgroundImage).Save(talent.BackgroundImage)
-		// 	tx.Model(&talent).Association("BackgroundImage").Append(talent.BackgroundImage)
-		// }
-		// if talent.Image != nil {
-		// 	tx.Model(&talent.Image).Save(talent.Image)
-		// 	tx.Model(&talent).Association("Image").Append(talent.Image)
-		// }
 		return nil
 	})
 }
@@ -45,7 +44,7 @@ func FindTalentByID(talentID int) (e.Talent, error) {
 	query = query.Preload("User")
 	query = query.Preload("BusinessType")
 	query = query.Preload("Location")
-	if err := db.DB.Where("id=?", talentID).Find(&talent).Error; err != nil {
+	if err := query.Where("id=?", talentID).Find(&talent).Error; err != nil {
 		return talent, err
 	}
 
@@ -102,7 +101,7 @@ func GetTalentList(filter *e.FilteredTalent) []e.TalentResults {
 		filter.Limit = 20
 	}
 	query := db.DB.Table("users u")
-	query = query.Select("s.start_price, s.id, t.id, u.name , c.name, sc.name, s.image_url")
+	query = query.Select("DISTINCT s.start_price, s.id, t.id, u.name , c.name, sc.name, s.image_url")
 	query = query.Joins("JOIN talents t ON u.id = t.user_id ")
 	query = query.Joins("LEFT JOIN talent_expertises te ON t.id = te.talent_id ")
 	query = query.Joins("JOIN services s ON t.id = s.talent_id AND s.id = (SELECT max(id) FROM services WHERE talent_id = t.id)")

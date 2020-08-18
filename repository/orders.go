@@ -58,7 +58,7 @@ func GetInvitations(email string, limitOffset e.LimitOffset) []e.Invitation {
 	query = query.Joins("JOIN users u ON t.user_id = u.id")
 	query = query.Where("u.email = ?", email)
 	query = query.Preload("Service.Category").Preload("Service.SubCategory")
-	query = query.Preload("Campaign")
+	query = query.Preload("Campaign.Company.Image")
 	query = query.Order("id desc").Limit(limitOffset.Limit).Offset(limitOffset.Offset).Find(&invitations)
 	return invitations
 }
@@ -66,7 +66,7 @@ func GetInvitations(email string, limitOffset e.LimitOffset) []e.Invitation {
 // AddQuotation godoc
 func AddQuotation(quote *e.Quotation) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&quote).Error; err != nil {
+		if err := tx.Save(&quote).Error; err != nil {
 			return err
 		}
 		return nil

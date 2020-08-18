@@ -2,6 +2,13 @@ basePath: /api/v1
 definitions:
   entity.Campaign:
     properties:
+      category_id:
+        type: integer
+      company:
+        $ref: '#/definitions/entity.Company'
+        type: object
+      company_id:
+        type: integer
       currency:
         type: string
       detail:
@@ -35,6 +42,8 @@ definitions:
         type: number
       status:
         type: string
+      sub_category_id:
+        type: integer
       title:
         type: string
     required:
@@ -74,6 +83,26 @@ definitions:
         items:
           $ref: '#/definitions/entity.SubCategory'
         type: array
+    type: object
+  entity.Company:
+    properties:
+      country:
+        type: string
+      currency:
+        type: string
+      id:
+        type: integer
+      image:
+        $ref: '#/definitions/entity.Image'
+        type: object
+      is_updated:
+        type: boolean
+      name:
+        type: string
+    required:
+    - country
+    - currency
+    - name
     type: object
   entity.Document:
     properties:
@@ -789,6 +818,62 @@ paths:
       summary: GetCategories used to find all categories
       tags:
       - categories
+  /company:
+    get:
+      consumes:
+      - application/json
+      description: find company logged in
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Company'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: FindCompany used to find company logged in
+      tags:
+      - company
+    put:
+      description: Edit company
+      parameters:
+      - description: Company Data
+        in: body
+        name: company
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Company'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Company'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: Edit company
+      tags:
+      - company
   /expertises:
     get:
       consumes:
@@ -1060,7 +1145,7 @@ paths:
       parameters:
       - description: New Service for talent
         in: body
-        name: talent
+        name: service
         required: true
         schema:
           $ref: '#/definitions/entity.Service'

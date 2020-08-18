@@ -5,7 +5,13 @@ import "time"
 // Campaign is model for database campaigns
 type Campaign struct {
 	ID             uint          `gorm:"primary_key" json:"id"`
+	CompanyID      uint          `json:"company_id"`
+	Company        *Company      `json:"company"`
 	Title          string        `json:"title" gorm:"type:varchar(60);index;not null" validate:"required"`
+	CategoryID     uint          `json:"category_id" gorm:"not null"`
+	Category       *Category     `json:"category" swaggerignore:"true"`
+	SubCategoryID  uint          `json:"sub_category_id" gorm:"not null" `
+	SubCategory    *SubCategory  `json:"sub_category" swaggerignore:"true"`
 	Detail         string        `json:"detail" validate:"required" gorm:"not null"`
 	Currency       string        `json:"currency" validate:"required" gorm:"not null"`
 	Location       *Location     `json:"location,omitempty" gorm:"foreignkey:LocationID"`

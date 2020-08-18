@@ -12,14 +12,13 @@ import (
 
 // AddCampaign used to insert campaign into campaigns database
 func AddCampaign(campaign *e.Campaign) error {
+	fmt.Printf("Campaign : %v", campaign)
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		tx = tx.Set("gorm:association_autoupdate", false)
 		if err := tx.Save(&campaign).Error; err != nil {
 			return err
 		}
-		// if len(campaign.Services) > 0 {
-		// 	tx.Model(&campaign.Services).Association("Services").Append(campaign.Services)
-		// }
+
 		if campaign.Location != nil {
 			if err := tx.Where("formatted_address = ?", campaign.Location.FormattedAddress).First(campaign.Location.FormattedAddress).First(&campaign.Location).Error; err != nil {
 				tx.Model(&campaign.Location).Save(campaign.Location)

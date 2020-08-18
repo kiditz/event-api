@@ -14,10 +14,19 @@ func AddUser(user *e.User) error {
 		if err := tx.Create(&user).Error; err != nil {
 			return err
 		}
-		tx.Create(&e.Talent{
-			UserID:     user.ID,
-			IsVerified: false,
-		})
+		if user.Type == "talent" {
+			tx.Create(&e.Talent{
+				UserID:     user.ID,
+				IsVerified: false,
+			})
+		}
+		if user.Type == "company" {
+			tx.Create(&e.Company{
+				UserID:    user.ID,
+				Name:      user.Name,
+				IsUpdated: false,
+			})
+		}
 		return nil
 	})
 }
@@ -26,6 +35,16 @@ func AddUser(user *e.User) error {
 func FindUserByEmail(email string) (e.User, error) {
 	var user e.User
 	if db.DB.Where("email = ?", email).Find(&user).RecordNotFound() {
+		err := fmt.Errorf("user_not_found")
+		return user, err
+	}
+	return user, nil
+}
+
+// FindUserByID is used to query user by email address
+func FindUserByID(userID uint) (e.User, error) {
+	var user e.User
+	if db.DB.Where("id = ?", userID).Find(&user).RecordNotFound() {
 		err := fmt.Errorf("user_not_found")
 		return user, err
 	}

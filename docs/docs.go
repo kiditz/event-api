@@ -687,6 +687,104 @@ var doc = `{
                 }
             }
         },
+        "/company": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find company logged in",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "FindCompany used to find company logged in",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Company"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Edit company",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "company"
+                ],
+                "summary": "Edit company",
+                "parameters": [
+                    {
+                        "description": "Company Data",
+                        "name": "company",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Company"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Company"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/expertises": {
             "get": {
                 "description": "used to find all expertises",
@@ -1105,7 +1203,7 @@ var doc = `{
                 "parameters": [
                     {
                         "description": "New Service for talent",
-                        "name": "talent",
+                        "name": "service",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -1339,6 +1437,16 @@ var doc = `{
                 "title"
             ],
             "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
+                "company": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Company"
+                },
+                "company_id": {
+                    "type": "integer"
+                },
                 "currency": {
                     "type": "string"
                 },
@@ -1386,6 +1494,9 @@ var doc = `{
                 },
                 "status": {
                     "type": "string"
+                },
+                "sub_category_id": {
+                    "type": "integer"
                 },
                 "title": {
                     "type": "string"
@@ -1435,6 +1546,35 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/entity.SubCategory"
                     }
+                }
+            }
+        },
+        "entity.Company": {
+            "type": "object",
+            "required": [
+                "country",
+                "currency",
+                "name"
+            ],
+            "properties": {
+                "country": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Image"
+                },
+                "is_updated": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },
