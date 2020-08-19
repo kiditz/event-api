@@ -57,8 +57,12 @@ func GetInvitations(email string, limitOffset e.LimitOffset) []e.Invitation {
 	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
 	query = query.Joins("JOIN users u ON t.user_id = u.id")
 	query = query.Where("u.email = ?", email)
-	query = query.Preload("Service.Category").Preload("Service.SubCategory")
+	query = query.Preload("Campaign")
+	query = query.Preload("Service.Category").Preload("Service.SubCategory").Preload("Service.Topic")
 	query = query.Preload("Campaign.Company.Image")
+	query = query.Preload("Campaign.Location")
+	query = query.Preload("Campaign.Company")
+
 	query = query.Order("id desc").Limit(limitOffset.Limit).Offset(limitOffset.Offset).Find(&invitations)
 	return invitations
 }
