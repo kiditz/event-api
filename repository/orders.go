@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
 	e "github.com/kiditz/spgku-api/entity"
@@ -38,6 +40,7 @@ func GetCarts(deviceID string) []e.Cart {
 func AddInvitation(invitations *[]e.Invitation) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		for _, invitation := range *invitations {
+			invitation.Status = e.ACTIVE
 			if err := tx.Create(&invitation).Error; err != nil {
 				return err
 			}
@@ -60,17 +63,52 @@ func GetInvitations(email string, limitOffset e.LimitOffset) []e.Invitation {
 	query = query.Preload("Campaign")
 	query = query.Preload("Service.Category").Preload("Service.SubCategory").Preload("Service.Topic")
 	query = query.Preload("Campaign.Company.Image")
+	query = query.Preload("Campaign.SubCategory")
+	query = query.Preload("Campaign.Category")
 	query = query.Preload("Campaign.Location")
 	query = query.Preload("Campaign.Company")
-
+	query = query.Preload("Campaign.PaymentTerms")
 	query = query.Order("id desc").Limit(limitOffset.Limit).Offset(limitOffset.Offset).Find(&invitations)
 	return invitations
 }
 
-// AddQuotation godoc
-func AddQuotation(quote *e.Quotation) error {
+// AcceptInvitation godoc
+func AcceptInvitation(quote *e.Quotation) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
+		var invitation e.Invitation
+		if err := tx.Where("id = ?", quote.InvitationID).Find(&invitation).Error; err != nil {
+			return err
+		}
+		if invitation.Status == e.ACCEPTED {
+			return fmt.Errorf("status_was_accepted")
+		}
+		// Save Invitation
+		invitation.Status = e.ACCEPTED
+		if err := tx.Save(&invitation).Error; err != nil {
+			return err
+		}
+		// Save Quotation
+		quote.Status = "active"
 		if err := tx.Save(&quote).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
+// RejectInvitation godoc
+func RejectInvitation(reject *e.RejectInvitation) error {
+	return db.DB.Transaction(func(tx *gorm.DB) error {
+		var invitation e.Invitation
+		if err := tx.Where("id = ?", reject.InvitationID).Find(&invitation).Error; err != nil {
+			return err
+		}
+		if invitation.Status == e.ACCEPTED {
+			return fmt.Errorf("reject_is_not_allowed")
+		}
+		// Save Invitation
+		invitation.Status = e.REJECTED
+		if err := tx.Save(&invitation).Error; err != nil {
 			return err
 		}
 		return nil
