@@ -114,3 +114,33 @@ func RejectInvitation(reject *e.RejectInvitation) error {
 		return nil
 	})
 }
+
+//GetQuotations used to find quotations list by campaig id
+func GetQuotations(filter e.FilteredQuotations) []e.QuotationList {
+	if filter.Limit <= 0 {
+		filter.Limit = 10
+	}
+	quotations := []e.QuotationList{}
+	query := db.DB.Table("quotations q")
+	query = query.Select("q.id, q.price, q.message, u.name, i.image_url, q.status")
+	query = query.Joins("JOIN services s ON q.service_id = s.id")
+	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
+	query = query.Joins("JOIN users u ON t.user_id = u.id")
+	query = query.Joins("JOIN images i ON t.image_id = i.id")
+	query = query.Where("q.campaign_id = ?", filter.CampaignID)
+	rows, err := query.Offset(filter.Offset).Limit(filter.Limit).Order("q.id desc").Rows()
+	defer rows.Close()
+	if err != nil {
+		fmt.Printf("Wrong query :%v", err.Error())
+	}
+	defer rows.Close()
+	for rows.Next() {
+		quotation := e.QuotationList{}
+		err := rows.Scan(&quotation.ID, &quotation.Price, &quotation.Message, &quotation.Name, &quotation.ImageURL, &quotation.Status)
+		if err != nil {
+			fmt.Println(err)
+		}
+		quotations = append(quotations, quotation)
+	}
+	return quotations
+}

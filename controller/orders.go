@@ -172,3 +172,23 @@ func RejectInvitation(c echo.Context) error {
 	}
 	return t.Success(c, reject)
 }
+
+// GetQuotations godoc
+// @Summary GetQuotations get quotations by campaign id
+// @Description get quotations by campaign id
+// @Tags orders
+// @Param filtered quotations query entity.FilteredQuotations true "FilteredQuotations"
+// @MimeType
+// @Produce json
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.QuotationList} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /quotations [get]
+func GetQuotations(c echo.Context) error {
+	var filter e.FilteredQuotations
+	err := c.Bind(&filter)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	quotations := r.GetQuotations(filter)
+	return t.Success(c, quotations)
+}
