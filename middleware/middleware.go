@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/dgrijalva/jwt-go"
@@ -26,7 +27,7 @@ func IsCompany(next echo.HandlerFunc) echo.HandlerFunc {
 		user := c.Get("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
 		isCompany := claims["type"] == company
-		if isCompany == false {
+		if !isCompany {
 			return echo.ErrUnauthorized
 		}
 		return next(c)
@@ -38,8 +39,9 @@ func IsTalent(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user := c.Get("user").(*jwt.Token)
 		claims := user.Claims.(jwt.MapClaims)
-		isCompany := claims["type"] == talent
-		if isCompany == false {
+		isTalent := claims["type"] == talent
+		fmt.Printf("Is Talent %v", isTalent)
+		if !isTalent {
 			return echo.ErrUnauthorized
 		}
 		return next(c)
