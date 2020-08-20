@@ -7,5 +7,7 @@
     "users_email_key": "Email tidak dapat digunakan",
     "record not found": "Data tidak ditemukan",
     "Not Found": "Not found",
-    "cart_service_id_talent_id": "Cart sudah ditambahkan"
+    "cart_service_id_talent_id": "Cart sudah ditambahkan",
+    "status_was_accepted":"Penawaran sudah pernah dibuat",
+    "reject_is_not_allowed":"Surat penawaran yang sudah di terima harus dibatalkan dulu oleh client."
 }
