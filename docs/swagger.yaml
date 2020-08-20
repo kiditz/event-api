@@ -232,6 +232,8 @@ definitions:
         type: integer
       id:
         type: integer
+      invitation_id:
+        type: integer
       message:
         type: string
       price:
@@ -245,6 +247,12 @@ definitions:
     - message
     - price
     - service_id
+    - status
+    type: object
+  entity.RejectInvitation:
+    properties:
+      invitation_id:
+        type: integer
     type: object
   entity.Service:
     properties:
@@ -929,6 +937,64 @@ paths:
       summary: AddInvitation api used to create new invitation for talent service
       tags:
       - orders
+  /invitation/accept:
+    post:
+      description: accept invitation and generate quote
+      parameters:
+      - description: Quotation
+        in: body
+        name: quotation
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Quotation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Quotation'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: AcceptInvitation api used to accept invitation and generate quote
+      tags:
+      - orders
+  /invitation/reject:
+    post:
+      description: reject invitation
+      parameters:
+      - description: RejectInvitation
+        in: body
+        name: quotation
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RejectInvitation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Invitation'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: RejectInvitation api used to reject invitation
+      tags:
+      - orders
   /invitations:
     get:
       description: find invitations
@@ -960,35 +1026,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: GetInvitations api used to invitations by user logged in
-      tags:
-      - orders
-  /quotation:
-    post:
-      description: create new invitation
-      parameters:
-      - description: Quotation
-        in: body
-        name: talent
-        required: true
-        schema:
-          $ref: '#/definitions/entity.Quotation'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/translate.ResultSuccess'
-            - properties:
-                data:
-                  $ref: '#/definitions/entity.Quotation'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/translate.ResultErrors'
-      summary: AddQuotation api used to create new invitation for talent service
       tags:
       - orders
   /sub-categories:

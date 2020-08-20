@@ -878,6 +878,104 @@ var doc = `{
                 }
             }
         },
+        "/invitation/accept": {
+            "post": {
+                "description": "accept invitation and generate quote",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "AcceptInvitation api used to accept invitation and generate quote",
+                "parameters": [
+                    {
+                        "description": "Quotation",
+                        "name": "quotation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Quotation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Quotation"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/invitation/reject": {
+            "post": {
+                "description": "reject invitation",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "RejectInvitation api used to reject invitation",
+                "parameters": [
+                    {
+                        "description": "RejectInvitation",
+                        "name": "quotation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.RejectInvitation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Invitation"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/invitations": {
             "get": {
                 "security": [
@@ -921,55 +1019,6 @@ var doc = `{
                                             "items": {
                                                 "$ref": "#/definitions/entity.Invitation"
                                             }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/translate.ResultErrors"
-                        }
-                    }
-                }
-            }
-        },
-        "/quotation": {
-            "post": {
-                "description": "create new invitation",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "orders"
-                ],
-                "summary": "AddQuotation api used to create new invitation for talent service",
-                "parameters": [
-                    {
-                        "description": "Quotation",
-                        "name": "talent",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/entity.Quotation"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/translate.ResultSuccess"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/entity.Quotation"
                                         }
                                     }
                                 }
@@ -1769,13 +1818,17 @@ var doc = `{
                 "campaign_id",
                 "message",
                 "price",
-                "service_id"
+                "service_id",
+                "status"
             ],
             "properties": {
                 "campaign_id": {
                     "type": "integer"
                 },
                 "id": {
+                    "type": "integer"
+                },
+                "invitation_id": {
                     "type": "integer"
                 },
                 "message": {
@@ -1789,6 +1842,14 @@ var doc = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.RejectInvitation": {
+            "type": "object",
+            "properties": {
+                "invitation_id": {
+                    "type": "integer"
                 }
             }
         },

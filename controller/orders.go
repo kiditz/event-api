@@ -121,27 +121,54 @@ func GetInvitations(c echo.Context) error {
 	return t.Success(c, invitations)
 }
 
-// AddQuotation godoc
-// @Summary AddQuotation api used to create new invitation for talent service
-// @Description create new invitation
+// AcceptInvitation godoc
+// @Summary AcceptInvitation api used to accept invitation and generate quote
+// @Description accept invitation and generate quote
 // @Tags orders
 // @MimeType
 // @Produce json
-// @Param talent body entity.Quotation true "Quotation"
+// @Param quotation body entity.Quotation true "Quotation"
 // @Success 200 {object} translate.ResultSuccess{data=entity.Quotation} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /quotation [post]
-func AddQuotation(c echo.Context) error {
-	var cart e.Cart
-	err := c.Bind(&cart)
+// @Router /invitation/accept [post]
+func AcceptInvitation(c echo.Context) error {
+	var quotation e.Quotation
+	err := c.Bind(&quotation)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	err = r.AddToCart(&cart, c)
+	err = r.AcceptInvitation(&quotation)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
 			return t.Errors(c, http.StatusBadRequest, err.Constraint)
 		}
+		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
-	return t.Success(c, cart)
+	return t.Success(c, quotation)
+}
+
+// RejectInvitation godoc
+// @Summary RejectInvitation api used to reject invitation
+// @Description reject invitation
+// @Tags orders
+// @MimeType
+// @Produce json
+// @Param quotation body entity.RejectInvitation true "RejectInvitation"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Invitation} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /invitation/reject [post]
+func RejectInvitation(c echo.Context) error {
+	var reject e.RejectInvitation
+	err := c.Bind(&reject)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	err = r.RejectInvitation(&reject)
+	if err != nil {
+		if err, ok := err.(*pq.Error); ok {
+			return t.Errors(c, http.StatusBadRequest, err.Constraint)
+		}
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return t.Success(c, reject)
 }
