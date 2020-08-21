@@ -5,6 +5,7 @@
     "company_not_found": "Company not found in the system!",
     "record not found": "Record not found",
     "cart_service_id_talent_id": "Cart was exists",
-    "status_was_accepted":"Quote was accepted",
+    "status_was_accepted":"Invitation was accepted",
+    "status_was_approved": "Quote was approved",
     "reject_is_not_allowed":"Must be rejected by client."
 }
