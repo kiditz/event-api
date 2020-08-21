@@ -120,6 +120,9 @@ func GetQuotations(filter *e.FilteredQuotations) []e.QuotationList {
 	if filter.Limit <= 0 {
 		filter.Limit = 10
 	}
+	if filter.Status == "" {
+		filter.Status = e.ACTIVE
+	}
 	quotations := []e.QuotationList{}
 	query := db.DB.Table("quotations q")
 	query = query.Select("q.id, q.price, q.message, u.name, i.image_url, q.status, q.created_at")
@@ -127,7 +130,11 @@ func GetQuotations(filter *e.FilteredQuotations) []e.QuotationList {
 	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
 	query = query.Joins("JOIN users u ON t.user_id = u.id")
 	query = query.Joins("JOIN images i ON t.image_id = i.id")
-	query = query.Where("q.campaign_id = ?", filter.CampaignID)
+	if filter.Status == e.ACTIVE {
+		query = query.Where("q.campaign_id = ? AND q.status in (?)", filter.CampaignID, []string{e.ACTIVE, e.DECLINED})
+	} else {
+		query = query.Where("q.campaign_id = ? AND q.status = ?", filter.CampaignID, filter.Status)
+	}
 	rows, err := query.Offset(filter.Offset).Limit(filter.Limit).Order("q.id desc").Rows()
 	defer rows.Close()
 	if err != nil {
@@ -146,10 +153,10 @@ func GetQuotations(filter *e.FilteredQuotations) []e.QuotationList {
 }
 
 // ApproveQuotation godoc
-func ApproveQuotation(quotationID int) error {
+func ApproveQuotation(quote *e.QuotationIdentity) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		var quotation e.Quotation
-		if err := tx.Where("id = ?", quotationID).Find(&quotation).Error; err != nil {
+		if err := tx.Where("id = ?", quote.QuotationID).Find(&quotation).Error; err != nil {
 			return err
 		}
 		if quotation.Status == e.APPROVED {
@@ -164,12 +171,15 @@ func ApproveQuotation(quotationID int) error {
 	})
 }
 
-// RejectQuotation godoc
-func RejectQuotation(quotationID int) error {
+// DeclineQuotation godoc
+func DeclineQuotation(quote *e.QuotationIdentity) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		var quotation e.Quotation
-		if err := tx.Where("id = ?", quotationID).Find(&quotation).Error; err != nil {
+		if err := tx.Where("id = ?", quote.QuotationID).Find(&quotation).Error; err != nil {
 			return err
+		}
+		if quotation.Status == e.APPROVED {
+			return fmt.Errorf("status_was_approved")
 		}
 		if quotation.Status == e.DECLINED {
 			return fmt.Errorf("status_was_declined")
@@ -179,12 +189,15 @@ func RejectQuotation(quotationID int) error {
 		if err := tx.Save(&quotation).Error; err != nil {
 			return err
 		}
-		if quotation.InvitationID >= 0 {
+		if quotation.InvitationID != 0 {
 			var invitation e.Invitation
 			if err := tx.Where("id = ?", quotation.InvitationID).Find(&invitation).Error; err != nil {
 				return err
 			}
-			invitation.Status = e.REJECTED
+			invitation.Status = e.ACTIVE
+			if err := tx.Save(&invitation).Error; err != nil {
+				return err
+			}
 		}
 		return nil
 	})

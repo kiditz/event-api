@@ -183,12 +183,65 @@ func RejectInvitation(c echo.Context) error {
 // @Success 200 {object} translate.ResultSuccess{data=[]entity.QuotationList} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /quotations [get]
+// @Security ApiKeyAuth
 func GetQuotations(c echo.Context) error {
 	var filter e.FilteredQuotations
 	err := c.Bind(&filter)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	quotations := r.GetQuotations(filter)
+	quotations := r.GetQuotations(&filter)
 	return t.Success(c, quotations)
+}
+
+// ApproveQuotation godoc
+// @Summary ApproveQuotation api used to approve quotation
+// @Description approve quotation
+// @Tags orders
+// @MimeType
+// @Produce json
+// @Param quotation body entity.QuotationIdentity true "QuotationIdentity"
+// @Success 200 {object} translate.ResultSuccess{data=entity.QuotationIdentity} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /quotation/approved [post]
+func ApproveQuotation(c echo.Context) error {
+	var quoteID e.QuotationIdentity
+	err := c.Bind(&quoteID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	err = r.ApproveQuotation(&quoteID)
+	if err != nil {
+		if err, ok := err.(*pq.Error); ok {
+			return t.Errors(c, http.StatusBadRequest, err.Constraint)
+		}
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return t.Success(c, quoteID)
+}
+
+// DeclineQuotation godoc
+// @Summary DeclineQuotation api used to decline quotation
+// @Description decline quotation
+// @Tags orders
+// @MimeType
+// @Produce json
+// @Param quotation body entity.QuotationIdentity true "QuotationIdentity"
+// @Success 200 {object} translate.ResultSuccess{data=entity.QuotationIdentity} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /quotation/declined [post]
+func DeclineQuotation(c echo.Context) error {
+	var quoteID e.QuotationIdentity
+	err := c.Bind(&quoteID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	err = r.DeclineQuotation(&quoteID)
+	if err != nil {
+		if err, ok := err.(*pq.Error); ok {
+			return t.Errors(c, http.StatusBadRequest, err.Constraint)
+		}
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return t.Success(c, quoteID)
 }

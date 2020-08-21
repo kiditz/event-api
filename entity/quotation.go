@@ -25,7 +25,8 @@ type QuotationList struct {
 
 //FilteredQuotations godoc
 type FilteredQuotations struct {
-	CampaignID uint `json:"campaign_id" query:"campaign_id"`
+	CampaignID uint   `json:"campaign_id" query:"campaign_id"`
+	Status     string `json:"status" query:"status"`
 	LimitOffset
 }
 

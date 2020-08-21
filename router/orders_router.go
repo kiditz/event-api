@@ -13,8 +13,10 @@ func SetOrderRoutes(v1 *echo.Group) {
 	v1.GET("/invitations", c.GetInvitations, m.IsLoggedIn(), m.IsTalent)
 	v1.POST("/invitation/accept", c.AcceptInvitation, m.IsLoggedIn(), m.IsTalent)
 	v1.POST("/invitation/reject", c.RejectInvitation, m.IsLoggedIn(), m.IsTalent)
+	v1.POST("/quotation/approved", c.ApproveQuotation, m.IsLoggedIn(), m.IsCompany)
+	v1.POST("/quotation/declined", c.DeclineQuotation, m.IsLoggedIn(), m.IsCompany)
 	v1.DELETE("/cart", c.DeleteCart)
-	v1.GET("/quotations", c.GetQuotations)
+	v1.GET("/quotations", c.GetQuotations, m.IsLoggedIn())
 	v1.GET("/carts", c.GetCarts)
 
 }

@@ -136,6 +136,8 @@ definitions:
         type: integer
       offset:
         type: integer
+      status:
+        type: string
     type: object
   entity.FilteredTalent:
     properties:
@@ -257,6 +259,11 @@ definitions:
     - price
     - service_id
     - status
+    type: object
+  entity.QuotationIdentity:
+    properties:
+      quotation_id:
+        type: integer
     type: object
   entity.QuotationList:
     properties:
@@ -1052,6 +1059,64 @@ paths:
       summary: GetInvitations api used to invitations by user logged in
       tags:
       - orders
+  /quotation/approved:
+    post:
+      description: approve quotation
+      parameters:
+      - description: QuotationIdentity
+        in: body
+        name: quotation
+        required: true
+        schema:
+          $ref: '#/definitions/entity.QuotationIdentity'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.QuotationIdentity'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: ApproveQuotation api used to approve quotation
+      tags:
+      - orders
+  /quotation/declined:
+    post:
+      description: decline quotation
+      parameters:
+      - description: QuotationIdentity
+        in: body
+        name: quotation
+        required: true
+        schema:
+          $ref: '#/definitions/entity.QuotationIdentity'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.QuotationIdentity'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: DeclineQuotation api used to decline quotation
+      tags:
+      - orders
   /quotations:
     get:
       description: get quotations by campaign id
@@ -1065,6 +1130,9 @@ paths:
       - in: query
         name: offset
         type: integer
+      - in: query
+        name: status
+        type: string
       produces:
       - application/json
       responses:
@@ -1083,6 +1151,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
       summary: GetQuotations get quotations by campaign id
       tags:
       - orders

@@ -1034,8 +1034,111 @@ var doc = `{
                 }
             }
         },
+        "/quotation/approved": {
+            "post": {
+                "description": "approve quotation",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "ApproveQuotation api used to approve quotation",
+                "parameters": [
+                    {
+                        "description": "QuotationIdentity",
+                        "name": "quotation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.QuotationIdentity"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.QuotationIdentity"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/quotation/declined": {
+            "post": {
+                "description": "decline quotation",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "DeclineQuotation api used to decline quotation",
+                "parameters": [
+                    {
+                        "description": "QuotationIdentity",
+                        "name": "quotation",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.QuotationIdentity"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.QuotationIdentity"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/quotations": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "get quotations by campaign id",
                 "produces": [
                     "application/json"
@@ -1058,6 +1161,11 @@ var doc = `{
                     {
                         "type": "integer",
                         "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "status",
                         "in": "query"
                     }
                 ],
@@ -1733,6 +1841,9 @@ var doc = `{
                 },
                 "offset": {
                     "type": "integer"
+                },
+                "status": {
+                    "type": "string"
                 }
             }
         },
@@ -1914,6 +2025,14 @@ var doc = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.QuotationIdentity": {
+            "type": "object",
+            "properties": {
+                "quotation_id": {
+                    "type": "integer"
                 }
             }
         },
