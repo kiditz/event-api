@@ -88,7 +88,7 @@ func AcceptInvitation(quote *e.Quotation) error {
 			return err
 		}
 		// Save Quotation
-		quote.Status = "active"
+		quote.Status = e.ACTIVE
 		if err := tx.Save(&quote).Error; err != nil {
 			return err
 		}
@@ -116,13 +116,13 @@ func RejectInvitation(reject *e.RejectInvitation) error {
 }
 
 //GetQuotations used to find quotations list by campaig id
-func GetQuotations(filter e.FilteredQuotations) []e.QuotationList {
+func GetQuotations(filter *e.FilteredQuotations) []e.QuotationList {
 	if filter.Limit <= 0 {
 		filter.Limit = 10
 	}
 	quotations := []e.QuotationList{}
 	query := db.DB.Table("quotations q")
-	query = query.Select("q.id, q.price, q.message, u.name, i.image_url, q.status")
+	query = query.Select("q.id, q.price, q.message, u.name, i.image_url, q.status, q.created_at")
 	query = query.Joins("JOIN services s ON q.service_id = s.id")
 	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
 	query = query.Joins("JOIN users u ON t.user_id = u.id")
@@ -136,11 +136,56 @@ func GetQuotations(filter e.FilteredQuotations) []e.QuotationList {
 	defer rows.Close()
 	for rows.Next() {
 		quotation := e.QuotationList{}
-		err := rows.Scan(&quotation.ID, &quotation.Price, &quotation.Message, &quotation.Name, &quotation.ImageURL, &quotation.Status)
+		err := rows.Scan(&quotation.ID, &quotation.Price, &quotation.Message, &quotation.Name, &quotation.ImageURL, &quotation.Status, &quotation.CreatedAt)
 		if err != nil {
 			fmt.Println(err)
 		}
 		quotations = append(quotations, quotation)
 	}
 	return quotations
+}
+
+// ApproveQuotation godoc
+func ApproveQuotation(quotationID int) error {
+	return db.DB.Transaction(func(tx *gorm.DB) error {
+		var quotation e.Quotation
+		if err := tx.Where("id = ?", quotationID).Find(&quotation).Error; err != nil {
+			return err
+		}
+		if quotation.Status == e.APPROVED {
+			return fmt.Errorf("status_was_approved")
+		}
+		// Save Quotation
+		quotation.Status = e.APPROVED
+		if err := tx.Save(&quotation).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
+// RejectQuotation godoc
+func RejectQuotation(quotationID int) error {
+	return db.DB.Transaction(func(tx *gorm.DB) error {
+		var quotation e.Quotation
+		if err := tx.Where("id = ?", quotationID).Find(&quotation).Error; err != nil {
+			return err
+		}
+		if quotation.Status == e.DECLINED {
+			return fmt.Errorf("status_was_declined")
+		}
+		// Save Quotation
+		quotation.Status = e.DECLINED
+		if err := tx.Save(&quotation).Error; err != nil {
+			return err
+		}
+		if quotation.InvitationID >= 0 {
+			var invitation e.Invitation
+			if err := tx.Where("id = ?", quotation.InvitationID).Find(&invitation).Error; err != nil {
+				return err
+			}
+			invitation.Status = e.REJECTED
+		}
+		return nil
+	})
 }
