@@ -1,11 +1,15 @@
 {
-    "jobs_company_id_companies_id_foreign": "Companies not found!",
+    "Not Found": "Not found",
+    "cart_service_id_talent_id": "Cart was exists",
+    "company_not_found": "Company not found in the system!",
     "idx_company_id_title": "Title has been created before",
     "idx_created_by_title": "Campaign title was created",
-    "company_not_found": "Company not found in the system!",
+    "jobs_company_id_companies_id_foreign": "Companies not found!",
     "record not found": "Record not found",
-    "cart_service_id_talent_id": "Cart was exists",
-    "status_was_accepted":"Invitation was accepted",
+    "reject_is_not_allowed": "Must be rejected by client.",
+    "status_was_accepted": "Invitation was accepted",
     "status_was_approved": "Quote was approved",
-    "reject_is_not_allowed":"Must be rejected by client."
+    "status_was_declined": "Quote was declined.",
+    "user_not_found": "Email / Password not registered",
+    "users_email_key": "Email cannot be used"
 }
