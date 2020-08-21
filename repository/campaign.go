@@ -40,7 +40,7 @@ func AddCampaign(campaign *e.Campaign) error {
 // FindCampaignByID  used to find campaign by id
 func FindCampaignByID(campaignID int) (e.Campaign, error) {
 	var campaign e.Campaign
-	if err := db.DB.Where("id=?", campaignID).Preload("Location").Preload("PaymentTerms").Preload("PaymentDays").Find(&campaign).Error; err != nil {
+	if err := db.DB.Where("id=?", campaignID).Preload("Category").Preload("SubCategory").Preload("Location").Preload("PaymentTerms").Preload("PaymentDays").Find(&campaign).Error; err != nil {
 		return campaign, err
 	}
 	return campaign, nil
@@ -62,7 +62,6 @@ func GetCampaigns(filter *CampaignsFilter, c echo.Context) []e.Campaign {
 	if filter.Limit == 0 {
 		filter.Limit = 10
 	}
-	fmt.Printf("Filtered :%v", &filter)
 	if len(filter.Date) > 0 {
 		query = query.Where("? between to_char(start_date, 'YYYY-MM-DD') and to_char(end_date, 'YYYY-MM-DD')", filter.Date)
 	}
@@ -72,7 +71,7 @@ func GetCampaigns(filter *CampaignsFilter, c echo.Context) []e.Campaign {
 	if filter.OnlyMe {
 		query = query.Where("created_by = ?", utils.GetEmail(c))
 	}
-	query = query.Preload("PaymentTerms").Preload("PaymentDays").Offset(filter.Offset).Limit(filter.Limit).Order("id desc").Find(&campaign)
+	query = query.Offset(filter.Offset).Limit(filter.Limit).Order("id desc").Find(&campaign)
 	return campaign
 }
 
