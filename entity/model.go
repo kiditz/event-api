@@ -4,7 +4,7 @@ import "time"
 
 // Model definition
 type Model struct {
-	CreatedAt time.Time  `json:"created_at" swaggerignore:"true"`
+	CreatedAt time.Time  `json:"created_at" swaggerignore:"true" gorm:"not null;default:now()"`
 	CreatedBy string     `json:"created_by,omitempty" swaggerignore:"true"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty" swaggerignore:"true"`
 	UpdatedBy string     `json:"updated_by,omitempty" swaggerignore:"true"`
@@ -22,3 +22,18 @@ func (u *Model) BeforeSave() (err error) {
 	u.UpdatedAt = &date
 	return
 }
+
+// APPROVED approve
+const APPROVED = "approved"
+
+// DECLINED decline
+const DECLINED = "declined"
+
+// ACTIVE activate
+const ACTIVE = "active"
+
+// ACCEPTED accepted
+const ACCEPTED = "accepted"
+
+// REJECTED reject
+const REJECTED = "rejected"

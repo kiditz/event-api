@@ -20,10 +20,16 @@ type QuotationList struct {
 	Name     string  `json:"name"`
 	ImageURL string  `json:"image_url"`
 	Status   string  `json:"status"`
+	Model
 }
 
 //FilteredQuotations godoc
 type FilteredQuotations struct {
 	CampaignID uint `json:"campaign_id" query:"campaign_id"`
 	LimitOffset
+}
+
+//QuotationIdentity godoc
+type QuotationIdentity struct {
+	QuotationID uint `json:"quotation_id" query:"campaign_id"`
 }

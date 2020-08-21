@@ -15,7 +15,3 @@ type Invitation struct {
 type RejectInvitation struct {
 	InvitationID uint `json:"invitation_id" query:"invitation_id"`
 }
-
-const ACTIVE = "active"
-const ACCEPTED = "accepted"
-const REJECTED = "accepted"
