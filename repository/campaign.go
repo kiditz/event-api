@@ -111,7 +111,7 @@ func GetCampaignInfo(campaignID int) (e.CampaignInfo, error) {
 	query = query.Joins("JOIN services s ON s.id = q.service_id")
 	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
 	query = query.Joins("JOIN images i ON i.id = t.image_id")
-	rows, _ := query.Where("q.campaign_id = ? AND status = ?", campaignID, e.APPROVED).Limit(5).Rows()
+	rows, _ := query.Where("q.campaign_id = ? AND status = ?", campaignID, e.APPROVED).Order("q.id desc").Limit(5).Rows()
 	defer rows.Close()
 	for rows.Next() {
 		var image string
