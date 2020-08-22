@@ -54,6 +54,17 @@ definitions:
     - start_price
     - title
     type: object
+  entity.CampaignInfo:
+    properties:
+      approved_count:
+        type: integer
+      images:
+        items:
+          type: string
+        type: array
+      staff_amount:
+        type: integer
+    type: object
   entity.Cart:
     properties:
       device_id:
@@ -578,10 +589,6 @@ paths:
                 data:
                   $ref: '#/definitions/entity.Campaign'
               type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/translate.ResultErrors'
       security:
       - ApiKeyAuth: []
       summary: AddCampaign api used to create new campaign
@@ -657,6 +664,38 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Upload documents
+      tags:
+      - campaigns
+  /campaigns/info/{id}:
+    get:
+      consumes:
+      - application/json
+      description: used to find campaign information
+      parameters:
+      - description: Campaign ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.CampaignInfo'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetCampaignInfo used to find campaign information
       tags:
       - campaigns
   /campaigns/payment-days:

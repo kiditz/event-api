@@ -21,7 +21,7 @@ import (
 // @Produce json
 // @Param campaign body entity.Campaign true "New Campaign"
 // @Success 200 {object} translate.ResultSuccess{data=entity.Campaign} desc
-// @Failure 400 {object} translate.ResultErrors
+// @ailure 400 {object} translate.ResultErrors
 // @Router /campaigns [post]
 // @Security ApiKeyAuth
 func AddCampaign(c echo.Context) error {
@@ -128,4 +128,24 @@ func GetPaymentTerms(c echo.Context) error {
 func GetPaymentDays(c echo.Context) error {
 	paymentDays := r.GetPaymentDays()
 	return t.Success(c, paymentDays)
+}
+
+// GetCampaignInfo godoc
+// @Summary GetCampaignInfo used to find campaign information
+// @Description used to find campaign information
+// @Tags campaigns
+// @Accept json
+// @Produce json
+// @Param id path string true "Campaign ID"
+// @Success 200 {object} translate.ResultSuccess{data=entity.CampaignInfo} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /campaigns/info/{id} [get]
+// @Security ApiKeyAuth
+func GetCampaignInfo(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	info, err := r.GetCampaignInfo(id)
+	if err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return t.Success(c, info)
 }

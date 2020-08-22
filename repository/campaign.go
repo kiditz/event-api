@@ -75,23 +75,51 @@ func GetCampaigns(filter *CampaignsFilter, c echo.Context) []e.Campaign {
 	return campaign
 }
 
-// GetAllSocialMedia docs
+// GetAllSocialMedia godoc
 func GetAllSocialMedia() []e.SocialMedia {
 	var socialMediaList []e.SocialMedia
 	db.DB.Find(&socialMediaList)
 	return socialMediaList
 }
 
-// GetPaymentTerms docs
+// GetPaymentTerms godoc
 func GetPaymentTerms() []e.PaymentTerms {
 	var paymentTerms []e.PaymentTerms
 	db.DB.Find(&paymentTerms)
 	return paymentTerms
 }
 
-// GetPaymentDays docs
+// GetPaymentDays godoc
 func GetPaymentDays() []e.PaymentDays {
 	var paymentDays []e.PaymentDays
 	db.DB.Find(&paymentDays)
 	return paymentDays
+}
+
+// GetCampaignInfo godoc
+func GetCampaignInfo(campaignID int) (e.CampaignInfo, error) {
+	info := e.CampaignInfo{}
+	campaign := e.Campaign{}
+	query := db.DB
+	if err := query.Where("id = ?", campaignID).Find(&campaign).Error; err != nil {
+		return info, err
+	}
+	query.Model(e.Quotation{}).Where("campaign_id = ?", campaignID).Count(&info.ApprovedCount)
+	info.StaffAmount = campaign.StaffAmount
+	query = query.Table("quotations q")
+	query = query.Select("i.image_url")
+	query = query.Joins("JOIN services s ON s.id = q.service_id")
+	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
+	query = query.Joins("JOIN images i ON i.id = t.image_id")
+	rows, _ := query.Where("q.campaign_id = ? AND status = ?", campaignID, e.APPROVED).Limit(5).Rows()
+	defer rows.Close()
+	for rows.Next() {
+		var image string
+		err := rows.Scan(&image)
+		if err != nil {
+			fmt.Println(err)
+		}
+		info.Images = append(info.Images, image)
+	}
+	return info, nil
 }

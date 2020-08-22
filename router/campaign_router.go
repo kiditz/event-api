@@ -14,4 +14,5 @@ func SetCampaignRoutes(v1 *echo.Group) {
 	v1.GET("/campaigns", c.GetCampaigns, m.IsLoggedIn())
 	v1.GET("/campaigns/payment-terms", c.GetPaymentTerms, m.IsLoggedIn())
 	v1.GET("/campaigns/payment-days", c.GetPaymentDays, m.IsLoggedIn())
+	v1.GET("/campaigns/info/:id", c.GetCampaignInfo)
 }

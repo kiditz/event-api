@@ -44,7 +44,7 @@ func FindTalentByID(talentID int) (e.Talent, error) {
 	query = query.Preload("User")
 	query = query.Preload("BusinessType")
 	query = query.Preload("Location")
-	if err := query.Where("id=?", talentID).Find(&talent).Error; err != nil {
+	if err := query.Find(&talent).Error; err != nil {
 		return talent, err
 	}
 
