@@ -28,3 +28,10 @@ type Campaign struct {
 	Status         string        `json:"status" gorm:"type:varchar(60);not null;default:'booking'"`
 	Model
 }
+
+//CampaignInfo show campaign info
+type CampaignInfo struct {
+	StaffAmount   uint     `json:"staff_amount"`
+	ApprovedCount uint     `json:"approved_count"`
+	Images        []string `json:"images"`
+}
