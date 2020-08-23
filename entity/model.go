@@ -37,3 +37,9 @@ const ACCEPTED = "accepted"
 
 // REJECTED reject
 const REJECTED = "rejected"
+
+// STARTED started
+const STARTED = "started"
+
+// CLOSED closed
+const CLOSED = "closed"
