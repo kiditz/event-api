@@ -104,7 +104,7 @@ func GetTalentList(filter *e.FilteredTalent) []e.TalentResults {
 	query = query.Select("DISTINCT s.start_price, s.id, t.id, u.name , c.name, sc.name, s.image_url")
 	query = query.Joins("JOIN talents t ON u.id = t.user_id ")
 	query = query.Joins("LEFT JOIN talent_expertises te ON t.id = te.talent_id ")
-	query = query.Joins("JOIN services s ON t.id = s.talent_id AND s.id = (SELECT max(id) FROM services WHERE talent_id = t.id)")
+	query = query.Joins("JOIN services s ON t.id = s.talent_id")
 	query = query.Joins("JOIN categories c ON c.id = s.category_id")
 	query = query.Joins("JOIN sub_categories sc ON sc.id = s.sub_category_id")
 	query = query.Joins("LEFT JOIN expertises e ON e.id = te.expertise_id ")
@@ -119,6 +119,11 @@ func GetTalentList(filter *e.FilteredTalent) []e.TalentResults {
 	}
 	if filter.CategoryID > 1 {
 		query = query.Where("s.category_id = ?", filter.CategoryID)
+	} else {
+		query = query.Where("s.id = (SELECT max(id) FROM services WHERE talent_id = t.id)")
+	}
+	if filter.CampaignID > 0 {
+		query = query.Where("NOT EXISTS (SELECT 1 FROM invitations i WHERE i.campaign_id = ?)", filter.CampaignID)
 	}
 	rows, err := query.Offset(filter.Offset).Limit(filter.Limit).Order("t.id desc").Rows()
 	defer rows.Close()
