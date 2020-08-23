@@ -38,6 +38,7 @@ type Talent struct {
 // FilteredTalent use to filter talent
 type FilteredTalent struct {
 	CategoryID    int64  `query:"category_id" json:"category_id"`
+	CampaignID    int64  `query:"campaign_id" json:"campaign_id"`
 	ExpertiseName string `query:"expertise_name" json:"expertise_name"`
 	Limit         int64  `query:"limit" json:"limit"`
 	Offset        int64  `query:"offset" json:"offset"`
