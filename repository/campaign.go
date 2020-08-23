@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
@@ -12,7 +13,6 @@ import (
 
 // AddCampaign used to insert campaign into campaigns database
 func AddCampaign(campaign *e.Campaign) error {
-	fmt.Printf("Campaign : %v", campaign)
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		tx = tx.Set("gorm:association_autoupdate", false)
 		if err := tx.Save(&campaign).Error; err != nil {
@@ -122,4 +122,32 @@ func GetCampaignInfo(campaignID int) (e.CampaignInfo, error) {
 		info.Images = append(info.Images, image)
 	}
 	return info, nil
+}
+
+// StartCampiagn godoc
+func StartCampiagn(campaignID int) error {
+	return db.DB.Transaction(func(tx *gorm.DB) error {
+		var campaign e.Campaign
+		if err := tx.Find(campaign, campaignID).Error; err != nil {
+			return err
+		}
+		now := time.Now()
+		campaign.StartDate = &now
+		tx.Save(campaign)
+		return nil
+	})
+}
+
+// StopProject godoc
+func StopProject(campaignID int) error {
+	return db.DB.Transaction(func(tx *gorm.DB) error {
+		var campaign e.Campaign
+		if err := tx.Find(campaign, campaignID).Error; err != nil {
+			return err
+		}
+		now := time.Now()
+		campaign.EndDate = &now
+		tx.Save(campaign)
+		return nil
+	})
 }
