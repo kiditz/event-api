@@ -31,7 +31,8 @@ type Campaign struct {
 
 //CampaignInfo show campaign info
 type CampaignInfo struct {
-	StaffAmount   uint     `json:"staff_amount"`
-	ApprovedCount uint     `json:"approved_count"`
-	Images        []string `json:"images"`
+	StaffAmount    uint     `json:"staff_amount"`
+	ApprovedCount  uint     `json:"approved_count"`
+	QuotationCount uint     `json:"quotation_count"`
+	Images         []string `json:"images"`
 }
