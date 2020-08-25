@@ -38,8 +38,8 @@ const ACCEPTED = "accepted"
 // REJECTED reject
 const REJECTED = "rejected"
 
-// STARTED started
-const STARTED = "started"
+// RUNNING started
+const RUNNING = "running"
 
 // CLOSED closed
 const CLOSED = "closed"

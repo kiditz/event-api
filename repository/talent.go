@@ -123,7 +123,7 @@ func GetTalentList(filter *e.FilteredTalent) []e.TalentResults {
 		query = query.Where("s.id = (SELECT max(id) FROM services WHERE talent_id = t.id)")
 	}
 	if filter.CampaignID > 0 {
-		query = query.Where("NOT EXISTS (SELECT 1 FROM invitations i WHERE i.campaign_id = ?)", filter.CampaignID)
+		query = query.Where("NOT EXISTS (SELECT 1 FROM invitations i WHERE i.campaign_id = ? AND i.service_id = s.id)", filter.CampaignID)
 	}
 	rows, err := query.Offset(filter.Offset).Limit(filter.Limit).Order("t.id desc").Rows()
 	defer rows.Close()

@@ -98,19 +98,21 @@ func GetPaymentDays() []e.PaymentDays {
 
 // GetCampaignInfo godoc
 func GetCampaignInfo(campaignID int) (e.CampaignInfo, error) {
-	info := e.CampaignInfo{}
+	info := e.CampaignInfo{Images: []string{}}
 	campaign := e.Campaign{}
 	query := db.DB
 	if err := query.Where("id = ?", campaignID).Find(&campaign).Error; err != nil {
 		return info, err
 	}
-	query.Model(e.Quotation{}).Where("campaign_id = ?", campaignID).Count(&info.ApprovedCount)
+	query.Model(e.Quotation{}).Where("campaign_id = ? and status = ?", campaignID, e.APPROVED).Count(&info.ApprovedCount)
+	query.Model(e.Quotation{}).Where("campaign_id = ?", campaignID).Count(&info.QuotationCount)
 	info.StaffAmount = campaign.StaffAmount
 	query = query.Table("quotations q")
 	query = query.Select("i.image_url")
 	query = query.Joins("JOIN services s ON s.id = q.service_id")
 	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
 	query = query.Joins("JOIN images i ON i.id = t.image_id")
+	query = query.Joins("JOIN sub_categories sc ON sc.id = s.sub_category_id ")
 	rows, _ := query.Where("q.campaign_id = ? AND status = ?", campaignID, e.APPROVED).Order("q.id desc").Limit(5).Rows()
 	defer rows.Close()
 	for rows.Next() {
@@ -121,6 +123,7 @@ func GetCampaignInfo(campaignID int) (e.CampaignInfo, error) {
 		}
 		info.Images = append(info.Images, image)
 	}
+
 	return info, nil
 }
 

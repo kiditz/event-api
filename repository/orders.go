@@ -76,7 +76,7 @@ func GetInvitations(email string, limitOffset e.LimitOffset) []e.Invitation {
 func AcceptInvitation(quote *e.Quotation) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		var invitation e.Invitation
-		if err := tx.Where("id = ?", quote.InvitationID).Find(&invitation).Error; err != nil {
+		if err := tx.Set("gorm:query_option", "FOR UPDATE").Where("id = ?", quote.InvitationID).Find(&invitation).Error; err != nil {
 			return err
 		}
 		if invitation.Status == e.ACCEPTED {
@@ -100,7 +100,7 @@ func AcceptInvitation(quote *e.Quotation) error {
 func RejectInvitation(reject *e.RejectInvitation) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		var invitation e.Invitation
-		if err := tx.Where("id = ?", reject.InvitationID).Find(&invitation).Error; err != nil {
+		if err := tx.Set("gorm:query_option", "FOR UPDATE").Where("id = ?", reject.InvitationID).Find(&invitation).Error; err != nil {
 			return err
 		}
 		if invitation.Status == e.ACCEPTED {
@@ -125,13 +125,16 @@ func GetQuotations(filter *e.FilteredQuotations) []e.QuotationList {
 	}
 	quotations := []e.QuotationList{}
 	query := db.DB.Table("quotations q")
-	query = query.Select("q.id, q.price, q.message, u.name, i.image_url, q.status, q.created_at")
+	query = query.Select("q.id, q.price, q.message, u.name, i.image_url, q.status, q.created_at, concat(c.name, ' | ', sc.name), s.image_url, p.currency")
 	query = query.Joins("JOIN services s ON q.service_id = s.id")
 	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
 	query = query.Joins("JOIN users u ON t.user_id = u.id")
 	query = query.Joins("JOIN images i ON t.image_id = i.id")
+	query = query.Joins("JOIN categories c ON c.id = s.category_id")
+	query = query.Joins("JOIN campaigns p ON p.id = q.campaign_id")
+	query = query.Joins("JOIN sub_categories sc ON sc.id = s.sub_category_id")
 	if filter.Status == e.ACTIVE {
-		query = query.Where("q.campaign_id = ? AND q.status in (?)", filter.CampaignID, []string{e.ACTIVE, e.DECLINED})
+		query = query.Where("q.campaign_id = ? AND q.status in (?)", filter.CampaignID, []string{e.ACTIVE, e.DECLINED, e.APPROVED})
 	} else {
 		query = query.Where("q.campaign_id = ? AND q.status = ?", filter.CampaignID, filter.Status)
 	}
@@ -143,7 +146,7 @@ func GetQuotations(filter *e.FilteredQuotations) []e.QuotationList {
 	defer rows.Close()
 	for rows.Next() {
 		quotation := e.QuotationList{}
-		err := rows.Scan(&quotation.ID, &quotation.Price, &quotation.Message, &quotation.Name, &quotation.ImageURL, &quotation.Status, &quotation.CreatedAt)
+		err := rows.Scan(&quotation.ID, &quotation.Price, &quotation.Message, &quotation.Name, &quotation.ImageURL, &quotation.Status, &quotation.CreatedAt, &quotation.ServiceCategory, &quotation.ServiceImageURL, &quotation.Currency)
 		if err != nil {
 			fmt.Println(err)
 		}

@@ -14,12 +14,15 @@ type Quotation struct {
 
 //QuotationList godoc
 type QuotationList struct {
-	ID       uint    `json:"id"`
-	Price    float64 `json:"price" `
-	Message  string  `json:"message"`
-	Name     string  `json:"name"`
-	ImageURL string  `json:"image_url"`
-	Status   string  `json:"status"`
+	ID              uint    `json:"id"`
+	Price           float64 `json:"price" `
+	Currency        string  `json:"currency" `
+	Message         string  `json:"message"`
+	Name            string  `json:"name"`
+	ImageURL        string  `json:"image_url"`
+	Status          string  `json:"status"`
+	ServiceCategory string  `json:"service_category"`
+	ServiceImageURL string  `json:"service_image_url"`
 	Model
 }
 
