@@ -9,10 +9,13 @@ type Order struct {
 	TransactionDetails  *TransactionDetails `json:"transaction_details"`
 	TransactionTime     time.Time           `json:"transaction_time"`
 	ItemDetails         []ItemDetails       `json:"item_details"`
-	TransactionStatus   string              `json:"transaction_status" gorm:"not null;varchar(10);" validate:"required"`
-	PaymentStatus       string              `json:"payment_status" gorm:"not null;varchar(10);" validate:"required"`
+	TransactionStatus   string              `json:"transaction_status" gorm:"not null;varchar(10);"`
+	PaymentStatus       string              `json:"payment_status" gorm:"not null;varchar(10);"`
 	UserID              uint                `json:"user_id" gorm:"not null;index;" validate:"required"`
 	CampaignID          uint                `json:"campaign_id" gorm:"not null;index;" validate:"required"`
+	CustomField1        string              `json:"custom_field1"`
+	CustomField2        string              `json:"custom_field2"`
+	CustomField3        string              `json:"custom_field3"`
 }
 
 // TransactionDetails godoc
