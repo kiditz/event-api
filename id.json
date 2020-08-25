@@ -7,10 +7,9 @@
     "jobs_company_id_companies_id_foreign": "Perusahaan tidak ditemukan!",
     "record not found": "Data tidak ditemukan",
     "reject_is_not_allowed": "Surat penawaran yang sudah di terima harus dibatalkan dulu oleh client.",
-    "status_was_accepted": "Penawaran sudah pernah dibuat",
+    "status_was_accepted": "Undangan sudah anda terima",
     "status_was_approved": "Surat penawaran sudah disetujui sebelumnya.",
     "status_was_declined": "Surat penawaran sudah ditolak sebelumnya.",
-    
     "user_not_found": "Email / Password tidak terdaftar",
     "users_email_key": "Email tidak dapat digunakan"
 }
