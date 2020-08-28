@@ -22,10 +22,27 @@ func AddUser(user *e.User) error {
 		}
 		if user.Type == "company" {
 			tx.Create(&e.Company{
-				UserID:    user.ID,
-				Name:      user.Name,
-				IsUpdated: false,
+				UserID:      user.ID,
+				Name:        "My Company Name",
+				Description: "[{\"insert\":\"My Company Description\"},{\"insert\":\"\n\"}]",
+				IsUpdated:   false,
 			})
+		}
+		return nil
+	})
+}
+
+//EditUser godoc
+func EditUser(user *e.User) error {
+	return db.DB.Transaction(func(tx *gorm.DB) error {
+		currentUser, err := FindUserByID(user.ID)
+		if err != nil {
+			return err
+		}
+		user.Password = currentUser.Password
+		user.Type = currentUser.Type
+		if err := tx.Save(&user).Error; err != nil {
+			return err
 		}
 		return nil
 	})

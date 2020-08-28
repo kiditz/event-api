@@ -2,7 +2,6 @@ package repository
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
@@ -125,32 +124,4 @@ func GetCampaignInfo(campaignID int) (e.CampaignInfo, error) {
 	}
 
 	return info, nil
-}
-
-// StartCampiagn godoc
-func StartCampiagn(campaignID int) error {
-	return db.DB.Transaction(func(tx *gorm.DB) error {
-		var campaign e.Campaign
-		if err := tx.Find(campaign, campaignID).Error; err != nil {
-			return err
-		}
-		now := time.Now()
-		campaign.StartDate = &now
-		tx.Save(campaign)
-		return nil
-	})
-}
-
-// StopProject godoc
-func StopProject(campaignID int) error {
-	return db.DB.Transaction(func(tx *gorm.DB) error {
-		var campaign e.Campaign
-		if err := tx.Find(campaign, campaignID).Error; err != nil {
-			return err
-		}
-		now := time.Now()
-		campaign.EndDate = &now
-		tx.Save(campaign)
-		return nil
-	})
 }

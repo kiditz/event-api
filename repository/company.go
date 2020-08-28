@@ -13,7 +13,7 @@ func FindCompany(c echo.Context) (e.Company, error) {
 	var company e.Company
 	user := utils.GetUser(c)
 	userID := uint(user["id"].(float64))
-	if err := db.DB.Where("user_id = ?", userID).Preload("Image").Find(&company).Error; err != nil {
+	if err := db.DB.Where("user_id = ?", userID).Preload("Category").Preload("SubCategory").Preload("BackgroundImage").Preload("Image").Find(&company).Error; err != nil {
 		return company, err
 	}
 	return company, nil

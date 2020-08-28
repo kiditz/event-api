@@ -62,6 +62,8 @@ definitions:
         items:
           type: string
         type: array
+      quotation_count:
+        type: integer
       staff_amount:
         type: integer
     type: object
@@ -97,9 +99,15 @@ definitions:
     type: object
   entity.Company:
     properties:
-      country:
-        type: string
-      currency:
+      background_image:
+        $ref: '#/definitions/entity.Image'
+        type: object
+      category:
+        $ref: '#/definitions/entity.Category'
+        type: object
+      category_id:
+        type: integer
+      description:
         type: string
       id:
         type: integer
@@ -108,11 +116,18 @@ definitions:
         type: object
       is_updated:
         type: boolean
+      is_verified:
+        type: boolean
       name:
         type: string
+      phone:
+        type: string
+      sub_category:
+        $ref: '#/definitions/entity.SubCategory'
+        type: object
+      sub_category_id:
+        type: integer
     required:
-    - country
-    - currency
     - name
     type: object
   entity.Document:
@@ -152,6 +167,8 @@ definitions:
     type: object
   entity.FilteredTalent:
     properties:
+      campaign_id:
+        type: integer
       category_id:
         type: integer
       expertise_name:
@@ -194,6 +211,27 @@ definitions:
     - campaign_id
     - service_id
     type: object
+  entity.ItemDetails:
+    properties:
+      brand:
+        type: string
+      id:
+        type: string
+      merchant_name:
+        type: string
+      name:
+        type: string
+      order_id:
+        type: integer
+      price:
+        type: number
+      quantity:
+        type: integer
+    required:
+    - name
+    - price
+    - quantity
+    type: object
   entity.LimitOffset:
     properties:
       limit:
@@ -227,6 +265,41 @@ definitions:
     - formatted_address
     - lat
     - lng
+    type: object
+  entity.Order:
+    properties:
+      campaign_id:
+        type: integer
+      custom_field1:
+        type: string
+      custom_field2:
+        type: string
+      custom_field3:
+        type: string
+      id:
+        type: integer
+      id_user:
+        type: integer
+      item_details:
+        items:
+          $ref: '#/definitions/entity.ItemDetails'
+        type: array
+      redirect_url:
+        type: string
+      token:
+        type: string
+      transaction_detail_id:
+        type: integer
+      transaction_details:
+        $ref: '#/definitions/entity.TransactionDetails'
+        type: object
+      transaction_status:
+        type: string
+      transaction_time:
+        type: string
+    required:
+    - campaign_id
+    - id_user
     type: object
   entity.PaymentDays:
     properties:
@@ -278,6 +351,8 @@ definitions:
     type: object
   entity.QuotationList:
     properties:
+      currency:
+        type: string
       id:
         type: integer
       image_url:
@@ -288,6 +363,10 @@ definitions:
         type: string
       price:
         type: number
+      service_category:
+        type: string
+      service_image_url:
+        type: string
       status:
         type: string
     type: object
@@ -406,16 +485,39 @@ definitions:
     - height
     - instagram_link
     type: object
+  entity.TransactionDetails:
+    properties:
+      billing:
+        type: number
+      down_payment:
+        type: number
+      gross_amount:
+        type: number
+      id:
+        type: integer
+      order_id:
+        type: string
+    type: object
   entity.User:
     properties:
+      background_image_url:
+        type: string
+      currency:
+        type: string
       email:
+        type: string
+      image_url:
+        type: string
+      language:
         type: string
       name:
         type: string
       type:
         type: string
     required:
+    - currency
     - email
+    - language
     - name
     - type
     type: object
@@ -481,6 +583,32 @@ info:
   title: Spgku Application
   version: "1.0"
 paths:
+  /account:
+    get:
+      consumes:
+      - application/json
+      description: Find user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: FindUserByLoggedIn api used to find user by token
+      tags:
+      - users
   /auth/token:
     post:
       consumes:
@@ -1098,6 +1226,35 @@ paths:
       summary: GetInvitations api used to invitations by user logged in
       tags:
       - orders
+  /order/charge:
+    post:
+      description: add new order
+      parameters:
+      - description: Order
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Order'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: AddOrder api used to add order
+      tags:
+      - orders
   /quotation/approved:
     post:
       description: approve quotation
@@ -1381,6 +1538,9 @@ paths:
       description: find talents
       parameters:
       - in: query
+        name: campaign_id
+        type: integer
+      - in: query
         name: category_id
         type: integer
       - in: query
@@ -1448,6 +1608,38 @@ paths:
           schema:
             $ref: '#/definitions/translate.ResultErrors'
       summary: AddUser api used to signup
+      tags:
+      - users
+    put:
+      consumes:
+      - application/json
+      description: Edit user
+      parameters:
+      - description: Edit User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/entity.User'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: EditUser api used to edit profile
       tags:
       - users
 securityDefinitions:

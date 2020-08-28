@@ -1,7 +1,13 @@
 package controller
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"os"
+	"time"
 
 	e "github.com/kiditz/spgku-api/entity"
 	r "github.com/kiditz/spgku-api/repository"
@@ -244,4 +250,84 @@ func DeclineQuotation(c echo.Context) error {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
 	return t.Success(c, quoteID)
+}
+
+// AddOrder godoc
+// @Summary AddOrder api used to add order
+// @Description add new order
+// @Tags orders
+// @MimeType
+// @Produce json
+// @Param order body entity.Order true "Order"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Order} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /order/charge [post]
+func AddOrder(c echo.Context) error {
+	var order e.Order
+	err := c.Bind(&order)
+	if err != nil {
+		print(err)
+		return t.Errors(c, http.StatusBadRequest, err)
+	}
+	if err != nil {
+		return t.Errors(c, http.StatusBadRequest, err)
+	}
+	// campaignID, _ := strconv.Atoi(order.CustomField3)
+	now := time.Now().UTC()
+	sec := now.Unix()
+	order.TransactionDetails.OrderID = fmt.Sprintf("INV/%d/%d", sec, now.Year())
+
+	order.TransactionTime = now
+	if order.TransactionDetails.GrossAmount > 0 {
+		newOrder, err := getSnapToken(&order)
+		print(newOrder.CampaignID)
+		if err != nil {
+			return t.Errors(c, http.StatusBadRequest, err.Error())
+		}
+		err = r.AddOrder(c, newOrder)
+		if err != nil {
+			return t.Errors(c, http.StatusBadRequest, err.Error())
+		}
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"token":        order.Token,
+			"redirect_url": order.RedirectURL,
+		})
+	}
+	err = r.AddOrder(c, &order)
+	if err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+
+	if err != nil {
+		return t.Errors(c, http.StatusInternalServerError, err)
+	}
+	return t.Success(c, order)
+}
+
+func getSnapToken(order *e.Order) (*e.Order, error) {
+	serverURL := os.Getenv("MIDTRANS_SERVER_URL")
+	serverKey := os.Getenv("MIDTRANS_SERVER_KEY")
+	requestBody, _ := json.Marshal(order)
+	req, err := http.NewRequest("POST", serverURL+"/snap/v1/transactions", bytes.NewBuffer(requestBody))
+	req.Header.Set("Content-Type", "application/json")
+	if err != nil {
+		return nil, err
+	}
+	fmt.Printf("BODY :%s\n", requestBody)
+	req.SetBasicAuth(serverKey, "")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	bodyText, _ := ioutil.ReadAll(resp.Body)
+	s := string(bodyText)
+	fmt.Println(s)
+	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed_to_call_midtrans")
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("RES :%s\n", s)
+	json.Unmarshal(bodyText, &order)
+	return order, nil
 }

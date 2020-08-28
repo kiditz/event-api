@@ -28,6 +28,52 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/account": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "FindUserByLoggedIn api used to find user by token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.User"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/token": {
             "post": {
                 "description": "Sign in by using email and password",
@@ -1083,6 +1129,55 @@ var doc = `{
                 }
             }
         },
+        "/order/charge": {
+            "post": {
+                "description": "add new order",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "AddOrder api used to add order",
+                "parameters": [
+                    {
+                        "description": "Order",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Order"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/quotation/approved": {
             "post": {
                 "description": "approve quotation",
@@ -1579,6 +1674,11 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "name": "campaign_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "name": "category_id",
                         "in": "query"
                     },
@@ -1637,6 +1737,61 @@ var doc = `{
             }
         },
         "/user": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Edit user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "EditUser api used to edit profile",
+                "parameters": [
+                    {
+                        "description": "Edit User",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.User"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new user",
                 "consumes": [
@@ -1779,6 +1934,9 @@ var doc = `{
                         "type": "string"
                     }
                 },
+                "quotation_count": {
+                    "type": "integer"
+                },
                 "staff_amount": {
                     "type": "integer"
                 }
@@ -1833,15 +1991,21 @@ var doc = `{
         "entity.Company": {
             "type": "object",
             "required": [
-                "country",
-                "currency",
                 "name"
             ],
             "properties": {
-                "country": {
-                    "type": "string"
+                "background_image": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Image"
                 },
-                "currency": {
+                "category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Category"
+                },
+                "category_id": {
+                    "type": "integer"
+                },
+                "description": {
                     "type": "string"
                 },
                 "id": {
@@ -1854,8 +2018,21 @@ var doc = `{
                 "is_updated": {
                     "type": "boolean"
                 },
+                "is_verified": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "sub_category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.SubCategory"
+                },
+                "sub_category_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -1916,6 +2093,9 @@ var doc = `{
         "entity.FilteredTalent": {
             "type": "object",
             "properties": {
+                "campaign_id": {
+                    "type": "integer"
+                },
                 "category_id": {
                     "type": "integer"
                 },
@@ -1979,6 +2159,37 @@ var doc = `{
                 }
             }
         },
+        "entity.ItemDetails": {
+            "type": "object",
+            "required": [
+                "name",
+                "price",
+                "quantity"
+            ],
+            "properties": {
+                "brand": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "merchant_name": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "order_id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "quantity": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.LimitOffset": {
             "type": "object",
             "properties": {
@@ -2026,6 +2237,58 @@ var doc = `{
                     "type": "string"
                 },
                 "place_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Order": {
+            "type": "object",
+            "required": [
+                "campaign_id",
+                "id_user"
+            ],
+            "properties": {
+                "campaign_id": {
+                    "type": "integer"
+                },
+                "custom_field1": {
+                    "type": "string"
+                },
+                "custom_field2": {
+                    "type": "string"
+                },
+                "custom_field3": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "id_user": {
+                    "type": "integer"
+                },
+                "item_details": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.ItemDetails"
+                    }
+                },
+                "redirect_url": {
+                    "type": "string"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "transaction_detail_id": {
+                    "type": "integer"
+                },
+                "transaction_details": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.TransactionDetails"
+                },
+                "transaction_status": {
+                    "type": "string"
+                },
+                "transaction_time": {
                     "type": "string"
                 }
             }
@@ -2105,6 +2368,9 @@ var doc = `{
         "entity.QuotationList": {
             "type": "object",
             "properties": {
+                "currency": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -2119,6 +2385,12 @@ var doc = `{
                 },
                 "price": {
                     "type": "number"
+                },
+                "service_category": {
+                    "type": "string"
+                },
+                "service_image_url": {
+                    "type": "string"
                 },
                 "status": {
                     "type": "string"
@@ -2297,15 +2569,49 @@ var doc = `{
                 }
             }
         },
+        "entity.TransactionDetails": {
+            "type": "object",
+            "properties": {
+                "billing": {
+                    "type": "number"
+                },
+                "down_payment": {
+                    "type": "number"
+                },
+                "gross_amount": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "order_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.User": {
             "type": "object",
             "required": [
+                "currency",
                 "email",
+                "language",
                 "name",
                 "type"
             ],
             "properties": {
+                "background_image_url": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
                 "email": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "language": {
                     "type": "string"
                 },
                 "name": {

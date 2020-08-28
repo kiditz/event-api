@@ -6,3 +6,5 @@ DB_PORT=5432
 ACCESS_SECRET=r1fkyG4ntengS3kali
 BUCKET_NAME=spgku.com
 GOOGLE_APPLICATION_CREDENTIALS=/home/kiditz/github.com/kiditz/spgku-api/Spgku-3e3cc4a1430f.json
+MIDTRANS_SERVER_KEY=SB-Mid-server-UySPGS0XmbAZ-ZOp9Oaav1IK
+MIDTRANS_SERVER_URL=https://app.sandbox.midtrans.com

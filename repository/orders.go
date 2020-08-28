@@ -2,6 +2,8 @@ package repository
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
@@ -202,6 +204,30 @@ func DeclineQuotation(quote *e.QuotationIdentity) error {
 				return err
 			}
 		}
+		return nil
+	})
+}
+
+//AddOrder godoc
+func AddOrder(c echo.Context, order *e.Order) error {
+	return db.DB.Transaction(func(tx *gorm.DB) error {
+		campaignID, _ := strconv.Atoi(order.CustomField3)
+		downPayment, _ := strconv.ParseFloat(order.CustomField2, 64)
+		billing, _ := strconv.ParseFloat(order.CustomField1, 64)
+		order.CampaignID = uint(campaignID)
+		order.TransactionDetails.DownPayment = downPayment
+		order.TransactionDetails.Billing = billing
+		var campaign e.Campaign
+		tx.Set("gorm:query_option", "FOR UPDATE").Where("id = ?", order.CampaignID).Preload("Company").Find(&campaign)
+		now := time.Now().UTC()
+		campaign.StartDate = &now
+		order.UserID = campaign.Company.UserID
+		if err := tx.Save(order).Error; err != nil {
+			return err
+		}
+		// if err := tx.Save(campaign).Error; err != nil {
+		// 	return err
+		// }
 		return nil
 	})
 }

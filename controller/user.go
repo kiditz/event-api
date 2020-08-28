@@ -10,6 +10,7 @@ import (
 	e "github.com/kiditz/spgku-api/entity"
 	r "github.com/kiditz/spgku-api/repository"
 	t "github.com/kiditz/spgku-api/translate"
+	"github.com/kiditz/spgku-api/utils"
 	u "github.com/kiditz/spgku-api/utils"
 	"github.com/labstack/echo/v4"
 	"github.com/lib/pq"
@@ -52,6 +53,53 @@ func AddUser(c echo.Context) error {
 	return t.Success(c, userData)
 }
 
+// EditUser godoc
+// @Summary EditUser api used to edit profile
+// @Description Edit user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param user body entity.User true "Edit User"
+// @Success 200 {object} translate.ResultSuccess{data=entity.User} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /user [put]
+// @Security ApiKeyAuth
+func EditUser(c echo.Context) error {
+	user := new(e.User)
+	err := c.Bind(&user)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err = r.EditUser(user)
+	if err != nil {
+		if err, ok := err.(*pq.Error); ok {
+			return t.Errors(c, http.StatusBadRequest, err.Error())
+		}
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return t.Success(c, user)
+}
+
+// FindUserByLoggedIn godoc
+// @Summary FindUserByLoggedIn api used to find user by token
+// @Description Find user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} translate.ResultSuccess{data=entity.User} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /account [get]
+// @Security ApiKeyAuth
+func FindUserByLoggedIn(c echo.Context) error {
+	email := utils.GetEmail(c)
+	user, err := r.FindUserByEmail(email)
+	if err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return t.Success(c, user)
+}
+
 //SignIn used to login
 // @Summary Sign In
 // @Description Sign in by using email and password
@@ -80,6 +128,10 @@ func SignIn(c echo.Context) error {
 		claims["id"] = user.ID
 		claims["email"] = user.Email
 		claims["type"] = user.Type
+		claims["currency"] = user.Currency
+		claims["language"] = user.Language
+		claims["image_url"] = user.ImageURL
+		claims["background_image_url"] = user.BackgroundImageURL
 		claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 		result, err := token.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
 		if err != nil {

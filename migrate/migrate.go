@@ -28,7 +28,7 @@ func main() {
 		&e.SubCategory{},
 		&e.Talent{},
 		&e.Order{},
-		&e.TransactionDetail{},
+		&e.TransactionDetails{},
 		&e.ItemDetails{},
 	)
 	db.DB.Model(&e.Campaign{}).AddUniqueIndex("idx_created_by_title", "created_by", "title")

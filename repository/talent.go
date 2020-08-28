@@ -61,8 +61,8 @@ func FindTalentByEmail(email string) (e.Talent, error) {
 	query = query.Preload("User")
 	query = query.Preload("BusinessType")
 	query = query.Preload("Location")
-	if err := query.First(&talent).Error; err != nil {
-		return talent, err
+	if query.First(&talent).RecordNotFound() {
+		return talent, fmt.Errorf("talent_not_found")
 	}
 	return talent, nil
 }
@@ -123,7 +123,7 @@ func GetTalentList(filter *e.FilteredTalent) []e.TalentResults {
 		query = query.Where("s.id = (SELECT max(id) FROM services WHERE talent_id = t.id)")
 	}
 	if filter.CampaignID > 0 {
-		query = query.Where("NOT EXISTS (SELECT 1 FROM invitations i WHERE i.campaign_id = ? AND i.service_id = s.id)", filter.CampaignID)
+		query = query.Where("NOT EXISTS (SELECT 1 FROM quotations i WHERE i.campaign_id = ? AND i.service_id = s.id)", filter.CampaignID)
 	}
 	rows, err := query.Offset(filter.Offset).Limit(filter.Limit).Order("t.id desc").Rows()
 	defer rows.Close()

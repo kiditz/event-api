@@ -33,6 +33,6 @@ func GetSubCategoriesByCategoryID(categoryID int) []e.SubCategory {
 // GetExpertises docs
 func GetExpertises() []e.Expertise {
 	var expertises []e.Expertise
-	db.DB.Find(&expertises)
+	db.DB.Select("distinct name, slig").Find(&expertises)
 	return expertises
 }

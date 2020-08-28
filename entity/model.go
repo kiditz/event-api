@@ -43,3 +43,6 @@ const RUNNING = "running"
 
 // CLOSED closed
 const CLOSED = "closed"
+
+// CLOSED closed
+const S50_50 = "closed"
