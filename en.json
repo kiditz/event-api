@@ -11,5 +11,7 @@
     "status_was_approved": "Quote was approved",
     "status_was_declined": "Quote was declined.",
     "user_not_found": "Email / Password not registered",
-    "users_email_key": "Email cannot be used"
+    "users_email_key": "Email cannot be used",
+    "failed_to_call_midtrans": "Failed to start campaign",
+    "talent_not_found":"Talent not found"
 }
