@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -71,7 +72,7 @@ func EditUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	err = r.EditUser(user)
+	err = r.EditUser(c, user)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
 			return t.Errors(c, http.StatusBadRequest, err.Error())
@@ -94,6 +95,26 @@ func EditUser(c echo.Context) error {
 func FindUserByLoggedIn(c echo.Context) error {
 	email := utils.GetEmail(c)
 	user, err := r.FindUserByEmail(email)
+	if err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return t.Success(c, user)
+}
+
+// FindUserByID godoc
+// @Summary FindUserByID api used to find user by primary key
+// @Description Find user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param id path string true "User ID"
+// @Success 200 {object} translate.ResultSuccess{data=entity.User} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /account/{id} [get]
+// @Security ApiKeyAuth
+func FindUserByID(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	user, err := r.FindUserByID(uint(id))
 	if err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
@@ -148,4 +169,24 @@ func TestClaims(c echo.Context) error {
 	claims := user.Claims.(jwt.MapClaims)
 	// name := claims["name"].(string)
 	return t.Success(c, claims)
+}
+
+// GetUsers godoc
+// @Summary GetUsers is api to find users by service params
+// @Description find users
+// @Tags talents
+// @Accept json
+// @Produce json
+// @Param filter query entity.FilteredUsers false "FilteredUsers"
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.User} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /users [get]
+// @Security ApiKeyAuth
+func GetUsers(c echo.Context) error {
+	filter := new(e.FilteredUsers)
+	if err := c.Bind(filter); err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	talents := r.GetUsersByService(filter)
+	return t.Success(c, talents)
 }

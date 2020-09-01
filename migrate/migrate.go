@@ -19,9 +19,12 @@ func main() {
 		&e.Image{},
 		&e.Invitation{},
 		&e.Location{},
+		&e.Occupation{},
 		&e.PaymentDays{},
 		&e.PaymentTerms{},
+		&e.Portfolio{},
 		&e.Quotation{},
+		&e.Rate{},
 		&e.Service{},
 		&e.SocialMedia{},
 		&e.User{},
@@ -33,5 +36,5 @@ func main() {
 	)
 	db.DB.Model(&e.Campaign{}).AddUniqueIndex("idx_created_by_title", "created_by", "title")
 	db.DB.Model(&e.Talent{}).AddUniqueIndex("talent_idx_created_by", "created_by")
-	db.DB.Model(&e.Cart{}).AddUniqueIndex("cart_service_id_talent_id", "service_id", "talent_id")
+	db.DB.Model(&e.Cart{}).AddUniqueIndex("cart_service_id_device_id", "service_id", "device_id")
 }

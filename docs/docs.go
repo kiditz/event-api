@@ -74,6 +74,61 @@ var doc = `{
                 }
             }
         },
+        "/account/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Find user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "FindUserByID api used to find user by primary key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.User"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/token": {
             "post": {
                 "description": "Sign in by using email and password",
@@ -136,6 +191,50 @@ var doc = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/business-type": {
+            "get": {
+                "description": "used to find all business types",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "GetBusinesType used to find all business types",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.BusinessType"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/translate.ResultErrors"
                         }
@@ -755,22 +854,22 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/definitions/translate.ResultSuccess"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "data": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
                                                 "$ref": "#/definitions/entity.Category"
                                             }
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -897,22 +996,22 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/definitions/translate.ResultSuccess"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "data": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
                                                 "$ref": "#/definitions/entity.Expertise"
                                             }
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -1113,6 +1212,50 @@ var doc = `{
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/definitions/entity.Invitation"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/occupations": {
+            "get": {
+                "description": "used to find all occupations",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "GetOccupations used to find occupations",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Occupation"
                                             }
                                         }
                                     }
@@ -1344,6 +1487,59 @@ var doc = `{
                 }
             }
         },
+        "/salary-rates/{id}": {
+            "get": {
+                "description": "used to find all salary rates",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "GetSalaryRates used to find salary rates",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "SubCategory ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Rate"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/sub-categories": {
             "get": {
                 "security": [
@@ -1366,22 +1562,22 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/definitions/translate.ResultSuccess"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "data": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
                                                 "$ref": "#/definitions/entity.SubCategory"
                                             }
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -1419,22 +1615,22 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "allOf": [
-                                    {
-                                        "$ref": "#/definitions/translate.ResultSuccess"
-                                    },
-                                    {
-                                        "type": "object",
-                                        "properties": {
-                                            "data": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
                                                 "$ref": "#/definitions/entity.SubCategory"
                                             }
                                         }
                                     }
-                                ]
-                            }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -1598,6 +1794,61 @@ var doc = `{
                 }
             }
         },
+        "/talent/service/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find service by id",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "talents"
+                ],
+                "summary": "FindServiceByID used to find service by primary key",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Service ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Service"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/talent/{id}": {
             "get": {
                 "security": [
@@ -1720,7 +1971,10 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/entity.Talent"
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.TalentResults"
+                                            }
                                         }
                                     }
                                 }
@@ -1842,9 +2096,109 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/users": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "talents"
+                ],
+                "summary": "GetUsers is api to find users by service params",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "campaign_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "category_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "expertise_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "q",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "sub_category_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.User"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "entity.BusinessType": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Campaign": {
             "type": "object",
             "required": [
@@ -1959,9 +2313,6 @@ var doc = `{
                 },
                 "service_id": {
                     "type": "integer"
-                },
-                "talent_id": {
-                    "type": "integer"
                 }
             }
         },
@@ -2039,6 +2390,9 @@ var doc = `{
         "entity.Document": {
             "type": "object",
             "properties": {
+                "file_type": {
+                    "type": "string"
+                },
                 "filename": {
                     "type": "string"
                 },
@@ -2091,6 +2445,32 @@ var doc = `{
             }
         },
         "entity.FilteredTalent": {
+            "type": "object",
+            "properties": {
+                "campaign_id": {
+                    "type": "integer"
+                },
+                "category_id": {
+                    "type": "integer"
+                },
+                "expertise_name": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "q": {
+                    "type": "string"
+                },
+                "sub_category_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.FilteredUsers": {
             "type": "object",
             "properties": {
                 "campaign_id": {
@@ -2241,6 +2621,23 @@ var doc = `{
                 }
             }
         },
+        "entity.Occupation": {
+            "type": "object",
+            "properties": {
+                "is_searchable": {
+                    "type": "boolean"
+                },
+                "is_usable": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Order": {
             "type": "object",
             "required": [
@@ -2324,6 +2721,23 @@ var doc = `{
                 }
             }
         },
+        "entity.Portfolio": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "service_id": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Quotation": {
             "type": "object",
             "required": [
@@ -2397,6 +2811,29 @@ var doc = `{
                 }
             }
         },
+        "entity.Rate": {
+            "type": "object",
+            "properties": {
+                "criteria": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "sub_category_slug": {
+                    "type": "string"
+                },
+                "total_followers": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.RejectInvitation": {
             "type": "object",
             "properties": {
@@ -2408,11 +2845,26 @@ var doc = `{
         "entity.Service": {
             "type": "object",
             "required": [
-                "description"
+                "description",
+                "language",
+                "title"
             ],
             "properties": {
+                "backgrounds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Image"
+                    }
+                },
+                "category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Category"
+                },
                 "category_id": {
                     "type": "integer"
+                },
+                "cpv": {
+                    "type": "number"
                 },
                 "description": {
                     "type": "string"
@@ -2420,29 +2872,43 @@ var doc = `{
                 "id": {
                     "type": "integer"
                 },
-                "image_url": {
+                "language": {
                     "type": "string"
                 },
                 "portfolios": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Image"
+                        "$ref": "#/definitions/entity.Portfolio"
                     }
                 },
-                "start_price": {
+                "price": {
                     "type": "number"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "sub_category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.SubCategory"
                 },
                 "sub_category_id": {
                     "type": "integer"
                 },
-                "talent_id": {
-                    "type": "integer"
+                "title": {
+                    "type": "string"
                 },
                 "topics": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/entity.Expertise"
                     }
+                },
+                "user": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.User"
+                },
+                "user_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -2552,6 +3018,12 @@ var doc = `{
                 "location_id": {
                     "type": "integer"
                 },
+                "occupations": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Occupation"
+                    }
+                },
                 "phone": {
                     "type": "string"
                 },
@@ -2566,6 +3038,32 @@ var doc = `{
                 },
                 "youtube_link": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.TalentResults": {
+            "type": "object",
+            "properties": {
+                "category_name": {
+                    "type": "string"
+                },
+                "image_url": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "service_id": {
+                    "type": "integer"
+                },
+                "start_price": {
+                    "type": "number"
+                },
+                "sub_category_name": {
+                    "type": "string"
+                },
+                "talent_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -2599,6 +3097,9 @@ var doc = `{
                 "type"
             ],
             "properties": {
+                "active": {
+                    "type": "boolean"
+                },
                 "background_image_url": {
                     "type": "string"
                 },
@@ -2616,6 +3117,16 @@ var doc = `{
                 },
                 "name": {
                     "type": "string"
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Service"
+                    }
+                },
+                "talent": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Talent"
                 },
                 "type": {
                     "type": "string"

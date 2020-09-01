@@ -41,8 +41,11 @@ const REJECTED = "rejected"
 // RUNNING started
 const RUNNING = "running"
 
-// CLOSED closed
+//ONREVIEW godoc
+const ONREVIEW = "on_review"
+
+// CLOSED godoc
 const CLOSED = "closed"
 
-// CLOSED closed
+// S50_50 godoc
 const S50_50 = "closed"

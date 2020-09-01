@@ -20,7 +20,6 @@ type Talent struct {
 	Gender                  string        `json:"gender" validate:"required"`
 	Location                *Location     `json:"location"`
 	LocationID              uint          `json:"location_id"`
-	Services                []Service     `json:"services" swaggerignore:"true"`
 	InstagramLink           string        `json:"instagram_link" validate:"required"`
 	InstagramFollowersCount uint          `json:"instagram_followers_count"`
 	FacebookLink            string        `json:"facebook_link"`
@@ -32,6 +31,7 @@ type Talent struct {
 	Engagement              float64       `json:"engagement"`
 	IsVerified              bool          `json:"is_verified"`
 	Expertises              []Expertise   `json:"expertises" gorm:"not null;many2many:talent_expertises;"`
+	Occupations             []Occupation  `json:"occupations" gorm:"not null;many2many:talent_occupations;"`
 	Model
 }
 

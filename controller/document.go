@@ -7,6 +7,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"cloud.google.com/go/storage"
@@ -48,6 +49,7 @@ func AddDocument(c echo.Context) error {
 	document := &e.Document{
 		FileName: file.Filename,
 		Size:     file.Size,
+		FileType: filepath.Ext(file.Filename),
 		URL:      "http://storage.googleapis.com/" + bucket + "/" + object,
 		Message:  message.Error(),
 	}

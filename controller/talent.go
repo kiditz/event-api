@@ -112,7 +112,7 @@ func FindTalentByLogin(c echo.Context) error {
 // @Accept json
 // @Produce json
 // @Param filter query entity.FilteredTalent false "FilteredTalent"
-// @Success 200 {object} translate.ResultSuccess{data=entity.Talent} desc
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.TalentResults} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /talents [get]
 // @Security ApiKeyAuth
@@ -123,4 +123,24 @@ func GetTalents(c echo.Context) error {
 	}
 	talents := r.GetTalentList(filter)
 	return t.Success(c, talents)
+}
+
+// FindServiceByID godoc
+// @Summary FindServiceByID used to find service by primary key
+// @Description find service by id
+// @Tags talents
+// @Accept json
+// @Produce json
+// @Param id path string true "Service ID"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Service} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /talent/service/{id} [get]
+// @Security ApiKeyAuth
+func FindServiceByID(c echo.Context) error {
+	id, _ := strconv.Atoi(c.Param("id"))
+	service, err := r.FindServiceByID(id)
+	if err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return t.Success(c, service)
 }

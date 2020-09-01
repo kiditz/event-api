@@ -14,7 +14,7 @@ import (
 // AddToCart godoc
 func AddToCart(cart *e.Cart, c echo.Context) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&cart).Error; err != nil {
+		if err := tx.Save(&cart).Error; err != nil {
 			return err
 		}
 		return nil
@@ -34,7 +34,7 @@ func DeleteCart(deviceID string) error {
 //GetCarts delete cart by loggedin
 func GetCarts(deviceID string) []e.Cart {
 	carts := []e.Cart{}
-	db.DB.Where("device_id = ?", deviceID).Preload("Service.Category").Preload("Service.SubCategory").Preload("Talent.User").Find(&carts)
+	db.DB.Where("device_id = ?", deviceID).Preload("Service.Category").Preload("Service.SubCategory").Preload("Service.User").Find(&carts)
 	return carts
 }
 

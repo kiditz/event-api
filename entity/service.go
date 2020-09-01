@@ -3,14 +3,30 @@ package entity
 // Service used for talent to write their service
 type Service struct {
 	ID                 uint         `gorm:"primary_key" json:"id"`
+	ServiceTitle       string       `json:"title" sql:"index" gorm:"not null" validate:"required"`
 	ServiceDescription string       `json:"description" sql:"index" gorm:"not null" validate:"required"`
+	Language           string       `json:"language" sql:"index" gorm:"not null" validate:"required"`
 	CategoryID         uint         `json:"category_id" gorm:"not null"`
-	Category           *Category    `json:"category" swaggerignore:"true"`
+	Category           *Category    `json:"category"`
 	SubCategoryID      uint         `json:"sub_category_id" gorm:"not null" `
-	SubCategory        *SubCategory `json:"sub_category" swaggerignore:"true"`
-	ImageURL           string       `json:"image_url"`
-	TalentID           uint         `json:"talent_id" gorm:"not null"`
-	Topic              []Expertise  `json:"topics" gorm:"not null;many2many:service_topics;"`
-	Portofilios        []Image      `json:"portfolios" gorm:"many2many:portfolios;"`
-	StartPrice         float64      `json:"start_price"`
+	SubCategory        *SubCategory `json:"sub_category"`
+	UserID             uint         `json:"user_id" gorm:"not null"`
+	User               *User        `json:"user"`
+	Topics             []Expertise  `json:"topics" gorm:"not null;many2many:service_topics;"`
+	Portfilios         []Portfolio  `json:"portfolios"`
+	Background         []Image      `json:"backgrounds" gorm:"many2many:service_backgrounds;"`
+	Price              float64      `json:"price"`
+	CostPerView        float64      `json:"cpv"`
+	Status             string       `json:"status" gorm:"varchar(10)"`
+}
+
+// FilteredService use to filter talent
+type FilteredUsers struct {
+	CategoryID    int64  `query:"category_id" json:"category_id"`
+	CampaignID    int64  `query:"campaign_id" json:"campaign_id"`
+	ExpertiseName string `query:"expertise_name" json:"expertise_name"`
+	Limit         int64  `query:"limit" json:"limit"`
+	Offset        int64  `query:"offset" json:"offset"`
+	Query         string `query:"q" json:"q"`
+	SubCategoryID int64  `query:"sub_category_id" json:"sub_category_id"`
 }

@@ -7,5 +7,6 @@ type Document struct {
 	URL      string `json:"url"`
 	Size     int64  `json:"size"`
 	Message  string `json:"message"`
+	FileType string `json:"file_type" gorm:"varchar(20);"`
 	Model
 }

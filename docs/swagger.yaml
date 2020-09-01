@@ -1,5 +1,14 @@
 basePath: /api/v1
 definitions:
+  entity.BusinessType:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
   entity.Campaign:
     properties:
       category_id:
@@ -79,8 +88,6 @@ definitions:
         type: integer
       service_id:
         type: integer
-      talent_id:
-        type: integer
     type: object
   entity.Category:
     properties:
@@ -132,6 +139,8 @@ definitions:
     type: object
   entity.Document:
     properties:
+      file_type:
+        type: string
       filename:
         type: string
       id:
@@ -166,6 +175,23 @@ definitions:
         type: string
     type: object
   entity.FilteredTalent:
+    properties:
+      campaign_id:
+        type: integer
+      category_id:
+        type: integer
+      expertise_name:
+        type: string
+      limit:
+        type: integer
+      offset:
+        type: integer
+      q:
+        type: string
+      sub_category_id:
+        type: integer
+    type: object
+  entity.FilteredUsers:
     properties:
       campaign_id:
         type: integer
@@ -266,6 +292,17 @@ definitions:
     - lat
     - lng
     type: object
+  entity.Occupation:
+    properties:
+      is_searchable:
+        type: boolean
+      is_usable:
+        type: boolean
+      name:
+        type: string
+      slug:
+        type: string
+    type: object
   entity.Order:
     properties:
       campaign_id:
@@ -321,6 +358,17 @@ definitions:
     required:
     - name
     type: object
+  entity.Portfolio:
+    properties:
+      id:
+        type: integer
+      image_url:
+        type: string
+      service_id:
+        type: integer
+      title:
+        type: string
+    type: object
   entity.Quotation:
     properties:
       campaign_id:
@@ -370,6 +418,21 @@ definitions:
       status:
         type: string
     type: object
+  entity.Rate:
+    properties:
+      criteria:
+        type: string
+      height:
+        type: integer
+      id:
+        type: integer
+      price:
+        type: number
+      sub_category_slug:
+        type: string
+      total_followers:
+        type: integer
+    type: object
   entity.RejectInvitation:
     properties:
       invitation_id:
@@ -377,30 +440,51 @@ definitions:
     type: object
   entity.Service:
     properties:
+      backgrounds:
+        items:
+          $ref: '#/definitions/entity.Image'
+        type: array
+      category:
+        $ref: '#/definitions/entity.Category'
+        type: object
       category_id:
         type: integer
+      cpv:
+        type: number
       description:
         type: string
       id:
         type: integer
-      image_url:
+      language:
         type: string
       portfolios:
         items:
-          $ref: '#/definitions/entity.Image'
+          $ref: '#/definitions/entity.Portfolio'
         type: array
-      start_price:
+      price:
         type: number
+      status:
+        type: string
+      sub_category:
+        $ref: '#/definitions/entity.SubCategory'
+        type: object
       sub_category_id:
         type: integer
-      talent_id:
-        type: integer
+      title:
+        type: string
       topics:
         items:
           $ref: '#/definitions/entity.Expertise'
         type: array
+      user:
+        $ref: '#/definitions/entity.User'
+        type: object
+      user_id:
+        type: integer
     required:
     - description
+    - language
+    - title
     type: object
   entity.SocialMedia:
     properties:
@@ -469,6 +553,10 @@ definitions:
         type: object
       location_id:
         type: integer
+      occupations:
+        items:
+          $ref: '#/definitions/entity.Occupation'
+        type: array
       phone:
         type: string
       twitter_followers_count:
@@ -485,6 +573,23 @@ definitions:
     - height
     - instagram_link
     type: object
+  entity.TalentResults:
+    properties:
+      category_name:
+        type: string
+      image_url:
+        type: string
+      name:
+        type: string
+      service_id:
+        type: integer
+      start_price:
+        type: number
+      sub_category_name:
+        type: string
+      talent_id:
+        type: integer
+    type: object
   entity.TransactionDetails:
     properties:
       billing:
@@ -500,6 +605,8 @@ definitions:
     type: object
   entity.User:
     properties:
+      active:
+        type: boolean
       background_image_url:
         type: string
       currency:
@@ -512,6 +619,13 @@ definitions:
         type: string
       name:
         type: string
+      services:
+        items:
+          $ref: '#/definitions/entity.Service'
+        type: array
+      talent:
+        $ref: '#/definitions/entity.Talent'
+        type: object
       type:
         type: string
     required:
@@ -609,6 +723,38 @@ paths:
       summary: FindUserByLoggedIn api used to find user by token
       tags:
       - users
+  /account/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Find user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.User'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: FindUserByID api used to find user by primary key
+      tags:
+      - users
   /auth/token:
     post:
       consumes:
@@ -652,6 +798,32 @@ paths:
       summary: Sign In
       tags:
       - users
+  /business-type:
+    get:
+      consumes:
+      - application/json
+      description: used to find all business types
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.BusinessType'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: GetBusinesType used to find all business types
+      tags:
+      - categories
   /campaigns:
     get:
       consumes:
@@ -1007,14 +1179,14 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              allOf:
-              - $ref: '#/definitions/translate.ResultSuccess'
-              - properties:
-                  data:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
                     $ref: '#/definitions/entity.Category'
-                type: object
-            type: array
+                  type: array
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -1091,14 +1263,14 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              allOf:
-              - $ref: '#/definitions/translate.ResultSuccess'
-              - properties:
-                  data:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
                     $ref: '#/definitions/entity.Expertise'
-                type: object
-            type: array
+                  type: array
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -1226,6 +1398,32 @@ paths:
       summary: GetInvitations api used to invitations by user logged in
       tags:
       - orders
+  /occupations:
+    get:
+      consumes:
+      - application/json
+      description: used to find all occupations
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Occupation'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: GetOccupations used to find occupations
+      tags:
+      - categories
   /order/charge:
     post:
       description: add new order
@@ -1352,6 +1550,38 @@ paths:
       summary: GetQuotations get quotations by campaign id
       tags:
       - orders
+  /salary-rates/{id}:
+    get:
+      consumes:
+      - application/json
+      description: used to find all salary rates
+      parameters:
+      - description: SubCategory ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Rate'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: GetSalaryRates used to find salary rates
+      tags:
+      - categories
   /sub-categories:
     get:
       consumes:
@@ -1363,14 +1593,14 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              allOf:
-              - $ref: '#/definitions/translate.ResultSuccess'
-              - properties:
-                  data:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
                     $ref: '#/definitions/entity.SubCategory'
-                type: object
-            type: array
+                  type: array
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -1397,14 +1627,14 @@ paths:
         "200":
           description: OK
           schema:
-            items:
-              allOf:
-              - $ref: '#/definitions/translate.ResultSuccess'
-              - properties:
-                  data:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
                     $ref: '#/definitions/entity.SubCategory'
-                type: object
-            type: array
+                  type: array
+              type: object
         "400":
           description: Bad Request
           schema:
@@ -1531,6 +1761,38 @@ paths:
       summary: AddService api used to create new service for talent
       tags:
       - talents
+  /talent/service/{id}:
+    get:
+      consumes:
+      - application/json
+      description: find service by id
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Service'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: FindServiceByID used to find service by primary key
+      tags:
+      - talents
   /talents:
     get:
       consumes:
@@ -1568,7 +1830,9 @@ paths:
             - $ref: '#/definitions/translate.ResultSuccess'
             - properties:
                 data:
-                  $ref: '#/definitions/entity.Talent'
+                  items:
+                    $ref: '#/definitions/entity.TalentResults'
+                  type: array
               type: object
         "400":
           description: Bad Request
@@ -1642,6 +1906,56 @@ paths:
       summary: EditUser api used to edit profile
       tags:
       - users
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: find users
+      parameters:
+      - in: query
+        name: campaign_id
+        type: integer
+      - in: query
+        name: category_id
+        type: integer
+      - in: query
+        name: expertise_name
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: offset
+        type: integer
+      - in: query
+        name: q
+        type: string
+      - in: query
+        name: sub_category_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.User'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetUsers is api to find users by service params
+      tags:
+      - talents
 securityDefinitions:
   ApiKeyAuth:
     in: header

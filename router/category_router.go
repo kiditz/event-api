@@ -13,4 +13,5 @@ func SetCategoryRoutes(v1 *echo.Group) {
 	v1.GET("/expertises", c.GetExpertises)
 	v1.GET("/business-type", c.GetBusinesType)
 	v1.GET("/occupations", c.GetOccupations)
+	v1.GET("/salary-rates/:id", c.GetSalaryRates)
 }

@@ -1,6 +1,6 @@
 {
     "Not Found": "Not found",
-    "cart_service_id_talent_id": "Cart was exists",
+    "cart_service_id_device_id": "Cart was exists",
     "company_not_found": "Company not found in the system!",
     "idx_company_id_title": "Title has been created before",
     "idx_created_by_title": "Campaign title was created",
@@ -13,5 +13,6 @@
     "user_not_found": "Email / Password not registered",
     "users_email_key": "Email cannot be used",
     "failed_to_call_midtrans": "Failed to start campaign",
-    "talent_not_found":"Talent not found"
+    "talent_not_found":"Talent not found",
+    "service_not_found": "Service not found"
 }
