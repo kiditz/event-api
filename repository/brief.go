@@ -10,8 +10,8 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// AddCampaign used to insert campaign into campaigns database
-func AddCampaign(campaign *e.Campaign) error {
+// AddBrief used to insert campaign into briefs database
+func AddBrief(campaign *e.Brief) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		tx = tx.Set("gorm:association_autoupdate", false)
 		if err := tx.Save(&campaign).Error; err != nil {
@@ -36,17 +36,17 @@ func AddCampaign(campaign *e.Campaign) error {
 	})
 }
 
-// FindCampaignByID  used to find campaign by id
-func FindCampaignByID(campaignID int) (e.Campaign, error) {
-	var campaign e.Campaign
-	if err := db.DB.Where("id=?", campaignID).Preload("Category").Preload("SubCategory").Preload("Location").Preload("PaymentTerms").Preload("PaymentDays").Find(&campaign).Error; err != nil {
+// FindBriefByID  used to find campaign by id
+func FindBriefByID(campaignID int) (e.Brief, error) {
+	var campaign e.Brief
+	if err := db.DB.Where("id=?", campaignID).Preload("Category").Preload("Location").Preload("PaymentTerms").Preload("PaymentDays").Find(&campaign).Error; err != nil {
 		return campaign, err
 	}
 	return campaign, nil
 }
 
-// CampaignsFilter filtering query by
-type CampaignsFilter struct {
+// BriefsFilter filtering query by
+type BriefsFilter struct {
 	Date   string `query:"date" json:"date"`
 	Query  string `query:"q" json:"q"`
 	Offset int    `query:"offset" json:"offset"`
@@ -54,9 +54,9 @@ type CampaignsFilter struct {
 	OnlyMe bool   `query:"onlyme" json:"onlyme"`
 }
 
-// GetCampaigns used to find campaign by filtered values
-func GetCampaigns(filter *CampaignsFilter, c echo.Context) []e.Campaign {
-	var campaign []e.Campaign
+// GetBriefs used to find campaign by filtered values
+func GetBriefs(filter *BriefsFilter, c echo.Context) []e.Brief {
+	var campaign []e.Brief
 	query := db.DB
 	if filter.Limit == 0 {
 		filter.Limit = 10
@@ -95,16 +95,16 @@ func GetPaymentDays() []e.PaymentDays {
 	return paymentDays
 }
 
-// GetCampaignInfo godoc
-func GetCampaignInfo(campaignID int) (e.CampaignInfo, error) {
-	info := e.CampaignInfo{Images: []string{}}
-	campaign := e.Campaign{}
+// GetBriefInfo godoc
+func GetBriefInfo(campaignID int) (e.BriefInfo, error) {
+	info := e.BriefInfo{Images: []string{}}
+	campaign := e.Brief{}
 	query := db.DB
 	if err := query.Where("id = ?", campaignID).Find(&campaign).Error; err != nil {
 		return info, err
 	}
-	query.Model(e.Quotation{}).Where("campaign_id = ? and status = ?", campaignID, e.APPROVED).Count(&info.ApprovedCount)
-	query.Model(e.Quotation{}).Where("campaign_id = ?", campaignID).Count(&info.QuotationCount)
+	query.Model(e.Quotation{}).Where("brief_id = ? and status = ?", campaignID, e.APPROVED).Count(&info.ApprovedCount)
+	query.Model(e.Quotation{}).Where("brief_id = ?", campaignID).Count(&info.QuotationCount)
 	info.StaffAmount = campaign.StaffAmount
 	query = query.Table("quotations q")
 	query = query.Select("i.image_url")
@@ -112,7 +112,7 @@ func GetCampaignInfo(campaignID int) (e.CampaignInfo, error) {
 	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
 	query = query.Joins("JOIN images i ON i.id = t.image_id")
 	query = query.Joins("JOIN sub_categories sc ON sc.id = s.sub_category_id ")
-	rows, _ := query.Where("q.campaign_id = ? AND status = ?", campaignID, e.APPROVED).Order("q.id desc").Limit(5).Rows()
+	rows, _ := query.Where("q.brief_id = ? AND status = ?", campaignID, e.APPROVED).Order("q.id desc").Limit(5).Rows()
 	defer rows.Close()
 	for rows.Next() {
 		var image string

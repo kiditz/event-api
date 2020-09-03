@@ -11,7 +11,7 @@ type Order struct {
 	ItemDetails         []ItemDetails       `json:"item_details"`
 	TransactionStatus   string              `json:"transaction_status" gorm:"not null;varchar(10);"`
 	UserID              uint                `json:"id_user" gorm:"not null;index;" validate:"required"`
-	CampaignID          uint                `json:"campaign_id" gorm:"not null;index;" validate:"required"`
+	BriefID             uint                `json:"brief_id" gorm:"index;" validate:"required"`
 	CustomField1        string              `json:"custom_field1"`
 	CustomField2        string              `json:"custom_field2"`
 	CustomField3        string              `json:"custom_field3"`

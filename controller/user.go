@@ -129,7 +129,7 @@ func FindUserByID(c echo.Context) error {
 // @Produce  json
 // @Param email query string true "your account email"
 // @Param password query string true "your account password"
-// @Success 200 {object} translate.ResultSuccess{data=entity.Campaign} desc
+// @Success 200 {object} translate.ResultSuccess{data=entity.Brief} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Failure 404 {object} translate.ResultErrors
 // @Failure 500 {object} translate.ResultErrors

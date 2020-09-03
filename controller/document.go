@@ -21,7 +21,7 @@ import (
 // AddDocument godoc
 // @Summary Upload documents
 // @Description Upload file
-// @Tags campaigns
+// @Tags briefs
 // @Accept  multipart/form-data
 // @Produce  json
 // @Param file formData file true "campaign image"
@@ -29,7 +29,7 @@ import (
 // @Failure 400 {object} translate.ResultErrors
 // @Failure 404 {object} translate.ResultErrors
 // @Failure 500 {object} translate.ResultErrors
-// @Router /campaigns/documents [post]
+// @Router /briefs/documents [post]
 // @Security ApiKeyAuth
 func AddDocument(c echo.Context) error {
 	// Get avatar

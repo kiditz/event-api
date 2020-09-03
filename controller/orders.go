@@ -38,6 +38,7 @@ func AddCart(c echo.Context) error {
 		if err, ok := err.(*pq.Error); ok {
 			return t.Errors(c, http.StatusBadRequest, err.Constraint)
 		}
+		return t.Errors(c, http.StatusInternalServerError, err.Error())
 	}
 	return t.Success(c, cart)
 }
@@ -280,7 +281,7 @@ func AddOrder(c echo.Context) error {
 	order.TransactionTime = now
 	if order.TransactionDetails.GrossAmount > 0 {
 		newOrder, err := getSnapToken(&order)
-		print(newOrder.CampaignID)
+		print(newOrder.BriefID)
 		if err != nil {
 			return t.Errors(c, http.StatusBadRequest, err.Error())
 		}

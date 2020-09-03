@@ -10,7 +10,7 @@ func main() {
 	defer db.DB.Close()
 	db.DB.AutoMigrate(
 		&e.BusinessType{},
-		&e.Campaign{},
+		&e.Brief{},
 		&e.Cart{},
 		&e.Category{},
 		&e.Company{},
@@ -34,7 +34,6 @@ func main() {
 		&e.TransactionDetails{},
 		&e.ItemDetails{},
 	)
-	db.DB.Model(&e.Campaign{}).AddUniqueIndex("idx_created_by_title", "created_by", "title")
-	db.DB.Model(&e.Talent{}).AddUniqueIndex("talent_idx_created_by", "created_by")
 	db.DB.Model(&e.Cart{}).AddUniqueIndex("cart_service_id_device_id", "service_id", "device_id")
+	db.DB.Model(&e.Cart{}).AddUniqueIndex("cart_category_id_device_id", "category_id", "device_id")
 }

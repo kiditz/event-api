@@ -170,7 +170,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/entity.Campaign"
+                                            "$ref": "#/definitions/entity.Brief"
                                         }
                                     }
                                 }
@@ -198,51 +198,7 @@ var doc = `{
                 }
             }
         },
-        "/business-type": {
-            "get": {
-                "description": "used to find all business types",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "categories"
-                ],
-                "summary": "GetBusinesType used to find all business types",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/translate.ResultSuccess"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/entity.BusinessType"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/translate.ResultErrors"
-                        }
-                    }
-                }
-            }
-        },
-        "/campaigns": {
+        "/briefs": {
             "get": {
                 "security": [
                     {
@@ -257,9 +213,9 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "campaigns"
+                    "briefs"
                 ],
-                "summary": "GetCampaigns used to find campaign by specific params",
+                "summary": "GetBriefs used to find campaign by specific params",
                 "parameters": [
                     {
                         "type": "string",
@@ -301,7 +257,7 @@ var doc = `{
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/entity.Campaign"
+                                                "$ref": "#/definitions/entity.Brief"
                                             }
                                         }
                                     }
@@ -328,17 +284,17 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "campaigns"
+                    "briefs"
                 ],
-                "summary": "AddCampaign api used to create new campaign",
+                "summary": "AddBrief api used to create new campaign",
                 "parameters": [
                     {
-                        "description": "New Campaign",
+                        "description": "New Brief",
                         "name": "campaign",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/entity.Campaign"
+                            "$ref": "#/definitions/entity.Brief"
                         }
                     }
                 ],
@@ -354,7 +310,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/entity.Campaign"
+                                            "$ref": "#/definitions/entity.Brief"
                                         }
                                     }
                                 }
@@ -364,7 +320,7 @@ var doc = `{
                 }
             }
         },
-        "/campaigns/documents": {
+        "/briefs/documents": {
             "post": {
                 "security": [
                     {
@@ -379,7 +335,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "campaigns"
+                    "briefs"
                 ],
                 "summary": "Upload documents",
                 "parameters": [
@@ -431,7 +387,7 @@ var doc = `{
                 }
             }
         },
-        "/campaigns/info/{id}": {
+        "/briefs/info/{id}": {
             "get": {
                 "security": [
                     {
@@ -446,13 +402,13 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "campaigns"
+                    "briefs"
                 ],
-                "summary": "GetCampaignInfo used to find campaign information",
+                "summary": "GetBriefInfo used to find campaign information",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Campaign ID",
+                        "description": "Brief ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -470,7 +426,7 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/entity.CampaignInfo"
+                                            "$ref": "#/definitions/entity.BriefInfo"
                                         }
                                     }
                                 }
@@ -486,7 +442,7 @@ var doc = `{
                 }
             }
         },
-        "/campaigns/payment-days": {
+        "/briefs/payment-days": {
             "get": {
                 "security": [
                     {
@@ -501,7 +457,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "campaigns"
+                    "briefs"
                 ],
                 "summary": "GetPaymentDays used to find all payment days list",
                 "responses": {
@@ -535,7 +491,7 @@ var doc = `{
                 }
             }
         },
-        "/campaigns/payment-terms": {
+        "/briefs/payment-terms": {
             "get": {
                 "security": [
                     {
@@ -550,7 +506,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "campaigns"
+                    "briefs"
                 ],
                 "summary": "GetPaymentTerms used to find all payment terms list",
                 "responses": {
@@ -584,7 +540,7 @@ var doc = `{
                 }
             }
         },
-        "/campaigns/social-media": {
+        "/briefs/social-media": {
             "get": {
                 "security": [
                     {
@@ -599,7 +555,7 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "campaigns"
+                    "briefs"
                 ],
                 "summary": "GetAllSocialMedia used to find all social media list",
                 "responses": {
@@ -633,7 +589,7 @@ var doc = `{
                 }
             }
         },
-        "/campaigns/{id}": {
+        "/briefs/{id}": {
             "get": {
                 "security": [
                     {
@@ -648,13 +604,13 @@ var doc = `{
                     "application/json"
                 ],
                 "tags": [
-                    "campaigns"
+                    "briefs"
                 ],
                 "summary": "FindcampaignById used to find campaign by it's primary key",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Campaign ID",
+                        "description": "Brief ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -672,7 +628,51 @@ var doc = `{
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/entity.Campaign"
+                                            "$ref": "#/definitions/entity.Brief"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/business-type": {
+            "get": {
+                "description": "used to find all business types",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "categories"
+                ],
+                "summary": "GetBusinesType used to find all business types",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.BusinessType"
+                                            }
                                         }
                                     }
                                 }
@@ -1437,7 +1437,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "name": "campaign_id",
+                        "name": "brief_id",
                         "in": "query"
                     },
                     {
@@ -1925,7 +1925,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "name": "campaign_id",
+                        "name": "brief_id",
                         "in": "query"
                     },
                     {
@@ -2118,7 +2118,7 @@ var doc = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "name": "campaign_id",
+                        "name": "brief_id",
                         "in": "query"
                     },
                     {
@@ -2185,31 +2185,21 @@ var doc = `{
         }
     },
     "definitions": {
-        "entity.BusinessType": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "slug": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Campaign": {
+        "entity.Brief": {
             "type": "object",
             "required": [
                 "currency",
                 "detail",
-                "end_price",
+                "price",
                 "staff_amount",
-                "start_price",
+                "sub_category_id",
                 "title"
             ],
             "properties": {
+                "category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Category"
+                },
                 "category_id": {
                     "type": "integer"
                 },
@@ -2229,8 +2219,11 @@ var doc = `{
                 "end_date": {
                     "type": "string"
                 },
-                "end_price": {
-                    "type": "number"
+                "end_time": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -2256,17 +2249,24 @@ var doc = `{
                 "payment_terms_id": {
                     "type": "integer"
                 },
+                "price": {
+                    "type": "number"
+                },
                 "staff_amount": {
                     "type": "integer"
                 },
                 "start_date": {
                     "type": "string"
                 },
-                "start_price": {
-                    "type": "number"
+                "start_time": {
+                    "type": "string"
                 },
                 "status": {
                     "type": "string"
+                },
+                "sub_category": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.SubCategory"
                 },
                 "sub_category_id": {
                     "type": "integer"
@@ -2276,7 +2276,7 @@ var doc = `{
                 }
             }
         },
-        "entity.CampaignInfo": {
+        "entity.BriefInfo": {
             "type": "object",
             "properties": {
                 "approved_count": {
@@ -2293,6 +2293,20 @@ var doc = `{
                 },
                 "staff_amount": {
                     "type": "integer"
+                }
+            }
+        },
+        "entity.BusinessType": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "slug": {
+                    "type": "string"
                 }
             }
         },
@@ -2336,6 +2350,18 @@ var doc = `{
                     "items": {
                         "$ref": "#/definitions/entity.SubCategory"
                     }
+                },
+                "template": {
+                    "type": "string"
+                },
+                "use_location": {
+                    "type": "boolean"
+                },
+                "use_shift": {
+                    "type": "boolean"
+                },
+                "use_when": {
+                    "type": "boolean"
                 }
             }
         },
@@ -2430,7 +2456,7 @@ var doc = `{
         "entity.FilteredQuotations": {
             "type": "object",
             "properties": {
-                "campaign_id": {
+                "brief_id": {
                     "type": "integer"
                 },
                 "limit": {
@@ -2447,7 +2473,7 @@ var doc = `{
         "entity.FilteredTalent": {
             "type": "object",
             "properties": {
-                "campaign_id": {
+                "brief_id": {
                     "type": "integer"
                 },
                 "category_id": {
@@ -2473,7 +2499,7 @@ var doc = `{
         "entity.FilteredUsers": {
             "type": "object",
             "properties": {
-                "campaign_id": {
+                "brief_id": {
                     "type": "integer"
                 },
                 "category_id": {
@@ -2513,16 +2539,16 @@ var doc = `{
         "entity.Invitation": {
             "type": "object",
             "required": [
-                "campaign_id",
+                "brief_id",
                 "service_id"
             ],
             "properties": {
+                "brief_id": {
+                    "type": "integer"
+                },
                 "campaign": {
                     "type": "object",
-                    "$ref": "#/definitions/entity.Campaign"
-                },
-                "campaign_id": {
-                    "type": "integer"
+                    "$ref": "#/definitions/entity.Brief"
                 },
                 "id": {
                     "type": "integer"
@@ -2641,11 +2667,11 @@ var doc = `{
         "entity.Order": {
             "type": "object",
             "required": [
-                "campaign_id",
+                "brief_id",
                 "id_user"
             ],
             "properties": {
-                "campaign_id": {
+                "brief_id": {
                     "type": "integer"
                 },
                 "custom_field1": {
@@ -2741,14 +2767,14 @@ var doc = `{
         "entity.Quotation": {
             "type": "object",
             "required": [
-                "campaign_id",
+                "brief_id",
                 "message",
                 "price",
                 "service_id",
                 "status"
             ],
             "properties": {
-                "campaign_id": {
+                "brief_id": {
                     "type": "integer"
                 },
                 "id": {
@@ -3156,7 +3182,7 @@ var doc = `{
                 }
             }
         },
-        "repository.CampaignsFilter": {
+        "repository.BriefsFilter": {
             "type": "object",
             "properties": {
                 "date": {

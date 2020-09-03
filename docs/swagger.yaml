@@ -1,16 +1,10 @@
 basePath: /api/v1
 definitions:
-  entity.BusinessType:
+  entity.Brief:
     properties:
-      id:
-        type: integer
-      name:
-        type: string
-      slug:
-        type: string
-    type: object
-  entity.Campaign:
-    properties:
+      category:
+        $ref: '#/definitions/entity.Category'
+        type: object
       category_id:
         type: integer
       company:
@@ -24,8 +18,10 @@ definitions:
         type: string
       end_date:
         type: string
-      end_price:
-        type: number
+      end_time:
+        type: string
+      height:
+        type: integer
       id:
         type: integer
       location:
@@ -43,14 +39,19 @@ definitions:
         type: object
       payment_terms_id:
         type: integer
+      price:
+        type: number
       staff_amount:
         type: integer
       start_date:
         type: string
-      start_price:
-        type: number
+      start_time:
+        type: string
       status:
         type: string
+      sub_category:
+        $ref: '#/definitions/entity.SubCategory'
+        type: object
       sub_category_id:
         type: integer
       title:
@@ -58,12 +59,12 @@ definitions:
     required:
     - currency
     - detail
-    - end_price
+    - price
     - staff_amount
-    - start_price
+    - sub_category_id
     - title
     type: object
-  entity.CampaignInfo:
+  entity.BriefInfo:
     properties:
       approved_count:
         type: integer
@@ -75,6 +76,15 @@ definitions:
         type: integer
       staff_amount:
         type: integer
+    type: object
+  entity.BusinessType:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      slug:
+        type: string
     type: object
   entity.Cart:
     properties:
@@ -103,6 +113,14 @@ definitions:
         items:
           $ref: '#/definitions/entity.SubCategory'
         type: array
+      template:
+        type: string
+      use_location:
+        type: boolean
+      use_shift:
+        type: boolean
+      use_when:
+        type: boolean
     type: object
   entity.Company:
     properties:
@@ -165,7 +183,7 @@ definitions:
     type: object
   entity.FilteredQuotations:
     properties:
-      campaign_id:
+      brief_id:
         type: integer
       limit:
         type: integer
@@ -176,7 +194,7 @@ definitions:
     type: object
   entity.FilteredTalent:
     properties:
-      campaign_id:
+      brief_id:
         type: integer
       category_id:
         type: integer
@@ -193,7 +211,7 @@ definitions:
     type: object
   entity.FilteredUsers:
     properties:
-      campaign_id:
+      brief_id:
         type: integer
       category_id:
         type: integer
@@ -219,11 +237,11 @@ definitions:
     type: object
   entity.Invitation:
     properties:
-      campaign:
-        $ref: '#/definitions/entity.Campaign'
-        type: object
-      campaign_id:
+      brief_id:
         type: integer
+      campaign:
+        $ref: '#/definitions/entity.Brief'
+        type: object
       id:
         type: integer
       service:
@@ -234,7 +252,7 @@ definitions:
       status:
         type: string
     required:
-    - campaign_id
+    - brief_id
     - service_id
     type: object
   entity.ItemDetails:
@@ -305,7 +323,7 @@ definitions:
     type: object
   entity.Order:
     properties:
-      campaign_id:
+      brief_id:
         type: integer
       custom_field1:
         type: string
@@ -335,7 +353,7 @@ definitions:
       transaction_time:
         type: string
     required:
-    - campaign_id
+    - brief_id
     - id_user
     type: object
   entity.PaymentDays:
@@ -371,7 +389,7 @@ definitions:
     type: object
   entity.Quotation:
     properties:
-      campaign_id:
+      brief_id:
         type: integer
       id:
         type: integer
@@ -386,7 +404,7 @@ definitions:
       status:
         type: string
     required:
-    - campaign_id
+    - brief_id
     - message
     - price
     - service_id
@@ -651,7 +669,7 @@ definitions:
     - password
     - type
     type: object
-  repository.CampaignsFilter:
+  repository.BriefsFilter:
     properties:
       date:
         type: string
@@ -781,7 +799,7 @@ paths:
             - $ref: '#/definitions/translate.ResultSuccess'
             - properties:
                 data:
-                  $ref: '#/definitions/entity.Campaign'
+                  $ref: '#/definitions/entity.Brief'
               type: object
         "400":
           description: Bad Request
@@ -798,33 +816,7 @@ paths:
       summary: Sign In
       tags:
       - users
-  /business-type:
-    get:
-      consumes:
-      - application/json
-      description: used to find all business types
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/translate.ResultSuccess'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/entity.BusinessType'
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/translate.ResultErrors'
-      summary: GetBusinesType used to find all business types
-      tags:
-      - categories
-  /campaigns:
+  /briefs:
     get:
       consumes:
       - application/json
@@ -856,7 +848,7 @@ paths:
             - properties:
                 data:
                   items:
-                    $ref: '#/definitions/entity.Campaign'
+                    $ref: '#/definitions/entity.Brief'
                   type: array
               type: object
         "400":
@@ -865,18 +857,18 @@ paths:
             $ref: '#/definitions/translate.ResultErrors'
       security:
       - ApiKeyAuth: []
-      summary: GetCampaigns used to find campaign by specific params
+      summary: GetBriefs used to find campaign by specific params
       tags:
-      - campaigns
+      - briefs
     post:
       description: Create a new campaign
       parameters:
-      - description: New Campaign
+      - description: New Brief
         in: body
         name: campaign
         required: true
         schema:
-          $ref: '#/definitions/entity.Campaign'
+          $ref: '#/definitions/entity.Brief'
       produces:
       - application/json
       responses:
@@ -887,20 +879,20 @@ paths:
             - $ref: '#/definitions/translate.ResultSuccess'
             - properties:
                 data:
-                  $ref: '#/definitions/entity.Campaign'
+                  $ref: '#/definitions/entity.Brief'
               type: object
       security:
       - ApiKeyAuth: []
-      summary: AddCampaign api used to create new campaign
+      summary: AddBrief api used to create new campaign
       tags:
-      - campaigns
-  /campaigns/{id}:
+      - briefs
+  /briefs/{id}:
     get:
       consumes:
       - application/json
       description: find campaign by id
       parameters:
-      - description: Campaign ID
+      - description: Brief ID
         in: path
         name: id
         required: true
@@ -915,7 +907,7 @@ paths:
             - $ref: '#/definitions/translate.ResultSuccess'
             - properties:
                 data:
-                  $ref: '#/definitions/entity.Campaign'
+                  $ref: '#/definitions/entity.Brief'
               type: object
         "400":
           description: Bad Request
@@ -925,8 +917,8 @@ paths:
       - ApiKeyAuth: []
       summary: FindcampaignById used to find campaign by it's primary key
       tags:
-      - campaigns
-  /campaigns/documents:
+      - briefs
+  /briefs/documents:
     post:
       consumes:
       - multipart/form-data
@@ -965,14 +957,14 @@ paths:
       - ApiKeyAuth: []
       summary: Upload documents
       tags:
-      - campaigns
-  /campaigns/info/{id}:
+      - briefs
+  /briefs/info/{id}:
     get:
       consumes:
       - application/json
       description: used to find campaign information
       parameters:
-      - description: Campaign ID
+      - description: Brief ID
         in: path
         name: id
         required: true
@@ -987,7 +979,7 @@ paths:
             - $ref: '#/definitions/translate.ResultSuccess'
             - properties:
                 data:
-                  $ref: '#/definitions/entity.CampaignInfo'
+                  $ref: '#/definitions/entity.BriefInfo'
               type: object
         "400":
           description: Bad Request
@@ -995,10 +987,10 @@ paths:
             $ref: '#/definitions/translate.ResultErrors'
       security:
       - ApiKeyAuth: []
-      summary: GetCampaignInfo used to find campaign information
+      summary: GetBriefInfo used to find campaign information
       tags:
-      - campaigns
-  /campaigns/payment-days:
+      - briefs
+  /briefs/payment-days:
     get:
       consumes:
       - application/json
@@ -1025,8 +1017,8 @@ paths:
       - ApiKeyAuth: []
       summary: GetPaymentDays used to find all payment days list
       tags:
-      - campaigns
-  /campaigns/payment-terms:
+      - briefs
+  /briefs/payment-terms:
     get:
       consumes:
       - application/json
@@ -1053,8 +1045,8 @@ paths:
       - ApiKeyAuth: []
       summary: GetPaymentTerms used to find all payment terms list
       tags:
-      - campaigns
-  /campaigns/social-media:
+      - briefs
+  /briefs/social-media:
     get:
       consumes:
       - application/json
@@ -1081,7 +1073,33 @@ paths:
       - ApiKeyAuth: []
       summary: GetAllSocialMedia used to find all social media list
       tags:
-      - campaigns
+      - briefs
+  /business-type:
+    get:
+      consumes:
+      - application/json
+      description: used to find all business types
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.BusinessType'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: GetBusinesType used to find all business types
+      tags:
+      - categories
   /cart:
     delete:
       description: add to cart
@@ -1516,7 +1534,7 @@ paths:
       description: get quotations by campaign id
       parameters:
       - in: query
-        name: campaign_id
+        name: brief_id
         type: integer
       - in: query
         name: limit
@@ -1800,7 +1818,7 @@ paths:
       description: find talents
       parameters:
       - in: query
-        name: campaign_id
+        name: brief_id
         type: integer
       - in: query
         name: category_id
@@ -1913,7 +1931,7 @@ paths:
       description: find users
       parameters:
       - in: query
-        name: campaign_id
+        name: brief_id
         type: integer
       - in: query
         name: category_id

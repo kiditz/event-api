@@ -13,19 +13,19 @@ import (
 	"github.com/lib/pq"
 )
 
-// AddCampaign godoc
-// @Summary AddCampaign api used to create new campaign
+// AddBrief godoc
+// @Summary AddBrief api used to create new campaign
 // @Description Create a new campaign
-// @Tags campaigns
+// @Tags briefs
 // @MimeType
 // @Produce json
-// @Param campaign body entity.Campaign true "New Campaign"
-// @Success 200 {object} translate.ResultSuccess{data=entity.Campaign} desc
+// @Param campaign body entity.Brief true "New Brief"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Brief} desc
 // @ailure 400 {object} translate.ResultErrors
-// @Router /campaigns [post]
+// @Router /briefs [post]
 // @Security ApiKeyAuth
-func AddCampaign(c echo.Context) error {
-	campaign := new(e.Campaign)
+func AddBrief(c echo.Context) error {
+	campaign := new(e.Brief)
 	err := c.Bind(&campaign)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -36,7 +36,7 @@ func AddCampaign(c echo.Context) error {
 	}
 	campaign.CompanyID = company.ID
 	campaign.CreatedBy = utils.GetEmail(c)
-	err = r.AddCampaign(campaign)
+	err = r.AddBrief(campaign)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
 			return t.Errors(c, http.StatusBadRequest, err.Constraint)
@@ -45,55 +45,55 @@ func AddCampaign(c echo.Context) error {
 	return t.Success(c, campaign)
 }
 
-// FindCampaignByID godoc
+// FindBriefByID godoc
 // @Summary FindcampaignById used to find campaign by it's primary key
 // @Description find campaign by id
-// @Tags campaigns
+// @Tags briefs
 // @Accept json
 // @Produce json
-// @Param id path string true "Campaign ID"
-// @Success 200 {object} translate.ResultSuccess{data=entity.Campaign} desc
+// @Param id path string true "Brief ID"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Brief} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /campaigns/{id} [get]
+// @Router /briefs/{id} [get]
 // @Security ApiKeyAuth
-func FindCampaignByID(c echo.Context) error {
+func FindBriefByID(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
-	campaign, err := r.FindCampaignByID(id)
+	campaign, err := r.FindBriefByID(id)
 	if err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
 	return t.Success(c, campaign)
 }
 
-// GetCampaigns godoc
-// @Summary GetCampaigns used to find campaign by specific params
+// GetBriefs godoc
+// @Summary GetBriefs used to find campaign by specific params
 // @Description find campaign by date
-// @Tags campaigns
+// @Tags briefs
 // @Accept json
 // @Produce json
-// @Param filter query repository.CampaignsFilter false "CampaignsFilter"
-// @Success 200 {object} translate.ResultSuccess{data=[]entity.Campaign} desc
+// @Param filter query repository.BriefsFilter false "BriefsFilter"
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.Brief} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /campaigns [get]
+// @Router /briefs [get]
 // @Security ApiKeyAuth
-func GetCampaigns(c echo.Context) error {
-	filter := new(r.CampaignsFilter)
+func GetBriefs(c echo.Context) error {
+	filter := new(r.BriefsFilter)
 	if err := c.Bind(filter); err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
-	campaigns := r.GetCampaigns(filter, c)
-	return t.Success(c, campaigns)
+	briefs := r.GetBriefs(filter, c)
+	return t.Success(c, briefs)
 }
 
 // GetAllSocialMedia godoc
 // @Summary GetAllSocialMedia used to find all social media list
 // @Description find campaign by date
-// @Tags campaigns
+// @Tags briefs
 // @Accept json
 // @Produce json
 // @Success 200 {object} translate.ResultSuccess{data=[]entity.SocialMedia} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /campaigns/social-media [get]
+// @Router /briefs/social-media [get]
 // @Security ApiKeyAuth
 func GetAllSocialMedia(c echo.Context) error {
 	socialMediaList := r.GetAllSocialMedia()
@@ -103,12 +103,12 @@ func GetAllSocialMedia(c echo.Context) error {
 // GetPaymentTerms godoc
 // @Summary GetPaymentTerms used to find all payment terms list
 // @Description find all payment terms
-// @Tags campaigns
+// @Tags briefs
 // @Accept json
 // @Produce json
 // @Success 200 {object} translate.ResultSuccess{data=[]entity.PaymentTerms} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /campaigns/payment-terms [get]
+// @Router /briefs/payment-terms [get]
 // @Security ApiKeyAuth
 func GetPaymentTerms(c echo.Context) error {
 	paymentTerms := r.GetPaymentTerms()
@@ -118,32 +118,32 @@ func GetPaymentTerms(c echo.Context) error {
 // GetPaymentDays godoc
 // @Summary GetPaymentDays used to find all payment days list
 // @Description find all payment days
-// @Tags campaigns
+// @Tags briefs
 // @Accept json
 // @Produce json
 // @Success 200 {object} translate.ResultSuccess{data=[]entity.PaymentDays} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /campaigns/payment-days [get]
+// @Router /briefs/payment-days [get]
 // @Security ApiKeyAuth
 func GetPaymentDays(c echo.Context) error {
 	paymentDays := r.GetPaymentDays()
 	return t.Success(c, paymentDays)
 }
 
-// GetCampaignInfo godoc
-// @Summary GetCampaignInfo used to find campaign information
+// GetBriefInfo godoc
+// @Summary GetBriefInfo used to find campaign information
 // @Description used to find campaign information
-// @Tags campaigns
+// @Tags briefs
 // @Accept json
 // @Produce json
-// @Param id path string true "Campaign ID"
-// @Success 200 {object} translate.ResultSuccess{data=entity.CampaignInfo} desc
+// @Param id path string true "Brief ID"
+// @Success 200 {object} translate.ResultSuccess{data=entity.BriefInfo} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /campaigns/info/{id} [get]
+// @Router /briefs/info/{id} [get]
 // @Security ApiKeyAuth
-func GetCampaignInfo(c echo.Context) error {
+func GetBriefInfo(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
-	info, err := r.GetCampaignInfo(id)
+	info, err := r.GetBriefInfo(id)
 	if err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}

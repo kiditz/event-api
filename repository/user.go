@@ -60,7 +60,7 @@ func GetUsersByService(filter *e.FilteredUsers) []e.User {
 	if filter.CategoryID > 1 {
 		query = query.Where("services.category_id = ?", filter.CategoryID)
 	}
-	if filter.CampaignID > 0 {
+	if filter.BriefID > 0 {
 	}
 
 	if filter.ExpertiseName != "" {
@@ -107,7 +107,7 @@ func FindUserByID(userID uint) (e.User, error) {
 	var user e.User
 	query := db.DB
 	query = query.Select("DISTINCT users.*")
-	query = query.Joins("JOIN services ON users.id = services.user_id AND users.active = ?", true)
+	query = query.Joins("LEFT JOIN services ON users.id = services.user_id")
 	query = query.Preload("Services", func(db *gorm.DB) *gorm.DB {
 		return db.Order("services.price ASC")
 	}).Preload("Services.Category").Preload("Services.SubCategory").Preload("Services.Background")

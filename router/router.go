@@ -6,7 +6,7 @@ import (
 
 // InitRoutes Initialize Routing
 func InitRoutes(v1 *echo.Group) {
-	SetCampaignRoutes(v1)
+	SetBriefRoutes(v1)
 	SetUserRoutes(v1)
 	SetTalentRoutes(v1)
 	SetCategoryRoutes(v1)

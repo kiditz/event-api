@@ -2,17 +2,18 @@ package entity
 
 import "time"
 
-// Campaign is model for database campaigns
-type Campaign struct {
+// Brief is model for database briefs
+type Brief struct {
 	ID             uint          `gorm:"primary_key" json:"id"`
 	CompanyID      uint          `json:"company_id"`
 	Company        *Company      `json:"company"`
 	Title          string        `json:"title" gorm:"type:varchar(60);index;not null" validate:"required"`
 	CategoryID     uint          `json:"category_id" gorm:"not null"`
-	Category       *Category     `json:"category" swaggerignore:"true"`
-	SubCategoryID  uint          `json:"sub_category_id" gorm:"not null" `
-	SubCategory    *SubCategory  `json:"sub_category" swaggerignore:"true"`
-	Detail         string        `json:"detail" validate:"required" gorm:"not null"`
+	Category       *Category     `json:"category"`
+	SubCategories  []SubCategory `json:"sub_categories" gorm:"not null;many2many:brief_sub_categories;"`
+	Height         uint          `json:"height" gorm:"not null"`
+	Gender         string        `json:"gender" gorm:"not null"`
+	Detail         string        `json:"detail" gorm:"not null" validate:"required"`
 	Currency       string        `json:"currency" validate:"required" gorm:"not null"`
 	Location       *Location     `json:"location,omitempty" gorm:"foreignkey:LocationID"`
 	LocationID     uint          `json:"location_id" gorm:"index;"`
@@ -22,15 +23,16 @@ type Campaign struct {
 	PaymentDays    *PaymentDays  `json:"payment_days,omitempty" gorm:"foreignkey:PaymentDaysID"`
 	StartDate      *time.Time    `json:"start_date"`
 	EndDate        *time.Time    `json:"end_date" validate:"gtefield=StartDate"`
-	StartPrice     float64       `json:"start_price" gorm:"not null" validate:"gte=50000.0,required"`
-	EndPrice       float64       `json:"end_price" gorm:"not null" validate:"gtefield=StartPrice,required"`
+	StartTime      *time.Time    `json:"start_time"`
+	EndTime        *time.Time    `json:"end_time" validate:"gtefield=StartTime"`
+	Price          float64       `json:"price" gorm:"not null;default:'100000'" validate:"gte=100000.0,required"`
 	StaffAmount    uint          `json:"staff_amount" gorm:"not null" validate:"gte=1,required"`
 	Status         string        `json:"status" gorm:"type:varchar(60);not null;default:'booking'"`
 	Model
 }
 
-//CampaignInfo show campaign info
-type CampaignInfo struct {
+//BriefInfo show campaign info
+type BriefInfo struct {
 	StaffAmount    uint     `json:"staff_amount"`
 	ApprovedCount  uint     `json:"approved_count"`
 	QuotationCount uint     `json:"quotation_count"`

@@ -14,6 +14,12 @@ import (
 // AddToCart godoc
 func AddToCart(cart *e.Cart, c echo.Context) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
+		existingCart := e.Cart{}
+		if !tx.Where("device_id = ?", cart.DeviceID).First(&existingCart).RecordNotFound() {
+			if cart.CategoryID != existingCart.CategoryID {
+				return fmt.Errorf("cart_category_id_device_id")
+			}
+		}
 		if err := tx.Save(&cart).Error; err != nil {
 			return err
 		}
@@ -62,14 +68,14 @@ func GetInvitations(email string, limitOffset e.LimitOffset) []e.Invitation {
 	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
 	query = query.Joins("JOIN users u ON t.user_id = u.id")
 	query = query.Where("u.email = ?", email)
-	query = query.Preload("Campaign")
+	query = query.Preload("Brief")
 	query = query.Preload("Service.Category").Preload("Service.SubCategory").Preload("Service.Topic")
-	query = query.Preload("Campaign.Company.Image")
-	query = query.Preload("Campaign.SubCategory")
-	query = query.Preload("Campaign.Category")
-	query = query.Preload("Campaign.Location")
-	query = query.Preload("Campaign.Company")
-	query = query.Preload("Campaign.PaymentTerms")
+	query = query.Preload("Brief.Company.Image")
+	query = query.Preload("Brief.SubCategory")
+	query = query.Preload("Brief.Category")
+	query = query.Preload("Brief.Location")
+	query = query.Preload("Brief.Company")
+	query = query.Preload("Brief.PaymentTerms")
 	query = query.Order("id desc").Limit(limitOffset.Limit).Offset(limitOffset.Offset).Find(&invitations)
 	return invitations
 }
@@ -133,12 +139,12 @@ func GetQuotations(filter *e.FilteredQuotations) []e.QuotationList {
 	query = query.Joins("JOIN users u ON t.user_id = u.id")
 	query = query.Joins("JOIN images i ON t.image_id = i.id")
 	query = query.Joins("JOIN categories c ON c.id = s.category_id")
-	query = query.Joins("JOIN campaigns p ON p.id = q.campaign_id")
+	query = query.Joins("JOIN briefs p ON p.id = q.brief_id")
 	query = query.Joins("JOIN sub_categories sc ON sc.id = s.sub_category_id")
 	if filter.Status == e.ACTIVE {
-		query = query.Where("q.campaign_id = ? AND q.status in (?)", filter.CampaignID, []string{e.ACTIVE, e.DECLINED, e.APPROVED})
+		query = query.Where("q.brief_id = ? AND q.status in (?)", filter.BriefID, []string{e.ACTIVE, e.DECLINED, e.APPROVED})
 	} else {
-		query = query.Where("q.campaign_id = ? AND q.status = ?", filter.CampaignID, filter.Status)
+		query = query.Where("q.brief_id = ? AND q.status = ?", filter.BriefID, filter.Status)
 	}
 	rows, err := query.Offset(filter.Offset).Limit(filter.Limit).Order("q.id desc").Rows()
 	defer rows.Close()
@@ -214,11 +220,11 @@ func AddOrder(c echo.Context, order *e.Order) error {
 		campaignID, _ := strconv.Atoi(order.CustomField3)
 		downPayment, _ := strconv.ParseFloat(order.CustomField2, 64)
 		billing, _ := strconv.ParseFloat(order.CustomField1, 64)
-		order.CampaignID = uint(campaignID)
+		order.BriefID = uint(campaignID)
 		order.TransactionDetails.DownPayment = downPayment
 		order.TransactionDetails.Billing = billing
-		var campaign e.Campaign
-		tx.Set("gorm:query_option", "FOR UPDATE").Where("id = ?", order.CampaignID).Preload("Company").Find(&campaign)
+		var campaign e.Brief
+		tx.Set("gorm:query_option", "FOR UPDATE").Where("id = ?", order.BriefID).Preload("Company").Find(&campaign)
 		now := time.Now().UTC()
 		campaign.StartDate = &now
 		order.UserID = campaign.Company.UserID

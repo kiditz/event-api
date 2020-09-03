@@ -4,7 +4,7 @@ package entity
 type Quotation struct {
 	ID           uint    `gorm:"primary_key" json:"id"`
 	ServiceID    uint    `json:"service_id" gorm:"not null;index;" validate:"required"`
-	CampaignID   uint    `json:"campaign_id" gorm:"not null;index" validate:"required"`
+	BriefID      uint    `json:"brief_id" gorm:"index" validate:"required"`
 	InvitationID uint    `json:"invitation_id" gorm:"index"`
 	Price        float64 `json:"price" validate:"required"`
 	Message      string  `json:"message" validate:"required"`
@@ -28,12 +28,12 @@ type QuotationList struct {
 
 //FilteredQuotations godoc
 type FilteredQuotations struct {
-	CampaignID uint   `json:"campaign_id" query:"campaign_id"`
-	Status     string `json:"status" query:"status"`
+	BriefID uint   `json:"brief_id" query:"brief_id"`
+	Status  string `json:"status" query:"status"`
 	LimitOffset
 }
 
 //QuotationIdentity godoc
 type QuotationIdentity struct {
-	QuotationID uint `json:"quotation_id" query:"campaign_id"`
+	QuotationID uint `json:"quotation_id" query:"quotation_id"`
 }
