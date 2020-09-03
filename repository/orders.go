@@ -40,7 +40,7 @@ func DeleteCart(deviceID string) error {
 //GetCarts delete cart by loggedin
 func GetCarts(deviceID string) []e.Cart {
 	carts := []e.Cart{}
-	db.DB.Where("device_id = ?", deviceID).Preload("Service.Category").Preload("Service.SubCategory").Preload("Service.User").Find(&carts)
+	db.DB.Where("device_id = ?", deviceID).Preload("Service.Category").Preload("Service.SubCategory").Preload("Service.User").Preload("Service.Background").Find(&carts)
 	return carts
 }
 

@@ -107,12 +107,10 @@ func GetBriefInfo(campaignID int) (e.BriefInfo, error) {
 	query.Model(e.Quotation{}).Where("brief_id = ?", campaignID).Count(&info.QuotationCount)
 	info.StaffAmount = campaign.StaffAmount
 	query = query.Table("quotations q")
-	query = query.Select("i.image_url")
+	query = query.Select("u.image_url")
 	query = query.Joins("JOIN services s ON s.id = q.service_id")
-	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
-	query = query.Joins("JOIN images i ON i.id = t.image_id")
-	query = query.Joins("JOIN sub_categories sc ON sc.id = s.sub_category_id ")
-	rows, _ := query.Where("q.brief_id = ? AND status = ?", campaignID, e.APPROVED).Order("q.id desc").Limit(5).Rows()
+	query = query.Joins("JOIN users u ON u.id = s.user_id")
+	rows, _ := query.Where("q.brief_id = ? AND q.status = ?", campaignID, e.APPROVED).Order("q.id desc").Limit(5).Rows()
 	defer rows.Close()
 	for rows.Next() {
 		var image string
