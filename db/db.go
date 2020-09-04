@@ -27,5 +27,5 @@ func Connect() {
 
 	fmt.Println("Connection Success")
 	DB = conn
-	// DB.LogMode(true)
+	DB.LogMode(true)
 }

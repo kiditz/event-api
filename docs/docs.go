@@ -2192,7 +2192,6 @@ var doc = `{
                 "detail",
                 "price",
                 "staff_amount",
-                "sub_category_id",
                 "title"
             ],
             "properties": {
@@ -2220,6 +2219,9 @@ var doc = `{
                     "type": "string"
                 },
                 "end_time": {
+                    "type": "string"
+                },
+                "gender": {
                     "type": "string"
                 },
                 "height": {
@@ -2264,12 +2266,11 @@ var doc = `{
                 "status": {
                     "type": "string"
                 },
-                "sub_category": {
-                    "type": "object",
-                    "$ref": "#/definitions/entity.SubCategory"
-                },
-                "sub_category_id": {
-                    "type": "integer"
+                "sub_categories": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.SubCategory"
+                    }
                 },
                 "title": {
                     "type": "string"
@@ -2313,6 +2314,9 @@ var doc = `{
         "entity.Cart": {
             "type": "object",
             "properties": {
+                "category_id": {
+                    "type": "integer"
+                },
                 "device_id": {
                     "type": "string"
                 },
@@ -2354,7 +2358,16 @@ var doc = `{
                 "template": {
                     "type": "string"
                 },
+                "use_gender": {
+                    "type": "boolean"
+                },
+                "use_height": {
+                    "type": "boolean"
+                },
                 "use_location": {
+                    "type": "boolean"
+                },
+                "use_price_dropdown": {
                     "type": "boolean"
                 },
                 "use_shift": {
@@ -2410,6 +2423,10 @@ var doc = `{
                 },
                 "sub_category_id": {
                     "type": "integer"
+                },
+                "user": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.User"
                 }
             }
         },
@@ -2543,12 +2560,12 @@ var doc = `{
                 "service_id"
             ],
             "properties": {
-                "brief_id": {
-                    "type": "integer"
-                },
-                "campaign": {
+                "brief": {
                     "type": "object",
                     "$ref": "#/definitions/entity.Brief"
+                },
+                "brief_id": {
+                    "type": "integer"
                 },
                 "id": {
                     "type": "integer"
@@ -2770,6 +2787,7 @@ var doc = `{
                 "brief_id",
                 "message",
                 "price",
+                "service",
                 "service_id",
                 "status"
             ],
@@ -2788,6 +2806,10 @@ var doc = `{
                 },
                 "price": {
                     "type": "number"
+                },
+                "service": {
+                    "type": "object",
+                    "$ref": "#/definitions/entity.Service"
                 },
                 "service_id": {
                     "type": "integer"

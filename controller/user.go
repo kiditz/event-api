@@ -187,6 +187,6 @@ func GetUsers(c echo.Context) error {
 	if err := c.Bind(filter); err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
-	talents := r.GetUsersByService(filter)
+	talents := r.GetUsersByService(c, filter)
 	return t.Success(c, talents)
 }

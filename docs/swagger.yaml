@@ -20,6 +20,8 @@ definitions:
         type: string
       end_time:
         type: string
+      gender:
+        type: string
       height:
         type: integer
       id:
@@ -49,11 +51,10 @@ definitions:
         type: string
       status:
         type: string
-      sub_category:
-        $ref: '#/definitions/entity.SubCategory'
-        type: object
-      sub_category_id:
-        type: integer
+      sub_categories:
+        items:
+          $ref: '#/definitions/entity.SubCategory'
+        type: array
       title:
         type: string
     required:
@@ -61,7 +62,6 @@ definitions:
     - detail
     - price
     - staff_amount
-    - sub_category_id
     - title
     type: object
   entity.BriefInfo:
@@ -88,6 +88,8 @@ definitions:
     type: object
   entity.Cart:
     properties:
+      category_id:
+        type: integer
       device_id:
         type: string
       device_name:
@@ -115,7 +117,13 @@ definitions:
         type: array
       template:
         type: string
+      use_gender:
+        type: boolean
+      use_height:
+        type: boolean
       use_location:
+        type: boolean
+      use_price_dropdown:
         type: boolean
       use_shift:
         type: boolean
@@ -152,6 +160,9 @@ definitions:
         type: object
       sub_category_id:
         type: integer
+      user:
+        $ref: '#/definitions/entity.User'
+        type: object
     required:
     - name
     type: object
@@ -237,11 +248,11 @@ definitions:
     type: object
   entity.Invitation:
     properties:
-      brief_id:
-        type: integer
-      campaign:
+      brief:
         $ref: '#/definitions/entity.Brief'
         type: object
+      brief_id:
+        type: integer
       id:
         type: integer
       service:
@@ -399,6 +410,9 @@ definitions:
         type: string
       price:
         type: number
+      service:
+        $ref: '#/definitions/entity.Service'
+        type: object
       service_id:
         type: integer
       status:
@@ -407,6 +421,7 @@ definitions:
     - brief_id
     - message
     - price
+    - service
     - service_id
     - status
     type: object

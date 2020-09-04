@@ -6,7 +6,7 @@ type Invitation struct {
 	ServiceID uint     `json:"service_id" gorm:"not null;index;" validate:"required"`
 	Service   *Service `json:"service"`
 	BriefID   uint     `json:"brief_id" gorm:"index;" validate:"required"`
-	Brief     *Brief   `json:"campaign"`
+	Brief     *Brief   `json:"brief"`
 	Status    string   `json:"status"`
 	Model
 }

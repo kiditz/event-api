@@ -37,10 +37,11 @@ func AddUser(user *e.User) error {
 }
 
 // GetUsersByService docs
-func GetUsersByService(filter *e.FilteredUsers) []e.User {
+func GetUsersByService(c echo.Context, filter *e.FilteredUsers) []e.User {
 	if filter.Limit == 0 {
 		filter.Limit = 20
 	}
+
 	var users []e.User
 	query := db.DB
 	query = query.Select("DISTINCT users.*")
@@ -61,6 +62,8 @@ func GetUsersByService(filter *e.FilteredUsers) []e.User {
 		query = query.Where("services.category_id = ?", filter.CategoryID)
 	}
 	if filter.BriefID > 0 {
+		query = query.Joins("JOIN briefs b ON b.id = ?", filter.BriefID)
+		query = query.Where("NOT EXISTS (SELECT u.name FROM users u JOIN services s ON u.id = s.user_id JOIN invitations i ON i.service_id = s.id WHERE u.id = users.id AND i.brief_id =  b.id AND s.price < b.price)")
 	}
 
 	if filter.ExpertiseName != "" {

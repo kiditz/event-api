@@ -2,13 +2,14 @@ package entity
 
 //Quotation godoc
 type Quotation struct {
-	ID           uint    `gorm:"primary_key" json:"id"`
-	ServiceID    uint    `json:"service_id" gorm:"not null;index;" validate:"required"`
-	BriefID      uint    `json:"brief_id" gorm:"index" validate:"required"`
-	InvitationID uint    `json:"invitation_id" gorm:"index"`
-	Price        float64 `json:"price" validate:"required"`
-	Message      string  `json:"message" validate:"required"`
-	Status       string  `json:"status" validate:"required"`
+	ID           uint     `gorm:"primary_key" json:"id"`
+	ServiceID    uint     `json:"service_id" gorm:"not null;index;" validate:"required"`
+	Service      *Service `json:"service" validate:"required"`
+	BriefID      uint     `json:"brief_id" gorm:"index" validate:"required"`
+	InvitationID uint     `json:"invitation_id" gorm:"index"`
+	Price        float64  `json:"price" validate:"required"`
+	Message      string   `json:"message" validate:"required"`
+	Status       string   `json:"status" validate:"required"`
 	Model
 }
 

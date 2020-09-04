@@ -197,7 +197,7 @@ func GetQuotations(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	quotations := r.GetQuotations(&filter)
+	quotations := r.GetQuotationsList(&filter)
 	return t.Success(c, quotations)
 }
 
@@ -267,25 +267,21 @@ func AddOrder(c echo.Context) error {
 	var order e.Order
 	err := c.Bind(&order)
 	if err != nil {
-		print(err)
 		return t.Errors(c, http.StatusBadRequest, err)
 	}
-	if err != nil {
-		return t.Errors(c, http.StatusBadRequest, err)
-	}
-	// campaignID, _ := strconv.Atoi(order.CustomField3)
+
 	now := time.Now().UTC()
 	sec := now.Unix()
-	order.TransactionDetails.OrderID = fmt.Sprintf("INV/%d/%d", sec, now.Year())
-
-	order.TransactionTime = now
 	if order.TransactionDetails.GrossAmount > 0 {
 		newOrder, err := getSnapToken(&order)
-		print(newOrder.BriefID)
 		if err != nil {
 			return t.Errors(c, http.StatusBadRequest, err.Error())
 		}
-		err = r.AddOrder(c, newOrder)
+		order.RedirectURL = newOrder.RedirectURL
+		order.Token = newOrder.Token
+		order.TransactionDetails.OrderID = fmt.Sprintf("INV/%d/%d", sec, now.Year())
+		order.TransactionTime = now
+		err = r.AddOrder(c, &order)
 		if err != nil {
 			return t.Errors(c, http.StatusBadRequest, err.Error())
 		}
@@ -331,4 +327,23 @@ func getSnapToken(order *e.Order) (*e.Order, error) {
 	fmt.Printf("RES :%s\n", s)
 	json.Unmarshal(bodyText, &order)
 	return order, nil
+}
+
+// AddPaymentNotification godoc
+// @Summary AddOrder api used to add order
+// @Description add new order
+// @Tags orders
+// @MimeType
+// @Produce json
+// @Param order body entity.Order true "Order"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Order} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /order/charge [post]
+func AddPaymentNotification(c echo.Context) error {
+	var notification e.PaymentNotification
+	err := c.Bind(&notification)
+	if err != nil {
+		return t.Errors(c, http.StatusBadRequest, err)
+	}
+	return nil
 }

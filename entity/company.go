@@ -4,6 +4,7 @@ package entity
 type Company struct {
 	ID                uint         `gorm:"primary_key" json:"id"`
 	UserID            uint         `json:"user_id" swaggerignore:"true"`
+	User              *User        `json:"user"`
 	ImageID           uint         `json:"image_id" swaggerignore:"true"`
 	Image             *Image       `json:"image"`
 	BackgroundImageID uint         `json:"background_image_id" swaggerignore:"true"`

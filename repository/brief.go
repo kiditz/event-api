@@ -39,7 +39,7 @@ func AddBrief(campaign *e.Brief) error {
 // FindBriefByID  used to find campaign by id
 func FindBriefByID(campaignID int) (e.Brief, error) {
 	var campaign e.Brief
-	if err := db.DB.Where("id=?", campaignID).Preload("Category").Preload("Location").Preload("PaymentTerms").Preload("PaymentDays").Find(&campaign).Error; err != nil {
+	if err := db.DB.Where("id=?", campaignID).Preload("Company.BackgroundImage").Preload("Company.Image").Preload("Category").Preload("Location").Preload("PaymentTerms").Preload("PaymentDays").Find(&campaign).Error; err != nil {
 		return campaign, err
 	}
 	return campaign, nil
@@ -70,6 +70,8 @@ func GetBriefs(filter *BriefsFilter, c echo.Context) []e.Brief {
 	if filter.OnlyMe {
 		query = query.Where("created_by = ?", utils.GetEmail(c))
 	}
+	query = query.Preload("Company.Image").Preload("Company.BackgroundImage")
+	query = query.Preload("Location")
 	query = query.Offset(filter.Offset).Limit(filter.Limit).Order("id desc").Find(&campaign)
 	return campaign
 }

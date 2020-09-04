@@ -65,13 +65,12 @@ func GetInvitations(email string, limitOffset e.LimitOffset) []e.Invitation {
 	invitations := []e.Invitation{}
 	query := db.DB
 	query = query.Joins("JOIN services s ON s.id = invitations.service_id")
-	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
-	query = query.Joins("JOIN users u ON t.user_id = u.id")
+	query = query.Joins("JOIN users u ON s.user_id = u.id")
 	query = query.Where("u.email = ?", email)
 	query = query.Preload("Brief")
-	query = query.Preload("Service.Category").Preload("Service.SubCategory").Preload("Service.Topic")
+	query = query.Preload("Service.Category").Preload("Service.SubCategory").Preload("Service.Topics").Preload("Service.Background").Preload("Service.User")
 	query = query.Preload("Brief.Company.Image")
-	query = query.Preload("Brief.SubCategory")
+	query = query.Preload("Brief.Company.User")
 	query = query.Preload("Brief.Category")
 	query = query.Preload("Brief.Location")
 	query = query.Preload("Brief.Company")
@@ -123,6 +122,24 @@ func RejectInvitation(reject *e.RejectInvitation) error {
 	})
 }
 
+//GetQuotationsList used to find quotations list by campaig id
+func GetQuotationsList(filter *e.FilteredQuotations) []e.Quotation {
+	quotations := []e.Quotation{}
+	query := db.DB
+	if filter.Status == e.ACTIVE {
+		query = query.Where("brief_id = ? AND status in (?)", filter.BriefID, []string{e.ACTIVE, e.DECLINED, e.APPROVED})
+	} else {
+		query = query.Where("brief_id = ? AND status = ?", filter.BriefID, filter.Status)
+	}
+	query = query.Preload("Service.Category")
+	query = query.Preload("Service.Background")
+	query = query.Preload("Service.SubCategory")
+	query = query.Preload("Service.User")
+	query = query.Find(&quotations)
+
+	return quotations
+}
+
 //GetQuotations used to find quotations list by campaig id
 func GetQuotations(filter *e.FilteredQuotations) []e.QuotationList {
 	if filter.Limit <= 0 {
@@ -133,11 +150,9 @@ func GetQuotations(filter *e.FilteredQuotations) []e.QuotationList {
 	}
 	quotations := []e.QuotationList{}
 	query := db.DB.Table("quotations q")
-	query = query.Select("q.id, q.price, q.message, u.name, i.image_url, q.status, q.created_at, concat(c.name, ' | ', sc.name), s.image_url, p.currency")
+	query = query.Select("q.id, q.price, q.message, u.name, u.image_url, q.status, q.created_at, concat(c.name, ' | ', sc.name), '', p.currency")
 	query = query.Joins("JOIN services s ON q.service_id = s.id")
-	query = query.Joins("JOIN talents t ON t.id = s.talent_id")
-	query = query.Joins("JOIN users u ON t.user_id = u.id")
-	query = query.Joins("JOIN images i ON t.image_id = i.id")
+	query = query.Joins("JOIN users u ON s.user_id = u.id")
 	query = query.Joins("JOIN categories c ON c.id = s.category_id")
 	query = query.Joins("JOIN briefs p ON p.id = q.brief_id")
 	query = query.Joins("JOIN sub_categories sc ON sc.id = s.sub_category_id")
@@ -149,7 +164,7 @@ func GetQuotations(filter *e.FilteredQuotations) []e.QuotationList {
 	rows, err := query.Offset(filter.Offset).Limit(filter.Limit).Order("q.id desc").Rows()
 	defer rows.Close()
 	if err != nil {
-		fmt.Printf("Wrong query :%v", err.Error())
+		fmt.Printf("Wrong query :%v", err)
 	}
 	defer rows.Close()
 	for rows.Next() {
@@ -216,24 +231,40 @@ func DeclineQuotation(quote *e.QuotationIdentity) error {
 
 //AddOrder godoc
 func AddOrder(c echo.Context, order *e.Order) error {
+
 	return db.DB.Transaction(func(tx *gorm.DB) error {
-		campaignID, _ := strconv.Atoi(order.CustomField3)
+		tx = tx.Set("gorm:association_autoupdate", false)
 		downPayment, _ := strconv.ParseFloat(order.CustomField2, 64)
 		billing, _ := strconv.ParseFloat(order.CustomField1, 64)
-		order.BriefID = uint(campaignID)
 		order.TransactionDetails.DownPayment = downPayment
 		order.TransactionDetails.Billing = billing
-		var campaign e.Brief
-		tx.Set("gorm:query_option", "FOR UPDATE").Where("id = ?", order.BriefID).Preload("Company").Find(&campaign)
+
 		now := time.Now().UTC()
-		campaign.StartDate = &now
-		order.UserID = campaign.Company.UserID
-		if err := tx.Save(order).Error; err != nil {
+		briefID, _ := strconv.Atoi(order.CustomField3)
+		order.BriefID = uint(briefID)
+		var brief e.Brief
+		tx.Where("id = ?", briefID).Preload("Company").Find(&brief)
+		if brief.StartDate == nil {
+			brief.StartDate = &now
+		}
+		brief.Status = e.ACTIVE
+		order.UserID = brief.Company.UserID
+		if err := tx.Save(&order).Error; err != nil {
+			fmt.Println(err.Error())
 			return err
 		}
-		// if err := tx.Save(campaign).Error; err != nil {
-		// 	return err
-		// }
+		for _, s := range order.ItemDetails {
+			s.OrderID = order.ID
+			if err := tx.Save(&s).Error; err != nil {
+				fmt.Println(err.Error())
+				return err
+			}
+		}
+
+		if err := tx.Save(&brief).Error; err != nil {
+			fmt.Println(err.Error())
+			return err
+		}
 		return nil
 	})
 }

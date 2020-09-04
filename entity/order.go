@@ -5,10 +5,10 @@ import "time"
 // Order godoc
 type Order struct {
 	ID                  uint                `json:"id" gorm:"primary_key"`
-	TransactionDetailID uint                `json:"transaction_detail_id" gorm:"not null;index;"`
-	TransactionDetails  *TransactionDetails `json:"transaction_details"`
+	TransactionDetailID uint                `json:"transaction_detail_id"`
+	TransactionDetails  *TransactionDetails `json:"transaction_details" gorm:"foreignkey:TransactionDetailID"`
 	TransactionTime     time.Time           `json:"transaction_time"`
-	ItemDetails         []ItemDetails       `json:"item_details"`
+	ItemDetails         []ItemDetails       `json:"item_details" gorm:"foreignKey:OrderID;references:ID"`
 	TransactionStatus   string              `json:"transaction_status" gorm:"not null;varchar(10);"`
 	UserID              uint                `json:"id_user" gorm:"not null;index;" validate:"required"`
 	BriefID             uint                `json:"brief_id" gorm:"index;" validate:"required"`
@@ -25,7 +25,7 @@ type TransactionDetails struct {
 	GrossAmount float64 `json:"gross_amount"`
 	DownPayment float64 `json:"down_payment"`
 	Billing     float64 `json:"billing"`
-	OrderID     string  `json:"order_id" gorm:"not null;index;varchar(50);"`
+	OrderID     string  `json:"order_id" gorm:"not null;index;varchar(100);"`
 }
 
 // ItemDetails godoc
@@ -36,5 +36,5 @@ type ItemDetails struct {
 	Brand        string  `json:"brand"`
 	MerchantName string  `json:"merchant_name"`
 	Name         string  `json:"name" gorm:"not null;index;varchar(50);" validate:"required"`
-	OrderID      uint    `json:"order_id" gorm:"not null;index;"`
+	OrderID      uint    `json:"order_id"`
 }
