@@ -8,6 +8,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
 	e "github.com/kiditz/spgku-api/entity"
+	"github.com/kiditz/spgku-api/utils"
 	"github.com/labstack/echo/v4"
 )
 
@@ -77,6 +78,15 @@ func GetInvitations(email string, limitOffset e.LimitOffset) []e.Invitation {
 	query = query.Preload("Brief.PaymentTerms")
 	query = query.Order("id desc").Limit(limitOffset.Limit).Offset(limitOffset.Offset).Find(&invitations)
 	return invitations
+}
+
+// GetCountInvitation godoc
+func GetCountInvitation(c echo.Context) int {
+	var invotationCount int
+	query := db.DB
+	query = query.Joins("JOIN users u ON u.id = invitations.user_id AND u.email = ?", utils.GetEmail(c))
+	query = query.Find(&e.Invitation{}).Count(&invotationCount)
+	return invotationCount
 }
 
 // AcceptInvitation godoc
