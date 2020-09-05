@@ -11,26 +11,32 @@ import (
 )
 
 // AddBrief used to insert campaign into briefs database
-func AddBrief(campaign *e.Brief) error {
+func AddBrief(c echo.Context, brief *e.Brief) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
+		company, err := FindCompany(c)
+		if err != nil {
+			return err
+		}
+		brief.CompanyID = company.ID
+		brief.CreatedBy = utils.GetEmail(c)
 		tx = tx.Set("gorm:association_autoupdate", false)
-		if err := tx.Save(&campaign).Error; err != nil {
+		if err := tx.Save(&brief).Error; err != nil {
 			return err
 		}
 
-		if campaign.Location != nil {
-			if err := tx.Where("formatted_address = ?", campaign.Location.FormattedAddress).First(campaign.Location.FormattedAddress).First(&campaign.Location).Error; err != nil {
-				tx.Model(&campaign.Location).Save(campaign.Location)
+		if brief.Location != nil {
+			if err := tx.Where("formatted_address = ?", brief.Location.FormattedAddress).First(brief.Location.FormattedAddress).First(&brief.Location).Error; err != nil {
+				tx.Model(&brief.Location).Save(brief.Location)
 			}
-			tx.Model(&campaign).Association("Location").Append(campaign.Location)
+			tx.Model(&brief).Association("Location").Append(brief.Location)
 		}
-		if campaign.PaymentTerms != nil {
-			tx.Model(&campaign.PaymentTerms).Save(campaign.PaymentTerms)
-			tx.Model(&campaign).Association("PaymentTerms").Append(campaign.PaymentTerms)
+		if brief.PaymentTerms != nil {
+			tx.Model(&brief.PaymentTerms).Save(brief.PaymentTerms)
+			tx.Model(&brief).Association("PaymentTerms").Append(brief.PaymentTerms)
 		}
-		if campaign.PaymentDays != nil {
-			tx.Model(&campaign.PaymentDays).Save(campaign.PaymentDays)
-			tx.Model(&campaign).Association("PaymentDays").Append(campaign.PaymentDays)
+		if brief.PaymentDays != nil {
+			tx.Model(&brief.PaymentDays).Save(brief.PaymentDays)
+			tx.Model(&brief).Association("PaymentDays").Append(brief.PaymentDays)
 		}
 		return nil
 	})
@@ -61,6 +67,7 @@ func GetBriefs(filter *BriefsFilter, c echo.Context) []e.Brief {
 	if filter.Limit == 0 {
 		filter.Limit = 10
 	}
+	email := utils.GetEmail(c)
 	if len(filter.Date) > 0 {
 		query = query.Where("? between to_char(start_date, 'YYYY-MM-DD') and to_char(end_date, 'YYYY-MM-DD')", filter.Date)
 	}
@@ -68,11 +75,23 @@ func GetBriefs(filter *BriefsFilter, c echo.Context) []e.Brief {
 		query = query.Where("title ilike ?", "%"+filter.Query+"%")
 	}
 	if filter.OnlyMe {
-		query = query.Where("created_by = ?", utils.GetEmail(c))
+		query = query.Where("created_by = ?", email)
+	} else {
+		query = query.Joins("JOIN users u ON u.email = ? ", email)
+		query = query.Joins("JOIN services s ON s.user_id = u.id AND s.category_id = briefs.category_id")
+		query = query.Where("briefs.status = ?", e.BOOKING)
+		query = query.Where(`
+			NOT EXISTS (
+				SELECT 1 FROM quotations q 
+				JOIN services s ON q.service_id = s.id 
+				JOIN users u ON u.id = s.user_id 
+				WHERE u.email = ?
+				AND q.brief_id = briefs.id AND q.status = 'approved'
+			)`, email)
 	}
 	query = query.Preload("Company.Image").Preload("Company.BackgroundImage")
 	query = query.Preload("Location")
-	query = query.Offset(filter.Offset).Limit(filter.Limit).Order("id desc").Find(&campaign)
+	query = query.Offset(filter.Offset).Limit(filter.Limit).Order("id desc").Select("DISTINCT briefs.*").Find(&campaign)
 	return campaign
 }
 

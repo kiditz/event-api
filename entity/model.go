@@ -29,17 +29,20 @@ const APPROVED = "approved"
 // DECLINED decline
 const DECLINED = "declined"
 
-// ACTIVE activate
+// ACTIVE godocr
 const ACTIVE = "active"
 
-// ACCEPTED accepted
+// ACCEPTED godoc
 const ACCEPTED = "accepted"
 
-// REJECTED reject
+// REJECTED godoc
 const REJECTED = "rejected"
 
-// RUNNING started
+// RUNNING godoc
 const RUNNING = "running"
+
+// BOOKING godoc
+const BOOKING = "booking"
 
 //ONREVIEW godoc
 const ONREVIEW = "on_review"
@@ -48,4 +51,4 @@ const ONREVIEW = "on_review"
 const CLOSED = "closed"
 
 // S50_50 godoc
-const S50_50 = "closed"
+const S50_50 = "50_50"

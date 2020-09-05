@@ -7,7 +7,6 @@ import (
 	e "github.com/kiditz/spgku-api/entity"
 	r "github.com/kiditz/spgku-api/repository"
 	t "github.com/kiditz/spgku-api/translate"
-	"github.com/kiditz/spgku-api/utils"
 
 	"github.com/labstack/echo/v4"
 	"github.com/lib/pq"
@@ -25,24 +24,20 @@ import (
 // @Router /briefs [post]
 // @Security ApiKeyAuth
 func AddBrief(c echo.Context) error {
-	campaign := new(e.Brief)
-	err := c.Bind(&campaign)
+	brief := new(e.Brief)
+	err := c.Bind(&brief)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	company, err := r.FindCompany(c)
-	if err != nil {
-		return t.Errors(c, http.StatusBadRequest, err.Error)
-	}
-	campaign.CompanyID = company.ID
-	campaign.CreatedBy = utils.GetEmail(c)
-	err = r.AddBrief(campaign)
+
+	err = r.AddBrief(c, brief)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {
 			return t.Errors(c, http.StatusBadRequest, err.Constraint)
 		}
+		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}
-	return t.Success(c, campaign)
+	return t.Success(c, brief)
 }
 
 // FindBriefByID godoc
