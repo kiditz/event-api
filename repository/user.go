@@ -63,7 +63,8 @@ func GetUsersByService(c echo.Context, filter *e.FilteredUsers) []e.User {
 	}
 	if filter.BriefID > 0 {
 		query = query.Joins("JOIN briefs b ON b.id = ?", filter.BriefID)
-		query = query.Where("NOT EXISTS (SELECT u.name FROM users u JOIN services s ON u.id = s.user_id JOIN invitations i ON i.service_id = s.id WHERE u.id = users.id AND i.brief_id =  b.id AND s.price < b.price)")
+		query = query.Where("NOT EXISTS (SELECT u.name FROM users u JOIN services s ON u.id = s.user_id JOIN invitations i ON i.service_id = s.id WHERE u.id = users.id AND i.brief_id =  b.id)")
+		query = query.Where(`NOT EXISTS (SELECT u.name FROM users u JOIN services s ON u.id = s.user_id JOIN quotations q ON q.service_id = s.id WHERE u.id = users.id AND q.brief_id =  b.id)`)
 	}
 
 	if filter.ExpertiseName != "" {
