@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"crypto/subtle"
 	"fmt"
 	"os"
 
@@ -13,6 +14,18 @@ import (
 func IsLoggedIn() echo.MiddlewareFunc {
 	return m.JWTWithConfig(m.JWTConfig{
 		SigningKey: []byte(os.Getenv("ACCESS_SECRET")),
+	})
+}
+
+// IsMidtrans used to handle token verification
+func IsMidtrans() echo.MiddlewareFunc {
+	return m.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+		// Be careful to use constant time comparison to prevent timing attacks
+		if subtle.ConstantTimeCompare([]byte(username), []byte(os.Getenv("MIDTRANS_SERVER_KEY"))) == 1 &&
+			subtle.ConstantTimeCompare([]byte(password), []byte("")) == 1 {
+			return true, nil
+		}
+		return false, nil
 	})
 }
 

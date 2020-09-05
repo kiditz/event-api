@@ -266,6 +266,11 @@ definitions:
     - brief_id
     - service_id
     type: object
+  entity.InvitationCount:
+    properties:
+      count:
+        type: integer
+    type: object
   entity.ItemDetails:
     properties:
       brand:
@@ -375,6 +380,45 @@ definitions:
         type: integer
     required:
     - days
+    type: object
+  entity.PaymentNotification:
+    properties:
+      approval_code:
+        type: string
+      currency:
+        type: string
+      custom_field1:
+        type: string
+      custom_field2:
+        type: string
+      custom_field3:
+        type: string
+      fraud_status:
+        type: string
+      gross_amount:
+        type: string
+      id:
+        type: integer
+      merchant_id:
+        type: string
+      order_id:
+        type: string
+      payment_type:
+        type: string
+      settlement_time:
+        type: string
+      signature_key:
+        type: string
+      status_code:
+        type: string
+      status_message:
+        type: string
+      transaction_id:
+        type: string
+      transaction_status:
+        type: string
+      transaction_time:
+        type: string
     type: object
   entity.PaymentTerms:
     properties:
@@ -1140,6 +1184,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
       summary: DeleteCart api used to delete cart for specific device
       tags:
       - orders
@@ -1198,6 +1244,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
       summary: GetCarts api used to find cart for specific device
       tags:
       - orders
@@ -1337,6 +1385,8 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
       summary: AddInvitation api used to create new invitation for talent service
       tags:
       - orders
@@ -1367,6 +1417,30 @@ paths:
           schema:
             $ref: '#/definitions/translate.ResultErrors'
       summary: AcceptInvitation api used to accept invitation and generate quote
+      tags:
+      - orders
+  /invitation/count:
+    get:
+      description: find carts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.InvitationCount'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetInvitationsCount api used to find invitation count
       tags:
       - orders
   /invitation/reject:
@@ -1467,6 +1541,35 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/entity.Order'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Order'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      summary: AddOrder api used to add order
+      tags:
+      - orders
+  /order/payment:
+    post:
+      description: add new order
+      parameters:
+      - description: PaymentNotification
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/entity.PaymentNotification'
       produces:
       - application/json
       responses:

@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"crypto/sha512"
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -81,11 +83,13 @@ func GetInvitations(email string, limitOffset e.LimitOffset) []e.Invitation {
 }
 
 // GetCountInvitation godoc
-func GetCountInvitation(c echo.Context) int {
-	var invotationCount int
+func GetCountInvitation(c echo.Context) e.InvitationCount {
+	var invotationCount e.InvitationCount
 	query := db.DB
-	query = query.Joins("JOIN users u ON u.id = invitations.user_id AND u.email = ?", utils.GetEmail(c))
-	query = query.Find(&e.Invitation{}).Count(&invotationCount)
+	query = query.Joins("JOIN services s ON s.id = invitations.service_id")
+	query = query.Joins("JOIN users u ON u.id = s.user_id AND u.email = ?", utils.GetEmail(c))
+	query = query.Where("invitations.status = ?", e.ACTIVE)
+	query = query.Find(&e.Invitation{}).Count(&invotationCount.Count)
 	return invotationCount
 }
 
@@ -249,16 +253,13 @@ func AddOrder(c echo.Context, order *e.Order) error {
 		order.TransactionDetails.DownPayment = downPayment
 		order.TransactionDetails.Billing = billing
 
-		now := time.Now().UTC()
 		briefID, _ := strconv.Atoi(order.CustomField3)
 		order.BriefID = uint(briefID)
 		var brief e.Brief
 		tx.Where("id = ?", briefID).Preload("Company").Find(&brief)
-		if brief.StartDate == nil {
-			brief.StartDate = &now
-		}
-		brief.Status = e.ACTIVE
+
 		order.UserID = brief.Company.UserID
+
 		if err := tx.Save(&order).Error; err != nil {
 			fmt.Println(err.Error())
 			return err
@@ -270,11 +271,112 @@ func AddOrder(c echo.Context, order *e.Order) error {
 				return err
 			}
 		}
+		return nil
+	})
+}
 
-		if err := tx.Save(&brief).Error; err != nil {
+//AddPayementNotification godoc
+func AddPayementNotification(c echo.Context, payment *e.PaymentNotification) error {
+	return db.DB.Transaction(func(tx *gorm.DB) error {
+		tx = tx.Set("gorm:association_autoupdate", false)
+		serverKey := os.Getenv("MIDTRANS_SERVER_KEY")
+		// Handle signature
+		baseSignature := fmt.Sprintf("%s%s%s%s", payment.OrderID, payment.StatusCode, payment.GrossAmount, serverKey)
+		h := sha512.New()
+		h.Write([]byte(baseSignature))
+		bs := h.Sum(nil)
+		fmt.Printf("Input : %s \n", baseSignature)
+		signature := fmt.Sprintf("%x", bs)
+		if signature != payment.SignatureKey {
+			return fmt.Errorf("Invalid Signature")
+		}
+		if err := tx.Save(&payment).Error; err != nil {
 			fmt.Println(err.Error())
 			return err
 		}
-		return nil
+		if payment.TransactionStatus == txCapture {
+			if payment.FraudStatus == fraudChallenge {
+				fmt.Println("waiting_payment")
+			} else if payment.FraudStatus == fraudAccept {
+				return onPaidStatus(tx, payment)
+			} else {
+				return fmt.Errorf("invalid_order")
+			}
+		} else if payment.TransactionStatus == txCancel {
+			return onCancelStatus(tx, payment)
+		} else if payment.TransactionStatus == txDeny {
+			return onCancelStatus(tx, payment)
+		} else if payment.TransactionStatus == txSettlement {
+			return onPaidStatus(tx, payment)
+		} else if payment.TransactionStatus == txExpire {
+			return onCancelStatus(tx, payment)
+		} else {
+			return fmt.Errorf("invalid_order")
+		}
+		if payment.FraudStatus == fraudDeny {
+			return onCancelStatus(tx, payment)
+		}
+		return fmt.Errorf("invalid_order")
 	})
+}
+
+const (
+	txAuthorize  = "authorize"
+	txCapture    = "capture"
+	txSettlement = "settlement"
+	txDeny       = "deny"
+	txPending    = "pending"
+	txCancel     = "cancel"
+	txRefund     = "refund"
+	txExpire     = "expire"
+
+	fraudAccept    = "accept"
+	fraudDeny      = "deny"
+	fraudChallenge = "challenge"
+)
+
+func onPaidStatus(tx *gorm.DB, payment *e.PaymentNotification) error {
+	return editOrder(tx, payment, e.ACTIVE)
+}
+
+func onCancelStatus(tx *gorm.DB, payment *e.PaymentNotification) error {
+	return editOrder(tx, payment, e.BOOKING)
+}
+
+func editOrder(tx *gorm.DB, payment *e.PaymentNotification, status string) error {
+	var order e.Order
+	var brief e.Brief
+	query := tx
+	query = query.Joins("JOIN transaction_details t ON t.id = orders.transaction_detail_id AND t.order_id = ?", payment.OrderID)
+	query = query.Preload("TransactionDetails")
+	if query.First(&order).RecordNotFound() {
+		return fmt.Errorf("order_not_found")
+	}
+	if tx.First(&brief, order.BriefID).RecordNotFound() {
+		return fmt.Errorf("brief_not_found")
+	}
+	startDate := time.Now().UTC()
+	endDate := time.Date(2100, 1, 1, 12, 0, 0, 0, time.UTC)
+
+	if brief.StartDate == nil {
+		brief.StartDate = &startDate
+	}
+	if brief.EndDate == nil {
+		brief.EndDate = &endDate
+	}
+	brief.Status = status
+	if err := tx.Save(&brief).Error; err != nil {
+		return err
+	}
+	layout := "2006-01-02 15:04:05"
+	trxTime, err := time.Parse(layout, payment.TransactionTime)
+	if err != nil {
+		return err
+	}
+	order.TransactionTime = trxTime
+	order.TransactionStatus = payment.TransactionStatus
+	if err := tx.Save(&order).Error; err != nil {
+		return err
+	}
+	return nil
 }

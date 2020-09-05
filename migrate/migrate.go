@@ -33,6 +33,7 @@ func main() {
 		&e.Order{},
 		&e.TransactionDetails{},
 		&e.ItemDetails{},
+		&e.PaymentNotification{},
 	)
 	// db.DB.Model(&e.Cart{}).AddUniqueIndex("cart_service_id_device_id", "service_id", "device_id")
 	// db.DB.Model(&e.Cart{}).AddUniqueIndex("cart_category_id_device_id", "category_id", "device_id")

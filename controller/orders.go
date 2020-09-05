@@ -53,6 +53,7 @@ func AddCart(c echo.Context) error {
 // @Success 200 {object} translate.ResultSuccess{data=entity.Cart} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /cart [delete]
+// @Security ApiKeyAuth
 func DeleteCart(c echo.Context) error {
 	deviceID := c.QueryParam("device_id")
 	err := r.DeleteCart(deviceID)
@@ -74,11 +75,26 @@ func DeleteCart(c echo.Context) error {
 // @Success 200 {object} translate.ResultSuccess{data=[]entity.Cart} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /carts [get]
+// @Security ApiKeyAuth
 func GetCarts(c echo.Context) error {
 	deviceID := c.QueryParam("device_id")
 	carts := r.GetCarts(deviceID)
 
 	return t.Success(c, carts)
+}
+
+// GetInvitationsCount godoc
+// @Summary GetInvitationsCount api used to find invitation count
+// @Description find carts
+// @Tags orders
+// @MimeType
+// @Produce json
+// @Success 200 {object} translate.ResultSuccess{data=entity.InvitationCount} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /invitation/count [get]
+// @Security ApiKeyAuth
+func GetInvitationsCount(c echo.Context) error {
+	return t.Success(c, r.GetCountInvitation(c))
 }
 
 // AddInvitation godoc
@@ -91,6 +107,7 @@ func GetCarts(c echo.Context) error {
 // @Success 200 {object} translate.ResultSuccess{data=entity.Invitation} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /invitation [post]
+// @Security ApiKeyAuth
 func AddInvitation(c echo.Context) error {
 	var invitations []e.Invitation
 	err := c.Bind(&invitations)
@@ -272,6 +289,7 @@ func AddOrder(c echo.Context) error {
 
 	now := time.Now().UTC()
 	sec := now.Unix()
+	order.TransactionDetails.OrderID = fmt.Sprintf("INV/%d/%d", sec, now.Year())
 	if order.TransactionDetails.GrossAmount > 0 {
 		newOrder, err := getSnapToken(&order)
 		if err != nil {
@@ -279,7 +297,6 @@ func AddOrder(c echo.Context) error {
 		}
 		order.RedirectURL = newOrder.RedirectURL
 		order.Token = newOrder.Token
-		order.TransactionDetails.OrderID = fmt.Sprintf("INV/%d/%d", sec, now.Year())
 		order.TransactionTime = now
 		err = r.AddOrder(c, &order)
 		if err != nil {
@@ -335,15 +352,22 @@ func getSnapToken(order *e.Order) (*e.Order, error) {
 // @Tags orders
 // @MimeType
 // @Produce json
-// @Param order body entity.Order true "Order"
+// @Param order body entity.PaymentNotification true "PaymentNotification"
 // @Success 200 {object} translate.ResultSuccess{data=entity.Order} desc
 // @Failure 400 {object} translate.ResultErrors
-// @Router /order/charge [post]
+// @Router /order/payment [post]
 func AddPaymentNotification(c echo.Context) error {
 	var notification e.PaymentNotification
 	err := c.Bind(&notification)
 	if err != nil {
 		return t.Errors(c, http.StatusBadRequest, err)
 	}
-	return nil
+	err = r.AddPayementNotification(c, &notification)
+	if err != nil {
+		if err, ok := err.(*pq.Error); ok {
+			return t.Errors(c, http.StatusBadRequest, err.Constraint)
+		}
+		return t.Errors(c, http.StatusInternalServerError, err.Error())
+	}
+	return t.Success(c, notification)
 }

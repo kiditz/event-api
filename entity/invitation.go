@@ -15,3 +15,8 @@ type Invitation struct {
 type RejectInvitation struct {
 	InvitationID uint `json:"invitation_id" query:"invitation_id"`
 }
+
+//InvitationCount godoc
+type InvitationCount struct {
+	Count uint `json:"count" query:"count"`
+}

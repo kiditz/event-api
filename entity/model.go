@@ -1,6 +1,9 @@
 package entity
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 // Model definition
 type Model struct {
@@ -12,12 +15,14 @@ type Model struct {
 
 //BeforeCreate docs
 func (u *Model) BeforeCreate() (err error) {
+	fmt.Println("BeforeCreate called")
 	u.CreatedAt = time.Now().UTC()
 	return
 }
 
 //BeforeSave docs
 func (u *Model) BeforeSave() (err error) {
+	fmt.Println("BeforeSave called")
 	date := time.Now().UTC()
 	u.UpdatedAt = &date
 	return

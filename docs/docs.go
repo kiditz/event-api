@@ -737,6 +737,11 @@ var doc = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "add to cart",
                 "produces": [
                     "application/json"
@@ -784,6 +789,11 @@ var doc = `{
         },
         "/carts": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "find carts",
                 "produces": [
                     "application/json"
@@ -1025,6 +1035,11 @@ var doc = `{
         },
         "/invitation": {
             "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "create new invitation",
                 "produces": [
                     "application/json"
@@ -1106,6 +1121,49 @@ var doc = `{
                                     "properties": {
                                         "data": {
                                             "$ref": "#/definitions/entity.Quotation"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/invitation/count": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find carts",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "GetInvitationsCount api used to find invitation count",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.InvitationCount"
                                         }
                                     }
                                 }
@@ -1290,6 +1348,55 @@ var doc = `{
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/entity.Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Order"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/order/payment": {
+            "post": {
+                "description": "add new order",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orders"
+                ],
+                "summary": "AddOrder api used to add order",
+                "parameters": [
+                    {
+                        "description": "PaymentNotification",
+                        "name": "order",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.PaymentNotification"
                         }
                     }
                 ],
@@ -2582,6 +2689,14 @@ var doc = `{
                 }
             }
         },
+        "entity.InvitationCount": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.ItemDetails": {
             "type": "object",
             "required": [
@@ -2744,6 +2859,65 @@ var doc = `{
                 },
                 "id": {
                     "type": "integer"
+                }
+            }
+        },
+        "entity.PaymentNotification": {
+            "type": "object",
+            "properties": {
+                "approval_code": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "custom_field1": {
+                    "type": "string"
+                },
+                "custom_field2": {
+                    "type": "string"
+                },
+                "custom_field3": {
+                    "type": "string"
+                },
+                "fraud_status": {
+                    "type": "string"
+                },
+                "gross_amount": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "merchant_id": {
+                    "type": "string"
+                },
+                "order_id": {
+                    "type": "string"
+                },
+                "payment_type": {
+                    "type": "string"
+                },
+                "settlement_time": {
+                    "type": "string"
+                },
+                "signature_key": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "string"
+                },
+                "status_message": {
+                    "type": "string"
+                },
+                "transaction_id": {
+                    "type": "string"
+                },
+                "transaction_status": {
+                    "type": "string"
+                },
+                "transaction_time": {
+                    "type": "string"
                 }
             }
         },
