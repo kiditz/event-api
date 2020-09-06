@@ -10,4 +10,5 @@ import (
 func SetCompanyRoutes(v1 *echo.Group) {
 	v1.PUT("/company", c.UpdateCompany, m.IsLoggedIn(), m.IsCompany)
 	v1.GET("/company", c.FindCompany, m.IsLoggedIn(), m.IsCompany)
+	v1.GET("/company/billings", c.FindCompany, m.IsLoggedIn(), m.IsCompany)
 }

@@ -12,3 +12,11 @@ type Billing struct {
 	User    *User      `json:"user"`
 	DueDate *time.Time `json:"due_date"`
 }
+
+type BillingFilter struct {
+	StartDate string `query:"start_date" json:"start_date"`
+	EndDate   string `query:"end_date" json:"end_date"`
+	Query     string `query:"query" json:"query"`
+	Offset    int    `query:"offset" json:"offset"`
+	Limit     int    `query:"limit" json:"limit"`
+}

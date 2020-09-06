@@ -1,5 +1,38 @@
 basePath: /api/v1
 definitions:
+  entity.Billing:
+    properties:
+      amount:
+        type: number
+      brief_id:
+        type: integer
+      due_date:
+        type: string
+      id:
+        type: integer
+      order_id:
+        type: string
+      user:
+        $ref: '#/definitions/entity.User'
+        type: object
+      user_id:
+        type: integer
+    required:
+    - brief_id
+    type: object
+  entity.BillingFilter:
+    properties:
+      end_date:
+        type: string
+      limit:
+        type: integer
+      offset:
+        type: integer
+      query:
+        type: string
+      start_date:
+        type: string
+    type: object
   entity.Brief:
     properties:
       category:
@@ -1399,6 +1432,50 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Edit company
+      tags:
+      - company
+  /company/billings:
+    get:
+      consumes:
+      - application/json
+      description: find billings of user
+      parameters:
+      - in: query
+        name: end_date
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: offset
+        type: integer
+      - in: query
+        name: query
+        type: string
+      - in: query
+        name: start_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Billing'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetBilling find billings of user
       tags:
       - company
   /expertises:

@@ -56,3 +56,23 @@ func FindCompany(c echo.Context) error {
 	}
 	return t.Success(c, company)
 }
+
+// GetBilling godoc
+// @Summary GetBilling find billings of user
+// @Description find billings of user
+// @Tags company
+// @Accept json
+// @Produce json
+// @Param filter query entity.BillingFilter true "BillingFilter"
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.Billing} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /company/billings [get]
+// @Security ApiKeyAuth
+func GetBilling(c echo.Context) error {
+	filter := new(e.BillingFilter)
+	if err := c.Bind(filter); err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	incomes := r.GetBillings(c, filter)
+	return t.Success(c, incomes)
+}
