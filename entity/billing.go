@@ -8,7 +8,7 @@ type Billing struct {
 	OrderID string     `json:"order_id"  gorm:"index;" gorm:"not null;"`
 	BriefID uint       `json:"brief_id" gorm:"index;" validate:"required"`
 	Amount  float64    `json:"amount"`
-	UserID  uint       `json:"user_id"`
+	UserID  uint       `json:"user_id" gorm:"index;"`
 	User    *User      `json:"user"`
 	DueDate *time.Time `json:"due_date"`
 }

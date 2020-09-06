@@ -9,7 +9,7 @@ type Income struct {
 	BriefID       uint       `json:"brief_id" gorm:"index;" validate:"required"`
 	Brief         *Brief     `json:"brief,omitempty" swaggerignore:"true"`
 	Amount        float64    `json:"amount"`
-	UserID        uint       `json:"user_id"`
+	UserID        uint       `json:"user_id" gorm:"index;"`
 	User          *User      `json:"user" swaggerignore:"true"`
 	WidrawalDate  *time.Time `json:"withdrawal_time"`
 	CanWithdrawal bool       `json:"can_withdrawal" gorm:"not null;default:'false'"`
