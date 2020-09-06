@@ -40,6 +40,34 @@ func AddBrief(c echo.Context) error {
 	return t.Success(c, brief)
 }
 
+// StopBrief godoc
+// @Summary AddBrief api used to create new campaign
+// @Description Create a new campaign
+// @Tags briefs
+// @MimeType
+// @Produce json
+// @Param campaign body entity.StopBrief true "New Brief"
+// @Success 200 {object} translate.ResultSuccess{data=entity.Brief} desc
+// @ailure 400 {object} translate.ResultErrors
+// @Router /briefs/stop [post]
+// @Security ApiKeyAuth
+func StopBrief(c echo.Context) error {
+	stop := new(e.StopBrief)
+	err := c.Bind(&stop)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	err = r.StopBrief(c, stop.ID)
+	if err != nil {
+		if err, ok := err.(*pq.Error); ok {
+			return t.Errors(c, http.StatusBadRequest, err.Constraint)
+		}
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	return t.Success(c, stop)
+}
+
 // FindBriefByID godoc
 // @Summary FindcampaignById used to find campaign by it's primary key
 // @Description find campaign by id
@@ -66,13 +94,13 @@ func FindBriefByID(c echo.Context) error {
 // @Tags briefs
 // @Accept json
 // @Produce json
-// @Param filter query repository.BriefsFilter false "BriefsFilter"
+// @Param filter query entity.BriefsFilter false "BriefsFilter"
 // @Success 200 {object} translate.ResultSuccess{data=[]entity.Brief} desc
 // @Failure 400 {object} translate.ResultErrors
 // @Router /briefs [get]
 // @Security ApiKeyAuth
 func GetBriefs(c echo.Context) error {
-	filter := new(r.BriefsFilter)
+	filter := new(e.BriefsFilter)
 	if err := c.Bind(filter); err != nil {
 		return t.Errors(c, http.StatusBadRequest, err.Error())
 	}

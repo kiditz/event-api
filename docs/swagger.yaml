@@ -77,6 +77,19 @@ definitions:
       staff_amount:
         type: integer
     type: object
+  entity.BriefsFilter:
+    properties:
+      date:
+        type: string
+      limit:
+        type: integer
+      offset:
+        type: integer
+      onlyme:
+        type: boolean
+      q:
+        type: string
+    type: object
   entity.BusinessType:
     properties:
       id:
@@ -245,6 +258,42 @@ definitions:
         type: string
     required:
     - image_url
+    type: object
+  entity.Income:
+    properties:
+      amount:
+        type: number
+      brief_id:
+        type: integer
+      can_withdrawal:
+        type: boolean
+      has_withdraw:
+        type: boolean
+      id:
+        type: integer
+      order_id:
+        type: string
+      user_id:
+        type: integer
+      withdrawal_time:
+        type: string
+    required:
+    - brief_id
+    type: object
+  entity.IncomeFilter:
+    properties:
+      can_withdrawal:
+        type: boolean
+      end_date:
+        type: string
+      has_withdraw:
+        type: boolean
+      limit:
+        type: integer
+      offset:
+        type: integer
+      start_date:
+        type: string
     type: object
   entity.Invitation:
     properties:
@@ -574,6 +623,11 @@ definitions:
     required:
     - name
     type: object
+  entity.StopBrief:
+    properties:
+      id:
+        type: integer
+    type: object
   entity.SubCategory:
     properties:
       category_id:
@@ -727,19 +781,6 @@ definitions:
     - name
     - password
     - type
-    type: object
-  repository.BriefsFilter:
-    properties:
-      date:
-        type: string
-      limit:
-        type: integer
-      offset:
-        type: integer
-      onlyme:
-        type: boolean
-      q:
-        type: string
     type: object
   translate.ResultErrors:
     properties:
@@ -1131,6 +1172,33 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: GetAllSocialMedia used to find all social media list
+      tags:
+      - briefs
+  /briefs/stop:
+    post:
+      description: Create a new campaign
+      parameters:
+      - description: New Brief
+        in: body
+        name: campaign
+        required: true
+        schema:
+          $ref: '#/definitions/entity.StopBrief'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Brief'
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: AddBrief api used to create new campaign
       tags:
       - briefs
   /business-type:
@@ -2040,6 +2108,53 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: EditUser api used to edit profile
+      tags:
+      - users
+  /user/incomes:
+    get:
+      consumes:
+      - application/json
+      description: find incomes of user
+      parameters:
+      - in: query
+        name: can_withdrawal
+        type: boolean
+      - in: query
+        name: end_date
+        type: string
+      - in: query
+        name: has_withdraw
+        type: boolean
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: offset
+        type: integer
+      - in: query
+        name: start_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Income'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetIncomes find incomes of user
       tags:
       - users
   /users:

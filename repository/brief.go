@@ -2,10 +2,12 @@ package repository
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/kiditz/spgku-api/db"
 	e "github.com/kiditz/spgku-api/entity"
+	"github.com/kiditz/spgku-api/translate"
 	"github.com/kiditz/spgku-api/utils"
 	"github.com/labstack/echo/v4"
 )
@@ -52,22 +54,17 @@ func FindBriefByID(campaignID int) (e.Brief, error) {
 }
 
 // BriefsFilter filtering query by
-type BriefsFilter struct {
-	Date   string `query:"date" json:"date"`
-	Query  string `query:"q" json:"q"`
-	Offset int    `query:"offset" json:"offset"`
-	Limit  int    `query:"limit" json:"limit"`
-	OnlyMe bool   `query:"onlyme" json:"onlyme"`
-}
 
 // GetBriefs used to find campaign by filtered values
-func GetBriefs(filter *BriefsFilter, c echo.Context) []e.Brief {
+func GetBriefs(filter *e.BriefsFilter, c echo.Context) []e.Brief {
 	var campaign []e.Brief
 	query := db.DB
 	if filter.Limit == 0 {
 		filter.Limit = 10
 	}
 	email := utils.GetEmail(c)
+	user := utils.GetUser(c)
+	userType := user["type"].(string)
 	if len(filter.Date) > 0 {
 		query = query.Where("? between to_char(start_date, 'YYYY-MM-DD') and to_char(end_date, 'YYYY-MM-DD')", filter.Date)
 	}
@@ -75,7 +72,15 @@ func GetBriefs(filter *BriefsFilter, c echo.Context) []e.Brief {
 		query = query.Where("title ilike ?", "%"+filter.Query+"%")
 	}
 	if filter.OnlyMe {
-		query = query.Where("created_by = ?", email)
+		if userType == "company" {
+			query = query.Where("created_by = ?", email)
+
+		} else {
+			query = query.Joins("JOIN quotations q ON briefs.id =  q.brief_id ")
+			query = query.Joins("JOIN services s ON s.id = q.service_id")
+			query = query.Joins("JOIN users u ON u.id = s.user_id AND u.email = ?", email)
+		}
+
 	} else {
 		query = query.Joins("JOIN users u ON u.email = ? ", email)
 		query = query.Joins("JOIN services s ON s.user_id = u.id AND s.category_id = briefs.category_id")
@@ -144,3 +149,82 @@ func GetBriefInfo(campaignID int) (e.BriefInfo, error) {
 
 	return info, nil
 }
+
+//StopBrief stop campaign
+func StopBrief(c echo.Context, briefID uint) error {
+
+	return db.DB.Transaction(func(tx *gorm.DB) error {
+
+		var brief e.Brief
+		if tx.Where("status = ? AND id = ?", e.ACTIVE, briefID).Preload("PaymentTerms").Preload("PaymentDays").First(&brief).RecordNotFound() {
+			return fmt.Errorf("brief_not_found")
+		}
+		var order e.Order
+		query := tx
+		query = query.Preload("TransactionDetails")
+		query = query.Preload("ItemDetails")
+		if query.Where("brief_id = ?", briefID).Last(&order).RecordNotFound() {
+			return fmt.Errorf("order_not_found")
+		}
+		user := utils.GetUser(c)
+		userID := uint(user["id"].(float64))
+		now := time.Now().UTC()
+		// Close the brief
+		brief.Status = e.CLOSED
+		if err := tx.Save(&brief).Error; err != nil {
+			return err
+		}
+		if brief.PaymentTerms.Slug == front {
+			if order.TransactionStatus == txCapture || order.TransactionStatus == txSettlement {
+				return addIncome(tx, &order, &brief, true)
+			}
+		} else if brief.PaymentTerms.Slug == back || brief.PaymentTerms.Slug == fiftyFifty {
+			dueDate := now.AddDate(0, 0, int(brief.PaymentDays.Days))
+			billing := e.Billing{
+				BriefID: brief.ID,
+				Amount:  order.TransactionDetails.Billing,
+				DueDate: &dueDate,
+				OrderID: order.TransactionDetails.OrderID,
+				UserID:  userID,
+			}
+			if err := tx.Save(&billing).Error; err != nil {
+				return err
+			}
+			return addIncome(tx, &order, &brief, false)
+		}
+
+		fmt.Println("stop brief")
+		return nil
+	})
+}
+func addIncome(tx *gorm.DB, order *e.Order, brief *e.Brief, canWithdrawal bool) error {
+	for _, item := range order.ItemDetails {
+		if !translate.IsEmail(item.Name) {
+			continue
+		}
+		fmt.Printf("Item %v\n", item)
+		user, err := FindUserByEmail(item.Name)
+		if err != nil {
+			fmt.Printf("user %s not found", item.Name)
+			continue
+		}
+		income := e.Income{
+			BriefID:       brief.ID,
+			Amount:        item.Price,
+			UserID:        user.ID,
+			OrderID:       order.TransactionDetails.OrderID,
+			CanWithdrawal: true,
+			HasWithdraw:   false,
+		}
+		if err := tx.Save(&income).Error; err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+const (
+	fiftyFifty = "50_50"
+	front      = "100_front"
+	back       = "100_back"
+)

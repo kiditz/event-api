@@ -10,6 +10,9 @@ import (
 func SetBriefRoutes(v1 *echo.Group) {
 	v1.POST("/briefs", c.AddBrief, m.IsLoggedIn(), m.IsCompany)
 	v1.POST("/briefs/documents", c.AddDocument, m.IsLoggedIn())
+
+	v1.POST("/briefs/stop", c.StopBrief, m.IsLoggedIn(), m.IsCompany)
+
 	v1.GET("/briefs/:id", c.FindBriefByID, m.IsLoggedIn())
 	v1.GET("/briefs", c.GetBriefs, m.IsLoggedIn())
 	v1.GET("/briefs/payment-terms", c.GetPaymentTerms, m.IsLoggedIn())

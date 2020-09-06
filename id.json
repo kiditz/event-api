@@ -15,5 +15,10 @@
     "user_not_found": "Email / Password tidak terdaftar",
     "users_email_key": "Email tidak dapat digunakan",
     "talent_not_found":"Talent tidak ditemukan",
-    "service_not_found": "Layanan tidak ditemukan"
+    "service_not_found": "Layanan tidak ditemukan",
+    "order_not_found": "Transaksi tidak ditemukan",
+    "brief_not_found": "Brief tidak ditemukan",
+    "uk_invitation_service_id_brief_id": "Sudah pernah diundang",
+    "uk_billing_user_id_brief_id": "Billing sudah ada",
+    "uk_income_user_id_brief_id": "Income sudah ada"
 }

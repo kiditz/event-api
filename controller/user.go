@@ -190,3 +190,23 @@ func GetUsers(c echo.Context) error {
 	talents := r.GetUsersByService(c, filter)
 	return t.Success(c, talents)
 }
+
+// GetIncomes godoc
+// @Summary GetIncomes find incomes of user
+// @Description find incomes of user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param filter query entity.IncomeFilter false "IncomeFilter"
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.Income} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /user/incomes [get]
+// @Security ApiKeyAuth
+func GetIncomes(c echo.Context) error {
+	filter := new(e.IncomeFilter)
+	if err := c.Bind(filter); err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	incomes := r.GetIncomes(c, filter)
+	return t.Success(c, incomes)
+}

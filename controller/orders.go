@@ -288,8 +288,6 @@ func AddOrder(c echo.Context) error {
 	}
 
 	now := time.Now().UTC()
-	sec := now.Unix()
-	order.TransactionDetails.OrderID = fmt.Sprintf("INV/%d/%d", sec, now.Year())
 	if order.TransactionDetails.GrossAmount > 0 {
 		newOrder, err := getSnapToken(&order)
 		if err != nil {

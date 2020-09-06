@@ -15,5 +15,10 @@
     "users_email_key": "Email cannot be used",
     "failed_to_call_midtrans": "Failed to start campaign",
     "talent_not_found":"Talent not found",
-    "service_not_found": "Service not found"
+    "service_not_found": "Service not found",
+    "uk_invitation_service_id_brief_id": "Has been invited",
+    "order_not_found": "Transaction not found",
+    "brief_not_found": "Brief not found",
+    "uk_billing_user_id_brief_id": "Billing was exists",
+    "uk_income_user_id_brief_id": "Income was exists"
 }

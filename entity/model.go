@@ -54,6 +54,3 @@ const ONREVIEW = "on_review"
 
 // CLOSED godoc
 const CLOSED = "closed"
-
-// S50_50 godoc
-const S50_50 = "50_50"

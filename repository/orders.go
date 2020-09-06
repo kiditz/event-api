@@ -245,7 +245,6 @@ func DeclineQuotation(quote *e.QuotationIdentity) error {
 
 //AddOrder godoc
 func AddOrder(c echo.Context, order *e.Order) error {
-
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		tx = tx.Set("gorm:association_autoupdate", false)
 		downPayment, _ := strconv.ParseFloat(order.CustomField2, 64)
@@ -257,9 +256,7 @@ func AddOrder(c echo.Context, order *e.Order) error {
 		order.BriefID = uint(briefID)
 		var brief e.Brief
 		tx.Where("id = ?", briefID).Preload("Company").Find(&brief)
-
 		order.UserID = brief.Company.UserID
-
 		if err := tx.Save(&order).Error; err != nil {
 			fmt.Println(err.Error())
 			return err
@@ -357,7 +354,6 @@ func editOrder(tx *gorm.DB, payment *e.PaymentNotification, status string) error
 	}
 	startDate := time.Now().UTC()
 	endDate := time.Date(2100, 1, 1, 12, 0, 0, 0, time.UTC)
-
 	if brief.StartDate == nil {
 		brief.StartDate = &startDate
 	}
@@ -368,6 +364,7 @@ func editOrder(tx *gorm.DB, payment *e.PaymentNotification, status string) error
 	if err := tx.Save(&brief).Error; err != nil {
 		return err
 	}
+
 	layout := "2006-01-02 15:04:05"
 	trxTime, err := time.Parse(layout, payment.TransactionTime)
 	if err != nil {
@@ -378,5 +375,6 @@ func editOrder(tx *gorm.DB, payment *e.PaymentNotification, status string) error
 	if err := tx.Save(&order).Error; err != nil {
 		return err
 	}
+	
 	return nil
 }

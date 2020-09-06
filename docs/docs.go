@@ -589,6 +589,54 @@ var doc = `{
                 }
             }
         },
+        "/briefs/stop": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Create a new campaign",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "briefs"
+                ],
+                "summary": "AddBrief api used to create new campaign",
+                "parameters": [
+                    {
+                        "description": "New Brief",
+                        "name": "campaign",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.StopBrief"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Brief"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
         "/briefs/{id}": {
             "get": {
                 "security": [
@@ -2204,6 +2252,87 @@ var doc = `{
                 }
             }
         },
+        "/user/incomes": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find incomes of user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "GetIncomes find incomes of user",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "name": "can_withdrawal",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "end_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "name": "has_withdraw",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "start_date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Income"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "security": [
@@ -2401,6 +2530,26 @@ var doc = `{
                 },
                 "staff_amount": {
                     "type": "integer"
+                }
+            }
+        },
+        "entity.BriefsFilter": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "onlyme": {
+                    "type": "boolean"
+                },
+                "q": {
+                    "type": "string"
                 }
             }
         },
@@ -2656,6 +2805,61 @@ var doc = `{
                     "type": "integer"
                 },
                 "image_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Income": {
+            "type": "object",
+            "required": [
+                "brief_id"
+            ],
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "brief_id": {
+                    "type": "integer"
+                },
+                "can_withdrawal": {
+                    "type": "boolean"
+                },
+                "has_withdraw": {
+                    "type": "boolean"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "order_id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                },
+                "withdrawal_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.IncomeFilter": {
+            "type": "object",
+            "properties": {
+                "can_withdrawal": {
+                    "type": "boolean"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "has_withdraw": {
+                    "type": "boolean"
+                },
+                "limit": {
+                    "type": "integer"
+                },
+                "offset": {
+                    "type": "integer"
+                },
+                "start_date": {
                     "type": "string"
                 }
             }
@@ -3151,6 +3355,14 @@ var doc = `{
                 }
             }
         },
+        "entity.StopBrief": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "entity.SubCategory": {
             "type": "object",
             "properties": {
@@ -3374,26 +3586,6 @@ var doc = `{
                     "type": "string"
                 },
                 "type": {
-                    "type": "string"
-                }
-            }
-        },
-        "repository.BriefsFilter": {
-            "type": "object",
-            "properties": {
-                "date": {
-                    "type": "string"
-                },
-                "limit": {
-                    "type": "integer"
-                },
-                "offset": {
-                    "type": "integer"
-                },
-                "onlyme": {
-                    "type": "boolean"
-                },
-                "q": {
                     "type": "string"
                 }
             }

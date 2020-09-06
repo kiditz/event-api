@@ -38,3 +38,17 @@ type BriefInfo struct {
 	QuotationCount uint     `json:"quotation_count"`
 	Images         []string `json:"images"`
 }
+
+//StopBrief show campaign info
+type StopBrief struct {
+	ID uint `json:"id" query:"id"`
+}
+
+//BriefsFilter godoc
+type BriefsFilter struct {
+	Date   string `query:"date" json:"date"`
+	Query  string `query:"q" json:"q"`
+	Offset int    `query:"offset" json:"offset"`
+	Limit  int    `query:"limit" json:"limit"`
+	OnlyMe bool   `query:"onlyme" json:"onlyme"`
+}

@@ -34,7 +34,10 @@ func main() {
 		&e.TransactionDetails{},
 		&e.ItemDetails{},
 		&e.PaymentNotification{},
+		&e.Income{},
+		&e.Billing{},
 	)
-	// db.DB.Model(&e.Cart{}).AddUniqueIndex("cart_service_id_device_id", "service_id", "device_id")
-	// db.DB.Model(&e.Cart{}).AddUniqueIndex("cart_category_id_device_id", "category_id", "device_id")
+	db.DB.Model(&e.Invitation{}).AddUniqueIndex("uk_invitation_service_id_brief_id", "service_id", "brief_id")
+	db.DB.Model(&e.Income{}).AddUniqueIndex("uk_income_user_id_brief_id", "user_id", "brief_id")
+	db.DB.Model(&e.Billing{}).AddUniqueIndex("uk_billing_user_id_brief_id", "user_id", "brief_id")
 }
