@@ -25,4 +25,5 @@ type IncomeFilter struct {
 	HasWithdraw   bool   `query:"has_withdraw" json:"has_withdraw"`
 	Offset        int    `query:"offset" json:"offset"`
 	Limit         int    `query:"limit" json:"limit"`
+	Query         string `query:"query" json:"query"`
 }
