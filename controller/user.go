@@ -210,3 +210,18 @@ func GetIncomes(c echo.Context) error {
 	incomes := r.GetIncomes(c, filter)
 	return t.Success(c, incomes)
 }
+
+// FindIncomeInfo godoc
+// @Summary GetIncomes find incomes of user
+// @Description find incomes of user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.Income} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /user/incomes/total [get]
+// @Security ApiKeyAuth
+func FindIncomeInfo(c echo.Context) error {
+	info := r.FindIncomeInfo(c)
+	return t.Success(c, info)
+}

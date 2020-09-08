@@ -31,6 +31,29 @@ func GetIncomes(c echo.Context, filter *e.IncomeFilter) []e.Income {
 	}
 	query = query.Preload("Brief")
 	query = query.Offset(filter.Offset).Limit(filter.Limit).Order("id desc")
-	query.Find(&incomes)
+	query = query.Find(&incomes)
 	return incomes
+}
+
+//FindIncomeInfo godoc
+func FindIncomeInfo(c echo.Context) e.IncomeInfo {
+	user := utils.GetUser(c)
+	userID := uint(user["id"].(float64))
+	var info e.IncomeInfo
+	query := db.DB.Table("incomes i")
+	query = query.Where("i.user_id = ?", userID)
+	query = query.Select(`
+	(
+		SELECT cast(sum((amount - (10.0 / 100.0) * amount)) as integer)
+			FROM incomes 
+		WHERE can_withdrawal = true and has_withdraw = false and user_id = i.user_id
+	) as total_withdrawal,
+	(
+		SELECT cast(sum((amount - (10.0 / 100.0) * amount)) as integer)
+			FROM incomes 
+		WHERE user_id = i.user_id
+	) as total
+	
+	`).Scan(&info)
+	return info
 }

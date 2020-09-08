@@ -2,6 +2,8 @@ package repository
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -208,13 +210,15 @@ func addIncome(tx *gorm.DB, order *e.Order, brief *e.Brief, canWithdrawal bool) 
 			fmt.Printf("user %s not found", item.Name)
 			continue
 		}
+		fee, _ := strconv.Atoi(os.Getenv("AGENCY_FEE"))
 		income := e.Income{
 			BriefID:       brief.ID,
 			Amount:        item.Price,
 			UserID:        user.ID,
 			OrderID:       order.TransactionDetails.OrderID,
-			CanWithdrawal: true,
+			CanWithdrawal: canWithdrawal,
 			HasWithdraw:   false,
+			AgencyFee:     fee,
 		}
 		if err := tx.Save(&income).Error; err != nil {
 			return err

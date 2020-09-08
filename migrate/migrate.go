@@ -36,6 +36,8 @@ func main() {
 		&e.PaymentNotification{},
 		&e.Income{},
 		&e.Billing{},
+		&e.Bank{},
+		&e.UserBank{},
 	)
 	db.DB.Model(&e.Invitation{}).AddUniqueIndex("uk_invitation_service_id_brief_id", "service_id", "brief_id")
 	db.DB.Model(&e.Income{}).AddUniqueIndex("uk_income_user_id_brief_id", "user_id", "brief_id")

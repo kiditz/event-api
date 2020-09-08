@@ -16,7 +16,7 @@ func init() {
 	db.DB.LogMode(true)
 }
 
-// @title Spgku Application
+// @title StafSus Application
 // @description This is event staffing application management
 // @version 1.0
 // @host localhost:8000
@@ -27,7 +27,6 @@ func init() {
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
-
 func main() {
 
 	e := echo.New()

@@ -343,6 +343,8 @@ func onCancelStatus(tx *gorm.DB, payment *e.PaymentNotification) error {
 func editOrder(tx *gorm.DB, payment *e.PaymentNotification, status string) error {
 	var order e.Order
 	var brief e.Brief
+	var billing e.Billing
+	var incomes []e.Income
 	query := tx
 	query = query.Joins("JOIN transaction_details t ON t.id = orders.transaction_detail_id AND t.order_id = ?", payment.OrderID)
 	query = query.Preload("TransactionDetails")
@@ -360,9 +362,32 @@ func editOrder(tx *gorm.DB, payment *e.PaymentNotification, status string) error
 	if brief.EndDate == nil {
 		brief.EndDate = &endDate
 	}
-	brief.Status = status
-	if err := tx.Save(&brief).Error; err != nil {
-		return err
+	if brief.Status != e.CLOSED {
+		brief.Status = status
+		if err := tx.Save(&brief).Error; err != nil {
+			return err
+		}
+	}
+	if brief.Status == e.CLOSED {
+		if !tx.Where("brief_id = ?", order.BriefID).Find(&billing).RecordNotFound() {
+			if billing.Amount == order.TransactionDetails.GrossAmount {
+				billing.HasPaid = true
+				if err := tx.Save(&billing).Error; err != nil {
+					return err
+				}
+			}
+		}
+		tx.Where("brief_id = ?", order.BriefID).Find(&incomes)
+		if len(incomes) > 0 {
+			for _, income := range incomes {
+				income.CanWithdrawal = true
+				fee, _ := strconv.Atoi(os.Getenv("AGENCY_FEE"))
+				income.AgencyFee = fee
+				if err := tx.Save(&income).Error; err != nil {
+					return err
+				}
+			}
+		}
 	}
 
 	layout := "2006-01-02 15:04:05"
@@ -375,6 +400,6 @@ func editOrder(tx *gorm.DB, payment *e.PaymentNotification, status string) error
 	if err := tx.Save(&order).Error; err != nil {
 		return err
 	}
-	
+
 	return nil
 }

@@ -8,6 +8,7 @@ type Income struct {
 	OrderID       string     `json:"order_id"  gorm:"index;" gorm:"not null;"`
 	BriefID       uint       `json:"brief_id" gorm:"index;" validate:"required"`
 	Brief         *Brief     `json:"brief,omitempty" swaggerignore:"true"`
+	AgencyFee     int        `json:"agency_fee"`
 	Amount        float64    `json:"amount"`
 	UserID        uint       `json:"user_id" gorm:"index;"`
 	User          *User      `json:"user" swaggerignore:"true"`
@@ -26,4 +27,10 @@ type IncomeFilter struct {
 	Offset        int    `query:"offset" json:"offset"`
 	Limit         int    `query:"limit" json:"limit"`
 	Query         string `query:"query" json:"query"`
+}
+
+//IncomeInfo godoc
+type IncomeInfo struct {
+	TotalWithdrawal float64 `json:"total_withdrawal"`
+	Total           float64 `json:"total"`
 }

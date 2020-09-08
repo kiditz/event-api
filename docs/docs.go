@@ -2374,10 +2374,64 @@ var doc = `{
                     },
                     {
                         "type": "string",
+                        "name": "query",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "start_date",
                         "in": "query"
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Income"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
+        "/user/incomes/total": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find incomes of user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "GetIncomes find incomes of user",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -2511,6 +2565,9 @@ var doc = `{
                 },
                 "due_date": {
                     "type": "string"
+                },
+                "has_paid": {
+                    "type": "boolean"
                 },
                 "id": {
                     "type": "integer"
@@ -2941,6 +2998,9 @@ var doc = `{
                 "brief_id"
             ],
             "properties": {
+                "agency_fee": {
+                    "type": "integer"
+                },
                 "amount": {
                     "type": "number"
                 },
@@ -2984,6 +3044,9 @@ var doc = `{
                 },
                 "offset": {
                     "type": "integer"
+                },
+                "query": {
+                    "type": "string"
                 },
                 "start_date": {
                     "type": "string"
@@ -3774,7 +3837,7 @@ var SwaggerInfo = swaggerInfo{
 	Host:        "localhost:8000",
 	BasePath:    "/api/v1",
 	Schemes:     []string{},
-	Title:       "Spgku Application",
+	Title:       "StafSus Application",
 	Description: "This is event staffing application management",
 }
 

@@ -8,6 +8,8 @@ definitions:
         type: integer
       due_date:
         type: string
+      has_paid:
+        type: boolean
       id:
         type: integer
       order_id:
@@ -294,6 +296,8 @@ definitions:
     type: object
   entity.Income:
     properties:
+      agency_fee:
+        type: integer
       amount:
         type: number
       brief_id:
@@ -325,6 +329,8 @@ definitions:
         type: integer
       offset:
         type: integer
+      query:
+        type: string
       start_date:
         type: string
     type: object
@@ -845,7 +851,7 @@ info:
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  title: Spgku Application
+  title: StafSus Application
   version: "1.0"
 paths:
   /account:
@@ -2209,8 +2215,39 @@ paths:
         name: offset
         type: integer
       - in: query
+        name: query
+        type: string
+      - in: query
         name: start_date
         type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Income'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetIncomes find incomes of user
+      tags:
+      - users
+  /user/incomes/total:
+    get:
+      consumes:
+      - application/json
+      description: find incomes of user
       produces:
       - application/json
       responses:
