@@ -11,7 +11,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// AddUser used tto register new user
+// AddUser godoc
 func AddUser(user *e.User) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(&user).Error; err != nil {
@@ -19,16 +19,16 @@ func AddUser(user *e.User) error {
 		}
 		user.Active = true
 		if user.Type == "talent" {
-			tx.Create(&e.Talent{
+			tx.Save(&e.Talent{
 				UserID:     user.ID,
 				IsVerified: false,
 			})
 		}
 		if user.Type == "company" {
-			tx.Create(&e.Company{
+			tx.Save(&e.Company{
 				UserID:      user.ID,
-				Name:        "My Company Name",
-				Description: "[{\"insert\":\"My Company Description\"},{\"insert\":\"\n\"}]",
+				Name:        "",
+				Description: "[{\"insert\":\"...\"},{\"insert\":\"\n\"}]",
 				IsUpdated:   false,
 			})
 		}

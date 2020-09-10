@@ -225,3 +225,51 @@ func FindIncomeInfo(c echo.Context) error {
 	info := r.FindIncomeInfo(c)
 	return t.Success(c, info)
 }
+
+// GetBanks godoc
+// @Summary GetBanks find all banks of indonesia
+// @Description find all banks of indonesia
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.Bank} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /banks [get]
+// @Security ApiKeyAuth
+func GetBanks(c echo.Context) error {
+	banks := r.GetBanks()
+	return t.Success(c, banks)
+}
+
+// AddUserBank godoc
+// @Summary GetBanks post new user bank account
+// @Description post new bank account
+// @Tags users
+// @Param userBank body entity.UserBank true "New Brief"
+// @Accept json
+// @Produce json
+// @Success 200 {object} translate.ResultSuccess{data=entity.UserBank} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /user/bank [post]
+// @Security ApiKeyAuth
+func AddUserBank(c echo.Context) error {
+	userBank := new(e.UserBank)
+	err := c.Bind(&userBank)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	fmt.Printf("\nBank %v\n", userBank)
+	invalid := t.ValidateTranslator(c, userBank)
+	if invalid != nil {
+		return t.Errors(c, http.StatusBadRequest, invalid)
+	}
+
+	err = r.AddUserBank(c, userBank)
+	if err != nil {
+		if err, ok := err.(*pq.Error); ok {
+			return t.Errors(c, http.StatusInternalServerError, err.Constraint)
+		}
+		return t.Errors(c, http.StatusInternalServerError, err.Error())
+	}
+	return t.Success(c, userBank)
+}

@@ -17,4 +17,7 @@ func SetUserRoutes(v1 *echo.Group) {
 	v1.GET("/user/private", c.TestClaims, m.IsLoggedIn(), m.IsCompany)
 	v1.GET("/user/incomes", c.GetIncomes, m.IsLoggedIn(), m.IsTalent)
 	v1.GET("/user/incomes/total", c.FindIncomeInfo, m.IsLoggedIn(), m.IsTalent)
+	v1.GET("/banks", c.GetBanks)
+	v1.POST("/user/bank", c.AddUserBank, m.IsLoggedIn(), m.IsTalent)
+
 }

@@ -59,7 +59,7 @@ func addTranslator(trans ut.Translator, fileName string) {
 }
 
 // ValidateTranslator the value
-func ValidateTranslator(c echo.Context, s interface{}) ([]map[string]interface{}, ut.Translator) {
+func ValidateTranslator(c echo.Context, s interface{}) []map[string]interface{} {
 	err := VALIDATE.Struct(s)
 
 	var slice []map[string]interface{}
@@ -73,9 +73,10 @@ func ValidateTranslator(c echo.Context, s interface{}) ([]map[string]interface{}
 			mapper["value"] = strings.TrimSpace(strings.ReplaceAll(err.Translate(trans), err.Field(), ""))
 			slice = append(slice, mapper)
 		}
-		return slice, trans
+
+		return slice
 	}
-	return slice, trans
+	return slice
 }
 
 // GetTranslator is used to call translator
@@ -111,6 +112,7 @@ func Errors(c echo.Context, statusCode int, s interface{}) error {
 	return c.JSON(statusCode, ResultErrors{
 		Status:     http.StatusText(statusCode),
 		Errors:     s,
+		Message:    TranslatesString(c, "validation_errors"),
 		StatusCode: statusCode,
 	})
 }

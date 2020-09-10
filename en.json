@@ -20,5 +20,6 @@
     "order_not_found": "Transaction not found",
     "brief_not_found": "Brief not found",
     "uk_billing_user_id_brief_id": "Billing was exists",
-    "uk_income_user_id_brief_id": "Income was exists"
+    "uk_income_user_id_brief_id": "Income was exists",
+    "validation_errors": "Errors in validations!"
 }

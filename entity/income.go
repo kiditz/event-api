@@ -15,6 +15,7 @@ type Income struct {
 	WidrawalDate  *time.Time `json:"withdrawal_time"`
 	CanWithdrawal bool       `json:"can_withdrawal" gorm:"not null;default:'false'"`
 	HasWithdraw   bool       `json:"has_withdraw" gorm:"not null;default:'false'"`
+
 	Model
 }
 

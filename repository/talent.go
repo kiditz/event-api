@@ -10,7 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// AddTalent used to create new talent
+// AddTalent godoc
 func AddTalent(talent *e.Talent, c echo.Context) error {
 
 	return db.DB.Transaction(func(tx *gorm.DB) error {
@@ -34,7 +34,7 @@ func AddTalent(talent *e.Talent, c echo.Context) error {
 	})
 }
 
-// FindTalentByID  used to find talent by id
+// FindTalentByID  godoc
 func FindTalentByID(talentID int) (e.Talent, error) {
 	var talent e.Talent
 	query := db.DB.Where("id=?", talentID)
@@ -50,7 +50,7 @@ func FindTalentByID(talentID int) (e.Talent, error) {
 	return talent, nil
 }
 
-// FindTalentByEmail used to find talent by email
+// FindTalentByEmail godoc
 func FindTalentByEmail(email string) (e.Talent, error) {
 	var talent e.Talent
 	query := db.DB.Joins("JOIN users u ON u.id = talents.user_id").Where("u.email = ?", email)
@@ -68,7 +68,7 @@ func FindTalentByEmail(email string) (e.Talent, error) {
 	return talent, nil
 }
 
-// GetTalentList  used to find talent by id
+// GetTalentList  godoc
 func GetTalentList(filter *e.FilteredTalent) []e.TalentResults {
 	if filter.Limit == 0 {
 		filter.Limit = 20
@@ -116,7 +116,7 @@ func GetTalentList(filter *e.FilteredTalent) []e.TalentResults {
 	return results
 }
 
-// AddService used to create new service for specific talent
+// AddService godoc
 func AddService(service *e.Service, c echo.Context) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		user := utils.GetUser(c)
@@ -134,7 +134,7 @@ func AddService(service *e.Service, c echo.Context) error {
 	})
 }
 
-// FindServiceByID used to find service by pk
+// FindServiceByID godoc
 func FindServiceByID(serviceID int) (e.Service, error) {
 	var service e.Service
 	db := db.DB

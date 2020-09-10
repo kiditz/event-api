@@ -18,7 +18,7 @@ import (
 // @Tags briefs
 // @MimeType
 // @Produce json
-// @Param campaign body entity.Brief true "New Brief"
+// @Param brief body entity.Brief true "New Brief"
 // @Success 200 {object} translate.ResultSuccess{data=entity.Brief} desc
 // @ailure 400 {object} translate.ResultErrors
 // @Router /briefs [post]

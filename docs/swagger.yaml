@@ -1,5 +1,14 @@
 basePath: /api/v1
 definitions:
+  entity.Bank:
+    properties:
+      code:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   entity.Billing:
     properties:
       amount:
@@ -805,6 +814,25 @@ definitions:
     - name
     - type
     type: object
+  entity.UserBank:
+    properties:
+      account_name:
+        type: string
+      account_no:
+        type: string
+      bank:
+        $ref: '#/definitions/entity.Bank'
+        type: object
+      bank_id:
+        type: integer
+      id:
+        type: integer
+      user:
+        $ref: '#/definitions/entity.User'
+        type: object
+      user_id:
+        type: integer
+    type: object
   entity.UserForm:
     properties:
       email:
@@ -955,6 +983,34 @@ paths:
       summary: Sign In
       tags:
       - users
+  /banks:
+    get:
+      consumes:
+      - application/json
+      description: find all banks of indonesia
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Bank'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetBanks find all banks of indonesia
+      tags:
+      - users
   /briefs:
     get:
       consumes:
@@ -1004,7 +1060,7 @@ paths:
       parameters:
       - description: New Brief
         in: body
-        name: campaign
+        name: brief
         required: true
         schema:
           $ref: '#/definitions/entity.Brief'
@@ -2191,6 +2247,39 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: EditUser api used to edit profile
+      tags:
+      - users
+  /user/bank:
+    post:
+      consumes:
+      - application/json
+      description: post new bank account
+      parameters:
+      - description: New Brief
+        in: body
+        name: userBank
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UserBank'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.UserBank'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetBanks post new user bank account
       tags:
       - users
   /user/incomes:
