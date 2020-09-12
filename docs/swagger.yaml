@@ -832,6 +832,9 @@ definitions:
         type: object
       user_id:
         type: integer
+    required:
+    - account_name
+    - account_no
     type: object
   entity.UserForm:
     properties:
@@ -2280,6 +2283,34 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: GetBanks post new user bank account
+      tags:
+      - users
+  /user/banks:
+    get:
+      consumes:
+      - application/json
+      description: find all user bank accounts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.UserBank'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetUserBanks find all user bank accounts
       tags:
       - users
   /user/incomes:

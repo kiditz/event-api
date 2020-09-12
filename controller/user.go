@@ -273,3 +273,18 @@ func AddUserBank(c echo.Context) error {
 	}
 	return t.Success(c, userBank)
 }
+
+// GetUserBanks godoc
+// @Summary GetUserBanks find all user bank accounts
+// @Description  find all user bank accounts
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.UserBank} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /user/banks [get]
+// @Security ApiKeyAuth
+func GetUserBanks(c echo.Context) error {
+	userBanks := r.GetUserBank(c)
+	return t.Success(c, userBanks)
+}

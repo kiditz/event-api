@@ -28,12 +28,11 @@ func AddUserBank(c echo.Context, userBank *e.UserBank) error {
 	})
 }
 
-// FindUserBank godoc
-func FindUserBank(c echo.Context) e.Bank {
-	var bank e.Bank
+// GetUserBank godoc
+func GetUserBank(c echo.Context) []e.UserBank {
+	var userBanks []e.UserBank
 	user := utils.GetUser(c)
 	userID := uint(user["id"].(float64))
-
-	db.DB.Where("user_id = ?", userID).Find(&bank)
-	return bank
+	db.DB.Where("user_id = ?", userID).Preload("Bank").Find(&userBanks)
+	return userBanks
 }

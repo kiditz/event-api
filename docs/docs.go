@@ -2434,6 +2434,55 @@ var doc = `{
                 }
             }
         },
+        "/user/banks": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find all user bank accounts",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "GetUserBanks find all user bank accounts",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.UserBank"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/user/incomes": {
             "get": {
                 "security": [
@@ -3878,6 +3927,10 @@ var doc = `{
         },
         "entity.UserBank": {
             "type": "object",
+            "required": [
+                "account_name",
+                "account_no"
+            ],
             "properties": {
                 "account_name": {
                     "type": "string"
