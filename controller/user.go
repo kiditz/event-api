@@ -288,3 +288,36 @@ func GetUserBanks(c echo.Context) error {
 	userBanks := r.GetUserBank(c)
 	return t.Success(c, userBanks)
 }
+
+// AddWithdraw godoc
+// @Summary AddWithdraw post new withdraw account
+// @Description post new bank account
+// @Tags users
+// @Param userBank body entity.Withdraw true "Withdraw"
+// @Accept json
+// @Produce json
+// @Success 200 {object} translate.ResultSuccess{data=entity.Withdraw} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /user/withdraw [post]
+// @Security ApiKeyAuth
+func AddWithdraw(c echo.Context) error {
+	withdraw := new(e.Withdraw)
+	err := c.Bind(&withdraw)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	fmt.Printf("\nWithdraw %v\n", withdraw)
+	invalid := t.ValidateTranslator(c, withdraw)
+	if invalid != nil {
+		return t.Errors(c, http.StatusBadRequest, invalid)
+	}
+
+	err = r.AddWithdraw(c, withdraw)
+	if err != nil {
+		if err, ok := err.(*pq.Error); ok {
+			return t.Errors(c, http.StatusInternalServerError, err.Constraint)
+		}
+		return t.Errors(c, http.StatusInternalServerError, err.Error())
+	}
+	return t.Success(c, withdraw)
+}

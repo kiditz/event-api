@@ -2129,6 +2129,62 @@ var doc = `{
                 }
             }
         },
+        "/talent/services": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find services",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "talents"
+                ],
+                "summary": "GetServicesByLoggedIn is api to find all services by params",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "category_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Service"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/talent/{id}": {
             "get": {
                 "security": [
@@ -2618,6 +2674,63 @@ var doc = `{
                 }
             }
         },
+        "/user/withdraw": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "post new bank account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "AddWithdraw post new withdraw account",
+                "parameters": [
+                    {
+                        "description": "Withdraw",
+                        "name": "userBank",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Withdraw"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Withdraw"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "security": [
@@ -3092,6 +3205,14 @@ var doc = `{
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.FilteredService": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -3980,6 +4101,29 @@ var doc = `{
                 }
             }
         },
+        "entity.Withdraw": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "income_id": {
+                    "type": "integer"
+                },
+                "transfer_status": {
+                    "type": "string"
+                },
+                "user_bank_id": {
+                    "type": "integer"
+                },
+                "withdraw_date": {
+                    "type": "string"
+                }
+            }
+        },
         "translate.ResultErrors": {
             "type": "object",
             "properties": {
@@ -4035,7 +4179,7 @@ type swaggerInfo struct {
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = swaggerInfo{
 	Version:     "1.0",
-	Host:        "localhost:8000",
+	Host:        "192.168.43.79:8000",
 	BasePath:    "/api/v1",
 	Schemes:     []string{},
 	Title:       "StafSus Application",

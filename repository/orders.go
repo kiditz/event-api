@@ -97,16 +97,15 @@ func GetCountInvitation(c echo.Context) e.InvitationCount {
 func AcceptInvitation(quote *e.Quotation) error {
 	return db.DB.Transaction(func(tx *gorm.DB) error {
 		var invitation e.Invitation
-		if err := tx.Set("gorm:query_option", "FOR UPDATE").Where("id = ?", quote.InvitationID).Find(&invitation).Error; err != nil {
-			return err
-		}
-		if invitation.Status == e.ACCEPTED {
-			return fmt.Errorf("status_was_accepted")
-		}
-		// Save Invitation
-		invitation.Status = e.ACCEPTED
-		if err := tx.Save(&invitation).Error; err != nil {
-			return err
+		if !tx.Set("gorm:query_option", "FOR UPDATE").Where("id = ?", quote.InvitationID).Find(&invitation).RecordNotFound() {
+			if invitation.Status == e.ACCEPTED {
+				return fmt.Errorf("status_was_accepted")
+			}
+			// Save Invitation
+			invitation.Status = e.ACCEPTED
+			if err := tx.Save(&invitation).Error; err != nil {
+				return err
+			}
 		}
 		// Save Quotation
 		quote.Status = e.ACTIVE

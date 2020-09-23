@@ -19,7 +19,7 @@ func init() {
 // @title StafSus Application
 // @description This is event staffing application management
 // @version 1.0
-// @host localhost:8000
+// @host 192.168.43.79:8000
 // @license.name Apache 2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @BasePath /api/v1

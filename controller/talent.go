@@ -144,3 +144,23 @@ func FindServiceByID(c echo.Context) error {
 	}
 	return t.Success(c, service)
 }
+
+// GetServicesByLoggedIn godoc
+// @Summary GetServicesByLoggedIn is api to find all services by params
+// @Description find services
+// @Tags talents
+// @Accept json
+// @Produce json
+// @Param filter query entity.FilteredService false "FilteredService"
+// @Success 200 {object} translate.ResultSuccess{data=[]entity.Service} desc
+// @Failure 400 {object} translate.ResultErrors
+// @Router /talent/services [get]
+// @Security ApiKeyAuth
+func GetServicesByLoggedIn(c echo.Context) error {
+	filter := new(e.FilteredService)
+	if err := c.Bind(filter); err != nil {
+		return t.Errors(c, http.StatusBadRequest, err.Error())
+	}
+	talents := r.GetServicesByLoggedIn(c, filter)
+	return t.Success(c, talents)
+}

@@ -260,6 +260,11 @@ definitions:
       status:
         type: string
     type: object
+  entity.FilteredService:
+    properties:
+      category_id:
+        type: integer
+    type: object
   entity.FilteredTalent:
     properties:
       brief_id:
@@ -852,6 +857,21 @@ definitions:
     - password
     - type
     type: object
+  entity.Withdraw:
+    properties:
+      amount:
+        type: number
+      id:
+        type: integer
+      income_id:
+        type: integer
+      transfer_status:
+        type: string
+      user_bank_id:
+        type: integer
+      withdraw_date:
+        type: string
+    type: object
   translate.ResultErrors:
     properties:
       message:
@@ -875,7 +895,7 @@ definitions:
         example: 200
         type: integer
     type: object
-host: localhost:8000
+host: 192.168.43.79:8000
 info:
   contact: {}
   description: This is event staffing application management
@@ -2139,6 +2159,38 @@ paths:
       summary: FindServiceByID used to find service by primary key
       tags:
       - talents
+  /talent/services:
+    get:
+      consumes:
+      - application/json
+      description: find services
+      parameters:
+      - in: query
+        name: category_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/entity.Service'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: GetServicesByLoggedIn is api to find all services by params
+      tags:
+      - talents
   /talents:
     get:
       consumes:
@@ -2389,6 +2441,39 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: GetIncomes find incomes of user
+      tags:
+      - users
+  /user/withdraw:
+    post:
+      consumes:
+      - application/json
+      description: post new bank account
+      parameters:
+      - description: Withdraw
+        in: body
+        name: userBank
+        required: true
+        schema:
+          $ref: '#/definitions/entity.Withdraw'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/translate.ResultSuccess'
+            - properties:
+                data:
+                  $ref: '#/definitions/entity.Withdraw'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/translate.ResultErrors'
+      security:
+      - ApiKeyAuth: []
+      summary: AddWithdraw post new withdraw account
       tags:
       - users
   /users:

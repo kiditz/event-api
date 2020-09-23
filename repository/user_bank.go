@@ -28,6 +28,18 @@ func AddUserBank(c echo.Context, userBank *e.UserBank) error {
 	})
 }
 
+// AddWithdraw godoc
+func AddWithdraw(c echo.Context, withdraw *e.Withdraw) error {
+	return db.DB.Transaction(func(tx *gorm.DB) error {
+
+		if err := tx.Save(&withdraw).Error; err != nil {
+			return err
+		}
+		tx.Model(&e.Income{}).Where("id = ?", withdraw.IncomeID).Update("has_withdraw", true).Update("withdrawal_date", withdraw.WithdrawDate)
+		return nil
+	})
+}
+
 // GetUserBank godoc
 func GetUserBank(c echo.Context) []e.UserBank {
 	var userBanks []e.UserBank

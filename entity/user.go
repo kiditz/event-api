@@ -26,3 +26,14 @@ type UserForm struct {
 	Type     string `json:"type,omitempty" gorm:"not null;type:varchar(20);" validate:"required"`
 	Model
 }
+
+// FilteredUsers use to filter talent
+type FilteredUsers struct {
+	CategoryID    int64  `query:"category_id" json:"category_id"`
+	BriefID       int64  `query:"brief_id" json:"brief_id"`
+	ExpertiseName string `query:"expertise_name" json:"expertise_name"`
+	Limit         int64  `query:"limit" json:"limit"`
+	Offset        int64  `query:"offset" json:"offset"`
+	Query         string `query:"q" json:"q"`
+	SubCategoryID int64  `query:"sub_category_id" json:"sub_category_id"`
+}

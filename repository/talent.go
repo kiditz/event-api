@@ -150,3 +150,20 @@ func FindServiceByID(serviceID int) (e.Service, error) {
 	}
 	return service, nil
 }
+
+// GetServicesByLoggedIn godoc
+func GetServicesByLoggedIn(c echo.Context, filteredService *e.FilteredService) []e.Service {
+	var services []e.Service
+	user := utils.GetUser(c)
+	userID := uint(user["id"].(float64))
+	db := db.DB
+	db = db.Preload("Category").Preload("SubCategory")
+	db = db.Preload("User.Talent.Location")
+	db = db.Preload("Topics")
+	db = db.Preload("Portfilios")
+	db = db.Preload("Background")
+	db = db.Where("user_id = ?", userID)
+	db = db.Where("category_id = ?", filteredService.CategoryID)
+	db = db.Find(&services)
+	return services
+}

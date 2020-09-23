@@ -20,6 +20,7 @@
     "brief_not_found": "Brief tidak ditemukan",
     "uk_invitation_service_id_brief_id": "Sudah pernah diundang",
     "uk_billing_user_id_brief_id": "Billing sudah ada",
+    "uk_quotation_service_id_brief_id":"Quote untuk service ini sudah di kirim",
     "uk_income_user_id_brief_id": "Income sudah ada",
     "validation_errors": "Validasi salah!"
 }

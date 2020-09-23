@@ -6,6 +6,7 @@
     "idx_company_id_title": "Title has been created before",
     "idx_created_by_title": "Brief title was created",
     "jobs_company_id_companies_id_foreign": "Companies not found!",
+    "uk_quotation_service_id_brief_id":"Quote was created!",
     "record not found": "Record not found",
     "reject_is_not_allowed": "Must be rejected by client.",
     "status_was_accepted": "Invitation was accepted",

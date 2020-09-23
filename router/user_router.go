@@ -20,5 +20,6 @@ func SetUserRoutes(v1 *echo.Group) {
 	v1.GET("/banks", c.GetBanks)
 	v1.POST("/user/bank", c.AddUserBank, m.IsLoggedIn(), m.IsTalent)
 	v1.GET("/user/banks", c.GetUserBanks, m.IsLoggedIn(), m.IsTalent)
+	v1.POST("/user/withdraw", c.AddWithdraw, m.IsLoggedIn(), m.IsTalent)
 
 }

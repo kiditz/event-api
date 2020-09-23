@@ -161,6 +161,11 @@ func AcceptInvitation(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
+	fmt.Printf("\nQuotation %v\n", quotation)
+	invalid := t.ValidateTranslator(c, quotation)
+	if invalid != nil {
+		return t.Errors(c, http.StatusBadRequest, invalid)
+	}
 	err = r.AcceptInvitation(&quotation)
 	if err != nil {
 		if err, ok := err.(*pq.Error); ok {

@@ -10,7 +10,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8000",
+    "host": "192.168.43.79:8000",
     "basePath": "/api/v1",
     "paths": {
         "/account": {
@@ -2114,6 +2114,62 @@
                 }
             }
         },
+        "/talent/services": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "find services",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "talents"
+                ],
+                "summary": "GetServicesByLoggedIn is api to find all services by params",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "category_id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/entity.Service"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/talent/{id}": {
             "get": {
                 "security": [
@@ -2603,6 +2659,63 @@
                 }
             }
         },
+        "/user/withdraw": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "post new bank account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "AddWithdraw post new withdraw account",
+                "parameters": [
+                    {
+                        "description": "Withdraw",
+                        "name": "userBank",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.Withdraw"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/translate.ResultSuccess"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/entity.Withdraw"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/translate.ResultErrors"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "security": [
@@ -3077,6 +3190,14 @@
                 },
                 "status": {
                     "type": "string"
+                }
+            }
+        },
+        "entity.FilteredService": {
+            "type": "object",
+            "properties": {
+                "category_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -3961,6 +4082,29 @@
                     "type": "string"
                 },
                 "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Withdraw": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "income_id": {
+                    "type": "integer"
+                },
+                "transfer_status": {
+                    "type": "string"
+                },
+                "user_bank_id": {
+                    "type": "integer"
+                },
+                "withdraw_date": {
                     "type": "string"
                 }
             }
